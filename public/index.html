@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartMeteo - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2 class="nav-text">SmartMeteo</h2>
+            <button id="toggle-btn"><i class="fas fa-bars"></i></button>
+        </div>
+        <nav>
+            <a href="#" class="active"><i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span></a>
+            <a href="#"><i class="fas fa-list"></i> <span class="nav-text">Echipamente</span></a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header class="top-nav">
+            <div class="breadcrumb">» Lista Echipamente » <strong>Statie Meteo Licenta</strong></div>
+            <div class="btn-group">
+                <button class="btn btn-purple"><i class="fas fa-chart-line"></i> Citiri senzori</button>
+                <button class="btn btn-blue"><i class="fas fa-tools"></i> Seteaza Senzori</button>
+                <button class="btn btn-red"><i class="fas fa-trash"></i> Sterge</button>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <div class="col-left">
+                
+                <div class="panel">
+                    <div class="panel-header-green">Ultima citire a statiei: Statie Meteo - Licenta</div>
+                    <div class="panel-body">
+                        <p class="timestamp">Data si ora: <span id="time">--</span></p>
+                        <div class="sensor-tags">
+                            <div class="tag-item" onclick="deschideIstoric('temperature')">
+                                <span class="label label-red">Temperatură Aer</span> <strong id="val-temp">--</strong>
+                            </div>
+                            <div class="tag-item" onclick="deschideIstoric('humidity')">
+                                <span class="label label-blue">Umiditate Relativă</span> <strong id="val-hum">--</strong>
+                            </div>
+                            <div class="tag-item" onclick="deschideIstoric('pressure')">
+                                <span class="label label-brown">Presiune Atmosferică</span> <strong id="val-pres">--</strong>
+                            </div>
+                            <div class="tag-item" onclick="deschideIstoric('lux')">
+                                <span class="label label-green">Intensitate Luminoasă</span> <strong id="val-lux">--</strong>
+                            </div>
+                            <div class="tag-item" onclick="deschideIstoric('soil')">
+                                <span class="label label-soil">Umiditate Sol</span> 
+                                <strong id="val-soil">--</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header-weather">
+                        <div class="weather-title">
+                            <i class="fas fa-bolt"></i> Meteo <span class="provider">OpenWeatherMap</span>
+                        </div>
+                        <div class="weather-tabs">
+                            <span class="tab active">Conditii curete</span>
+                            <span class="tab">Prognoza</span>
+                            <span class="tab">Istoric</span>
+                        </div>
+                    </div>
+                    <div class="weather-content">
+                        <div class="weather-main-info">
+                            <p class="location-name">București</p>
+                            <p class="weather-condition" id="open-desc">CER SENIN</p>
+                            <div class="temp-display">
+                                <h1 id="open-temp-large">14.03°C</h1>
+                                <i class="fas fa-sun weather-big-icon"></i>
+                            </div>
+                            <div class="weather-bottom-stats">
+                                <p>Presiune: <strong id="open-pres">1027 mb</strong></p>
+                                <p>Precipitatii: <strong>0 mm</strong></p>
+                            </div>
+                        </div>
+                        
+                        <div class="weather-indicators">
+                            <div class="indicator-item">
+                                <span class="indicator-label">Viteza Vant</span>
+                                <div class="gauge-container">
+                                    <div class="gauge-value" id="open-wind">4.12</div>
+                                    <div class="gauge-unit">km/h V</div>
+                                </div>
+                            </div>
+                            <div class="indicator-item">
+                                <span class="indicator-label">Umiditate</span>
+                                <div class="gauge-circle">
+                                    <span id="open-hum-percent">53%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <div class="col-right">
+                <div class="panel">
+                    <div class="panel-header-green">Detalii Echipament</div>
+                    <div class="panel-body no-padding">
+                        <table class="details-table">
+                            <tr><td>Versiune protocol</td><td>v3</td></tr>
+                            <tr><td>Denumire</td><td>Statie Licenta</td></tr>
+                            <tr><td>Statie ID</td><td>1016</td></tr>
+                            <tr><td>Latitudine</td><td>44.8147</td></tr>
+                            <tr><td>Longitudine</td><td>25.6242</td></tr>
+                            <tr><td>Activ</td><td>Da</td></tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header-green">Spatii de lucru</div>
+                    <div class="panel-body">
+                        <div class="workspace-placeholder">
+                            <p style="color: #777; font-size: 13px;">Implicit - Statie Meteo Licenta</p>
+                        </div>
+                    </div>
+                </div>
+            </div> </div> </div> <script>
+        // Logica Sidebar
+        const btn = document.getElementById('toggle-btn');
+        const side = document.getElementById('sidebar');
+        const main = document.querySelector('.main-content');
+        
+        btn.onclick = () => {
+            side.classList.toggle('collapsed');
+            main.classList.toggle('expanded');
+        };
+
+        function deschideIstoric(tipSenzor) {
+            window.open(`istoric.html?sensor=${tipSenzor}`, '_blank');
+        }
+
+        async function update() {
+            try {
+                const res = await fetch('/get-latest-data');
+                const d = await res.json();
+                
+                // Actualizările existente
+                document.getElementById('val-temp').innerText = d.temperature + " °C";
+                document.getElementById('val-hum').innerText = d.humidity + " %";
+                document.getElementById('val-pres').innerText = d.pressure + " hPa";
+                document.getElementById('val-lux').innerText = d.lux + " lx";
+                
+                // NOU: Actualizare Umiditate Sol (asigură-te că serverul returnează d.soil_moisture)
+                if(d.soil_moisture !== undefined) {
+                    document.getElementById('val-soil').innerText = d.soil_moisture + " %";
+                }
+
+                document.getElementById('time').innerText = new Date().toLocaleString();
+            } catch(e) { 
+                console.error("Eroare update:", e); 
+            }
+}
+        
+        setInterval(update, 3000);
+        update(); // Rulare imediata la refresh
+    </script>
+</body>
+</html>

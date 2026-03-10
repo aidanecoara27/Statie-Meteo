@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Istoric Detaliat Senzor</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #ecf0f5; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #222d32; text-transform: capitalize; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="titlu-senzor">Variatie Senzor</h1>
+        <canvas id="graficDetaliat" height="400"></canvas>
+    </div>
+
+    <script>
+        // Preluăm tipul senzorului din URL (ex: ?sensor=temperature)
+        const params = new URLSearchParams(window.location.search);
+        const sensorType = params.get('sensor');
+        document.getElementById('titlu-senzor').innerText = "Istoric: " + sensorType;
+
+        async function randeazaGrafic() {
+    try {
+        const res = await fetch('/get-history');
+        const history = await res.json();
+        
+        // Debug: Verificăm în consolă dacă datele conțin coloana cerută
+        console.log("Date primite:", history[0]); 
+
+        const ctx = document.getElementById('graficDetaliat').getContext('2d');
+        
+        // Distrugem graficul vechi dacă există (previne suprapunerea la refresh)
+        if (window.myChart) window.myChart.destroy();
+
+        window.myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: history.map(h => h.ora),
+                datasets: [{
+                    label: "Nivel " + sensorType,
+                    data: history.map(h => h[sensorType]), // EX: h['soil_moisture']
+                    borderColor: sensorType === 'soil_moisture' ? '#3498db' : '#5cb85c',
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true // Important pentru umiditate (%)
+                    }
+                }
+            }
+        });
+    } catch (eroare) {
+        console.error("Eroare la încărcarea graficului:", eroare);
+    }
+}
+    </script>
+</body>
+</html>

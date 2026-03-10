@@ -1,0 +1,237 @@
+/* 1. VARIABILE ȘI RESET */
+:root {
+    --green: #5cb85c;
+    --dark: #222d32;
+    --gray-bg: #ecf0f5;
+    --border: #d2d6de;
+    --blue-info: #3c8dbc;
+    --red-danger: #dd4b39;
+}
+
+body { 
+    font-family: 'Source Sans Pro', sans-serif; 
+    margin: 0; 
+    background: var(--gray-bg); 
+    display: flex; 
+    overflow-x: hidden;
+}
+
+/* 2. SIDEBAR */
+.sidebar { 
+    width: 230px; 
+    background: var(--dark); 
+    height: 100vh; 
+    color: white; 
+    position: fixed; 
+    transition: 0.3s; 
+    z-index: 10; 
+}
+
+.sidebar.collapsed { width: 50px; }
+.sidebar.collapsed .nav-text { display: none; }
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: rgba(0,0,0,0.1);
+}
+
+nav a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: #b8c7ce;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+nav a:hover, nav a.active {
+    background: #1e282c;
+    color: white;
+    border-left: 3px solid var(--green);
+}
+
+nav a i { margin-right: 10px; width: 20px; text-align: center; }
+
+/* 3. CONTENT AREA */
+.main-content { 
+    margin-left: 230px; 
+    width: calc(100% - 230px); 
+    transition: 0.3s; 
+}
+
+.main-content.expanded { 
+    margin-left: 50px; 
+    width: calc(100% - 50px); 
+}
+
+/* 4. TOP NAV & BUTTONS */
+.top-nav { 
+    background: white; 
+    padding: 10px 20px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-bottom: 1px solid var(--border); 
+}
+
+.breadcrumb { font-size: 14px; color: #777; }
+
+.btn { 
+    padding: 6px 12px; 
+    border: none; 
+    color: white; 
+    cursor: pointer; 
+    border-radius: 3px; 
+    font-size: 12px; 
+    margin-left: 5px; 
+    transition: 0.2s;
+}
+
+.btn:hover { opacity: 0.9; box-shadow: inset 0 0 100px rgba(0,0,0,0.1); }
+.btn-purple { background: #605ca8; }
+.btn-blue { background: #00c0ef; }
+.btn-red { background: #dd4b39; }
+
+/* 5. GRID SYSTEM */
+.dashboard-container {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.col-left { flex: 0 0 65%; max-width: 65%; }
+.col-right { flex: 0 0 35%; max-width: 35%; }
+
+/* 6. PANELS */
+.panel {
+    background: white;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    border-top: 3px solid var(--border);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+.panel-header-green {
+    background: var(--green);
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    border-radius: 3px 3px 0 0;
+}
+
+.panel-body { padding: 15px; }
+
+/* 7. SENSOR TAGS (Hardware) */
+.sensor-tags { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.tag-item { 
+    background: #f8f8f8; 
+    border: 1px solid #eee; 
+    padding: 12px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tag-item:hover {
+    background: #e1f5fe !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.label { 
+    padding: 3px 10px; 
+    border-radius: 3px; 
+    color: white; 
+    font-size: 11px; 
+    font-weight: bold; 
+    min-width: 130px;
+    text-align: center;
+}
+
+.label-red { background: var(--red-danger); }
+.label-blue { background: var(--blue-info); }
+.label-brown { background: #8a6d3b; }
+.label-green { background: #00a65a; }
+.label-soil { background: #5d4037; }
+
+/* 8. WEATHER SECTION */
+.panel-header-weather {
+    background: var(--green);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    height: 45px;
+}
+
+.weather-title { font-weight: bold; font-size: 14px; }
+.weather-tabs { display: flex; height: 100%; }
+
+.tab {
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.tab.active { background: rgba(0,0,0,0.15); border-bottom: 3px solid white; }
+
+.weather-content {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    padding: 20px;
+    gap: 15px;
+    border: 1px solid var(--border);
+    border-top: none;
+}
+
+.weather-main-info h1 { font-size: 48px; margin: 10px 0; font-weight: 300; }
+.weather-condition { font-weight: bold; text-transform: uppercase; color: #444; }
+.weather-big-icon { font-size: 40px; color: #f39c12; }
+
+.weather-indicators {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-left: 1px solid #eee;
+}
+
+/* Gauges */
+.gauge-circle, .gauge-container {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border: 5px solid #eee;
+}
+
+.gauge-circle { border-color: var(--blue-info); font-size: 18px; }
+.gauge-container { border-color: var(--red-danger); }
+.gauge-value { font-size: 18px; }
+.gauge-unit { font-size: 10px; font-weight: normal; }
+
+/* 9. TABLES & DETAILS */
+.details-table { width: 100%; border-collapse: collapse; }
+.details-table td { 
+    padding: 12px 15px; 
+    border-bottom: 1px solid #f4f4f4; 
+    font-size: 13px; 
+}
+
+.details-table td:first-child { color: #999; width: 45%; font-weight: 600; }
+.details-table tr:last-child td { border-bottom: none; }
+
+.timestamp { font-size: 13px; color: #666; margin-bottom: 15px; display: block; }
