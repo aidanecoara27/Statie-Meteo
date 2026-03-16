@@ -27,6 +27,25 @@ db.connect((err) => {
     console.log("CONECTAT CU SUCCES LA RAILWAY!");
 });
 
+const axios = require('axios'); // Asigură-te că linia asta e la începutul fișierului server.js
+
+// Ruta pentru OpenWeatherMap
+app.get('/get-external-weather', async (req, res) => {
+    try {
+        const API_KEY = '8be2098d066d3fe35f3d44dbc4526f4e'; // Înlocuiește cu API Key-ul tău de pe OpenWeather
+        const ORAS = 'Bucuresti'; // Sau orașul tău
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${ORAS}&appid=${API_KEY}&units=metric&lang=ro`;
+
+        const response = await axios.get(url);
+        
+        // Trimitem datele primite de la OpenWeather către site-ul tău
+        res.json(response.data);
+    } catch (error) {
+        console.error("Eroare OpenWeather API:", error.message);
+        res.status(500).json({ error: "Nu am putut prelua datele externe" });
+    }
+});
+
 // 2. RUTA PENTRU ESP32 (Hardware -> DB)
 
 app.get('/update-sensors', (req, res) => {
