@@ -30,7 +30,6 @@
 
         <div class="dashboard-container">
             <div class="col-left">
-                
                 <div class="panel">
                     <div class="panel-header-green">Ultima citire a statiei: Statie Meteo - Licenta</div>
                     <div class="panel-body">
@@ -49,8 +48,7 @@
                                 <span class="label label-green">Intensitate Luminoasă</span> <strong id="val-lux">--</strong>
                             </div>
                             <div class="tag-item" onclick="deschideIstoric('soil')">
-                                <span class="label label-soil">Umiditate Sol</span> 
-                                <strong id="val-soil">--</strong>
+                                <span class="label label-soil">Umiditate Sol</span> <strong id="val-soil">--</strong>
                             </div>
                         </div>
                     </div>
@@ -62,7 +60,7 @@
                             <i class="fas fa-bolt"></i> Meteo <span class="provider">OpenWeatherMap</span>
                         </div>
                         <div class="weather-tabs">
-                            <span class="tab active">Conditii curete</span>
+                            <span class="tab active">Conditii curente</span>
                             <span class="tab">Prognoza</span>
                             <span class="tab">Istoric</span>
                         </div>
@@ -70,35 +68,37 @@
                     <div class="weather-content">
                         <div class="weather-main-info">
                             <p class="location-name">București</p>
-                            <p class="weather-condition" id="open-desc">CER SENIN</p>
+                            <p class="weather-condition" id="open-desc">ÎNCĂRCARE...</p>
                             <div class="temp-display">
-                                <h1 id="open-temp-large">14.03°C</h1>
+                                <h1 id="extern-temp">--°C</h1>
                                 <i class="fas fa-sun weather-big-icon"></i>
                             </div>
                             <div class="weather-bottom-stats">
-                                <p>Presiune: <strong id="open-pres">1027 mb</strong></p>
-                                <p>Precipitatii: <strong>0 mm</strong></p>
+                                <p>Presiune: <strong id="open-pres">-- mb</strong></p>
+                                <p>Precipitații: <strong id="open-precip">0 mm</strong></p>
                             </div>
                         </div>
                         
                         <div class="weather-indicators">
                             <div class="indicator-item">
-                                <span class="indicator-label">Viteza Vant</span>
+                                <span class="indicator-label">Viteză Vânt</span>
                                 <div class="gauge-container">
-                                    <div class="gauge-value" id="open-wind">4.12</div>
-                                    <div class="gauge-unit">km/h V</div>
+                                    <div class="gauge-value" id="open-wind">--</div>
+                                    <div class="gauge-unit">km/h</div>
                                 </div>
                             </div>
                             <div class="indicator-item">
                                 <span class="indicator-label">Umiditate</span>
                                 <div class="gauge-circle">
-                                    <span id="open-hum-percent">53%</span>
+                                    <span id="open-hum-percent">--%</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> <div class="col-right">
+            </div>
+
+            <div class="col-right">
                 <div class="panel">
                     <div class="panel-header-green">Detalii Echipament</div>
                     <div class="panel-body no-padding">
@@ -106,23 +106,16 @@
                             <tr><td>Versiune protocol</td><td>v3</td></tr>
                             <tr><td>Denumire</td><td>Statie Licenta</td></tr>
                             <tr><td>Statie ID</td><td>1016</td></tr>
-                            <tr><td>Latitudine</td><td>44.8147</td></tr>
-                            <tr><td>Longitudine</td><td>25.6242</td></tr>
                             <tr><td>Activ</td><td>Da</td></tr>
                         </table>
                     </div>
                 </div>
-                
-                <div class="panel">
-                    <div class="panel-header-green">Spatii de lucru</div>
-                    <div class="panel-body">
-                        <div class="workspace-placeholder">
-                            <p style="color: #777; font-size: 13px;">Implicit - Statie Meteo Licenta</p>
-                        </div>
-                    </div>
-                </div>
-            </div> </div> </div> <script>
-        // Logica Sidebar
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Logica Sidebar
         const btn = document.getElementById('toggle-btn');
         const side = document.getElementById('sidebar');
         const main = document.querySelector('.main-content');
@@ -136,30 +129,57 @@
             window.open(`istoric.html?sensor=${tipSenzor}`, '_blank');
         }
 
+        // 2. Update Senzori Locali (la fiecare 3 secunde)
         async function update() {
             try {
                 const res = await fetch('/get-latest-data');
+                if (!res.ok) throw new Error("Server error");
                 const d = await res.json();
                 
-                // Actualizările existente
-                document.getElementById('val-temp').innerText = d.temperature + " °C";
-                document.getElementById('val-hum').innerText = d.humidity + " %";
-                document.getElementById('val-pres').innerText = d.pressure + " hPa";
-                document.getElementById('val-lux').innerText = d.lux + " lx";
+                document.getElementById('val-temp').innerText = (d.temperature || "--") + " °C";
+                document.getElementById('val-hum').innerText = (d.humidity || "--") + " %";
+                document.getElementById('val-pres').innerText = (d.pressure || "--") + " hPa";
+                document.getElementById('val-lux').innerText = (d.lux || "--") + " lx";
                 
-                // NOU: Actualizare Umiditate Sol (asigură-te că serverul returnează d.soil_moisture)
                 if(d.soil_moisture !== undefined) {
                     document.getElementById('val-soil').innerText = d.soil_moisture + " %";
                 }
 
                 document.getElementById('time').innerText = new Date().toLocaleString();
             } catch(e) { 
-                console.error("Eroare update:", e); 
+                console.error("Eroare update senzori:", e); 
             }
-}
+        }
+
+        // 3. Update OpenWeather (la fiecare 15 minute)
+        async function updateExternalWeather() {
+            console.log("Se descarcă datele OpenWeather...");
+            try {
+                const res = await fetch('/get-external-weather'); 
+                if (!res.ok) throw new Error("Nu s-a putut contacta serverul pentru vreme");
+                const d = await res.json();
+
+                // Actualizăm interfața cu datele reale
+                document.getElementById('extern-temp').innerText = Math.round(d.main.temp) + "°C";
+                document.getElementById('open-desc').innerText = d.weather[0].description.toUpperCase();
+                document.getElementById('open-pres').innerText = d.main.pressure + " mb";
+                document.getElementById('open-wind').innerText = d.wind.speed;
+                document.getElementById('open-hum-percent').innerText = d.main.humidity + "%";
+                
+                console.log("Vremea externă a fost actualizată!");
+            } catch(e) {
+                console.error("Eroare update OpenWeather:", e);
+                document.getElementById('open-desc').innerText = "EROARE CONEXIUNE";
+            }
+        }
         
+        // Pornire automată
         setInterval(update, 3000);
-        update(); // Rulare imediata la refresh
+        setInterval(updateExternalWeather, 900000); // 15 minute
+
+        // Executare imediată la încărcare
+        update();
+        updateExternalWeather();
     </script>
 </body>
 </html>
