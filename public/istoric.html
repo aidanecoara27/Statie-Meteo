@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Istoric Senzori - SmartMeteo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .charts-container { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .full-width { grid-column: span 2; }
+        h2 { text-align: center; color: #333; }
+    </style>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="breadcrumb"><a href="index.html" style="color:white">« Înapoi la Dashboard</a> » <strong>Evoluție Parametri</strong></div>
+    </header>
+
+    <div class="charts-container">
+        <div class="chart-card full-width"><canvas id="chart-temp"></canvas></div>
+        <div class="chart-card"><canvas id="chart-hum"></canvas></div>
+        <div class="chart-card"><canvas id="chart-pres"></canvas></div>
+        <div class="chart-card"><canvas id="chart-lux"></canvas></div>
+        <div class="chart-card"><canvas id="chart-soil"></canvas></div>
+    </div>
+
+    <script>
+        async function loadCharts() {
+            const res = await fetch('/get-history');
+            const data = await res.json();
+
+            const labels = data.map(d => d.ora);
+            
+            const config = (label, color, key) => ({
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data.map(d => d[key]),
+                        borderColor: color,
+                        backgroundColor: color + '22',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            new Chart(document.getElementById('chart-temp'), config('Temperatură (°C)', '#ff4757', 'temperature'));
+            new Chart(document.getElementById('chart-hum'), config('Umiditate (%)', '#2f3542', 'humidity'));
+            new Chart(document.getElementById('chart-pres'), config('Presiune (hPa)', '#ffa502', 'pressure'));
+            new Chart(document.getElementById('chart-lux'), config('Lumină (lx)', '#2ed573', 'lux'));
+            new Chart(document.getElementById('chart-soil'), config('Umiditate Sol (%)', '#747d8c', 'soil_moisture'));
+        }
+
+        loadCharts();
+    </script>
+</body>
+</html>
