@@ -10,19 +10,21 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // 1. Conexiunea la baza de date
+// TEST TEMPORAR (nu lăsa așa pe termen lung din motive de securitate)
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '0000', // Pune parola ta de la MySQL dacă ai una
-    database: 'statie_meteo'
+    host: process.env.MYSQLHOST || 'interchange.proxy.rlwy.net',
+    user: process.env.MYSQLUSER || 'root',
+    password: process.env.MYSQLPASSWORD || 'FjWCGwzRtMTCrzXbMOWghLmirnfoYVIV',
+    database: process.env.MYSQLDATABASE || 'railway',
+    port: process.env.MYSQLPORT || 50040
 });
 
-db.connect(err => {
+db.connect((err) => {
     if (err) {
-        console.error('Eroare conectare MySQL:', err);
+        console.error("EROARE CONECTARE BAZĂ DATE:", err.message);
         return;
     }
-    console.log('Conectat cu succes la MySQL!');
+    console.log("CONECTAT CU SUCCES LA RAILWAY!");
 });
 
 // 2. RUTA PENTRU ESP32 (Hardware -> DB)
@@ -60,25 +62,6 @@ app.get('/get-latest-data', (req, res) => {
     });
 });
 
-// 4. RUTA PENTRU CONTROL LED (Site -> DB)
-app.get('/toggle-led/:state', (req, res) => {
-    const state = req.params.state;
-    const sql = "UPDATE status_control SET led_state = ? WHERE id = 1";
-    db.query(sql, [state], (err, result) => {
-        if (err) return res.status(500).json(err);
-        res.send(`LED setat la ${state}`);
-    });
-});
-
-// 5. RUTA PENTRU ARDUINO (DB -> LED)
-app.get('/get-led', (req, res) => {
-    const sql = "SELECT led_state FROM status_control WHERE id = 1";
-    db.query(sql, (err, result) => {
-        if (err) return res.status(500).json(err);
-        res.send(result[0].led_state.toString());
-    });
-});
-
 // RUTA: Trimite ultimele 20 de înregistrări pentru grafic
 app.get('/get-history', (req, res) => {
     // Folosim SELECT * pentru a lua toate datele + formatăm ora pentru grafic
@@ -94,7 +77,7 @@ app.get('/get-history', (req, res) => {
     });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Serverul ruleaza pe http://localhost:${PORT}`);
 });
