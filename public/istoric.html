@@ -2,111 +2,170 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Evoluție Senzori - SmartMeteo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Istoric Senzori - SmartMeteo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <style>
-        .history-container { padding: 20px; max-width: 1200px; margin: auto; }
-        .filter-bar { background: #f8f9fa; padding: 15px; border-radius: 8px; display: flex; gap: 20px; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .sensor-selectors { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .selector-item { display: flex; align-items: center; gap: 5px; cursor: pointer; padding: 5px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 14px; }
-        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .chart-box { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .chart-box.hidden { display: none; }
-        .full-row { grid-column: span 2; }
+        /* TEMATICA DASHBOARD (Preluată din stilul tău) */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; }
         
-        /* Culorile senzorilor tale */
-        .bg-red { background: #ff4757; }
-        .bg-blue { background: #2f3542; }
-        .bg-orange { background: #ffa502; }
-        .bg-green { background: #2ed573; }
-        .bg-soil { background: #747d8c; }
+        .header { background-color: #72b06e; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header h1 { margin: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        
+        .nav-buttons { display: flex; gap: 10px; }
+        .btn-nav { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 15px; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        .btn-nav:hover { background: rgba(255,255,255,0.3); }
+        .btn-nav.active { background: #5d945a; font-weight: bold; }
+
+        .container { padding: 20px; max-width: 1200px; margin: auto; }
+
+        /* BARA FILTRE (Stil ENTEN) */
+        .filter-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        .filter-group label { font-size: 0.8rem; color: #666; }
+        input[type="date"], select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
+
+        /* SELECTORI SENZORI (Pătrățele colorate) */
+        .sensor-toggles { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: flex-end; }
+        .toggle-btn { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 4px; color: white; font-size: 0.85rem; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
+        .toggle-btn input { cursor: pointer; }
+        
+        /* Culori conform Dashboard-ului tău */
+        .color-temp { background-color: #ff4757; }
+        .color-hum { background-color: #2f3542; }
+        .color-pres { background-color: #ffa502; }
+        .color-lux { background-color: #2ed573; }
+        .color-soil { background-color: #747d8c; }
+        .btn-all { background-color: #5d945a; }
+
+        .off { opacity: 0.4; grayscale: 100%; }
+
+        /* ZONA GRAFICE */
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
+        .full-width { grid-column: span 2; }
+        .chart-container h3 { margin-top: 0; font-size: 1rem; color: #444; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <header class="top-nav">
-        <div class="breadcrumb"><a href="index.html" style="color:white; text-decoration:none;">« Dashboard</a> » <strong>Citiri Senzori</strong></div>
-        <button class="btn btn-blue" onclick="location.reload()"><i class="fas fa-sync"></i> Reîncarcă datele</button>
-    </header>
 
-    <div class="history-container">
-        <div class="filter-bar">
-            <div><label>De la:</label> <input type="date" id="date-from"></div>
-            <div><label>Până la:</label> <input type="date" id="date-to"></div>
-            <div>
-                <label>Grupare date:</label>
-                <select id="grouping">
-                    <option>Ora</option><option>2 ore</option><option>6 ore</option>
+    <div class="header">
+        <h1><i class="fas fa-bolt"></i> Meteo OpenWeatherMap</h1>
+        <div class="nav-buttons">
+            <a href="index.html" class="btn-nav">Conditii curente</a>
+            <a href="#" class="btn-nav">Prognoza</a>
+            <a href="istoric.html" class="btn-nav active">Istoric</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>De la</label>
+                <input type="date" id="date-from">
+            </div>
+            <div class="filter-group">
+                <label>Pana la</label>
+                <input type="date" id="date-to">
+            </div>
+            <div class="filter-group">
+                <label>Grupare date</label>
+                <select id="grupare">
+                    <option value="ora">Ora</option>
+                    <option value="2ore">2 ore</option>
+                    <option value="zi">Zi</option>
                 </select>
             </div>
+            <button class="btn-nav" style="background:#4a90e2; height:36px;" onclick="loadData()">Incarca date</button>
         </div>
 
-        <div class="sensor-selectors">
-            <label class="selector-item bg-red"><input type="checkbox" checked onchange="toggleChart('temp', this)"> Temp. Aer</label>
-            <label class="selector-item bg-blue"><input type="checkbox" checked onchange="toggleChart('hum', this)"> Umiditate</label>
-            <label class="selector-item bg-orange"><input type="checkbox" checked onchange="toggleChart('pres', this)"> Presiune</label>
-            <label class="selector-item bg-green"><input type="checkbox" checked onchange="toggleChart('lux', this)"> Luminozitate</label>
-            <label class="selector-item bg-soil"><input type="checkbox" checked onchange="toggleChart('soil', this)"> Umiditate Sol</label>
+        <div class="sensor-toggles">
+            <label class="toggle-btn color-temp"><input type="checkbox" checked onchange="toggleChart('temp', this)"> Temp. aer</label>
+            <label class="toggle-btn color-hum"><input type="checkbox" checked onchange="toggleChart('hum', this)"> Umiditate</label>
+            <label class="toggle-btn color-pres"><input type="checkbox" checked onchange="toggleChart('pres', this)"> Presiune</label>
+            <label class="toggle-btn color-lux"><input type="checkbox" checked onchange="toggleChart('lux', this)"> Luminozitate</label>
+            <label class="toggle-btn color-soil"><input type="checkbox" checked onchange="toggleChart('soil', this)"> Umiditate Sol</label>
+            <button class="toggle-btn btn-all">Toti senzorii</button>
         </div>
 
         <div class="charts-grid">
-            <div class="chart-box full-row" id="box-temp"><canvas id="chart-temp"></canvas></div>
-            <div class="chart-box" id="box-hum"><canvas id="chart-hum"></canvas></div>
-            <div class="chart-box" id="box-pres"><canvas id="chart-pres"></canvas></div>
-            <div class="chart-box" id="box-lux"><canvas id="chart-lux"></canvas></div>
-            <div class="chart-box" id="box-soil"><canvas id="chart-soil"></canvas></div>
+            <div class="chart-container full-width" id="box-temp">
+                <h3>Temperatura atmosferica (Ta) °C</h3>
+                <canvas id="chart-temp"></canvas>
+            </div>
+            <div class="chart-container" id="box-hum">
+                <h3>Umiditate atmosferica (Rha) %</h3>
+                <canvas id="chart-hum"></canvas>
+            </div>
+            <div class="chart-container" id="box-pres">
+                <h3>Presiune atmosferica (Pa) hPa</h3>
+                <canvas id="chart-pres"></canvas>
+            </div>
+            <div class="chart-container" id="box-lux">
+                <h3>Intensitate luminoasa (Lx)</h3>
+                <canvas id="chart-lux"></canvas>
+            </div>
+            <div class="chart-container" id="box-soil">
+                <h3>Umiditate sol (%)</h3>
+                <canvas id="chart-soil"></canvas>
+            </div>
         </div>
     </div>
 
     <script>
-        // Funcția care ascunde/arată graficele
-        function toggleChart(id, checkbox) {
-            const element = document.getElementById('box-' + id);
-            if (checkbox.checked) element.classList.remove('hidden');
-            else element.classList.add('hidden');
+        function toggleChart(id, cb) {
+            const box = document.getElementById('box-' + id);
+            cb.parentElement.classList.toggle('off', !cb.checked);
+            box.classList.toggle('hidden', !cb.checked);
         }
 
-        async function init() {
-            const res = await fetch('/get-history');
-            const data = await res.json();
-            const labels = data.map(d => d.ora);
+        async function loadData() {
+            try {
+                const response = await fetch('/get-history');
+                const data = await response.json();
+                
+                const labels = data.map(item => item.ora);
 
-            const draw = (ctxId, label, color, key) => {
-                new Chart(document.getElementById(ctxId), {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: label,
-                            data: data.map(d => d[key]),
-                            borderColor: color,
-                            backgroundColor: color + '22',
-                            fill: true,
-                            tension: 0.3,
-                            pointRadius: 4
-                        }]
-                    },
-                    options: { 
-                        responsive: true,
-                        plugins: { legend: { display: true } },
-                        scales: { y: { beginAtZero: false } }
-                    }
-                });
-            };
+                const createChart = (id, label, color, key) => {
+                    const ctx = document.getElementById(id).getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: label,
+                                data: data.map(item => item[key]),
+                                borderColor: color,
+                                backgroundColor: color + '22',
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: { x: { grid: { display: false } } }
+                        }
+                    });
+                };
 
-            draw('chart-temp', 'Temperatura Atmosferica (Ta) °C', '#ff4757', 'temperature');
-            draw('chart-hum', 'Umiditatea Atmosferica (Rha) %', '#2f3542', 'humidity');
-            draw('chart-pres', 'Presiunea Atmosferica (Pa) hPa', '#ffa502', 'pressure');
-            draw('chart-lux', 'Intensitate Luminoasa (lx)', '#2ed573', 'lux');
-            draw('chart-soil', 'Umiditatea Solului (%)', '#747d8c', 'soil_moisture');
+                createChart('chart-temp', 'Temp', '#ff4757', 'temperature');
+                createChart('chart-hum', 'Hum', '#2f3542', 'humidity');
+                createChart('chart-pres', 'Pres', '#ffa502', 'pressure');
+                createChart('chart-lux', 'Lux', '#2ed573', 'lux');
+                createChart('chart-soil', 'Soil', '#747d8c', 'soil_moisture');
+
+            } catch (e) { console.error("Eroare la incarcare:", e); }
         }
 
-        // Setăm data curentă în input-uri
+        // Setam datele implicite
         document.getElementById('date-from').valueAsDate = new Date();
         document.getElementById('date-to').valueAsDate = new Date();
         
-        init();
+        loadData();
     </script>
 </body>
 </html>
