@@ -3,168 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Istoric Senzori - SmartMeteo</title>
+    <title>Istoric - SmartMeteo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* TEMATICA DASHBOARD (Preluată din stilul tău) */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; }
-        
-        .header { background-color: #72b06e; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .header h1 { margin: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-        
-        .nav-buttons { display: flex; gap: 10px; }
-        .btn-nav { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 15px; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
-        .btn-nav:hover { background: rgba(255,255,255,0.3); }
-        .btn-nav.active { background: #5d945a; font-weight: bold; }
+        :root { --sidebar-width: 240px; --primary-green: #72b06e; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; display: flex; background-color: #f4f7f6; height: 100vh; overflow: hidden; }
 
-        .container { padding: 20px; max-width: 1200px; margin: auto; }
+        /* SIDEBAR (Identic cu poza ta) */
+        .sidebar { width: var(--sidebar-width); background-color: #212529; color: white; display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-header { padding: 20px; font-size: 24px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #3d4145; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+        .sidebar-menu li { padding: 15px 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; color: #adb5bd; }
+        .sidebar-menu li:hover, .sidebar-menu li.active { background-color: rgba(255,255,255,0.1); color: white; }
+        .sidebar-menu a { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 10px; width: 100%; }
 
-        /* BARA FILTRE (Stil ENTEN) */
-        .filter-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .filter-group { display: flex; flex-direction: column; gap: 5px; }
-        .filter-group label { font-size: 0.8rem; color: #666; }
-        input[type="date"], select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
+        /* MAIN CONTENT */
+        .main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .top-header { background: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; }
+        .top-header h2 { font-size: 16px; color: #555; margin: 0; }
 
-        /* SELECTORI SENZORI (Pătrățele colorate) */
-        .sensor-toggles { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: flex-end; }
-        .toggle-btn { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 4px; color: white; font-size: 0.85rem; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
-        .toggle-btn input { cursor: pointer; }
-        
-        /* Culori conform Dashboard-ului tău */
-        .color-temp { background-color: #ff4757; }
-        .color-hum { background-color: #2f3542; }
-        .color-pres { background-color: #ffa502; }
-        .color-lux { background-color: #2ed573; }
-        .color-soil { background-color: #747d8c; }
-        .btn-all { background-color: #5d945a; }
+        .content-padding { padding: 20px; }
 
-        .off { opacity: 0.4; grayscale: 100%; }
+        /* CARDUL VERDE DE TITLU */
+        .status-bar { background-color: var(--primary-green); color: white; padding: 12px 20px; border-radius: 4px; margin-bottom: 20px; font-weight: bold; }
 
-        /* ZONA GRAFICE */
+        /* FILTRE & TOGGLES */
+        .filter-box { background: white; padding: 20px; border-radius: 4px; border: 1px solid #dee2e6; margin-bottom: 20px; }
+        .filter-row { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 15px; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; font-size: 13px; }
+        input, select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+
+        .sensor-toggles { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start; }
+        .toggle-btn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; cursor: pointer; border: none; }
+        .off { opacity: 0.3; filter: grayscale(1); }
+
+        /* CULORI BUTOANE */
+        .bg-red { background: #d9534f; }
+        .bg-blue { background: #5bc0de; }
+        .bg-orange { background: #f0ad4e; }
+        .bg-green { background: #5cb85c; }
+        .bg-brown { background: #8d6e63; }
+
+        /* GRAFICE */
         .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .chart-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
+        .chart-card { background: white; padding: 15px; border-radius: 4px; border: 1px solid #dee2e6; }
         .full-width { grid-column: span 2; }
-        .chart-container h3 { margin-top: 0; font-size: 1rem; color: #444; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1><i class="fas fa-bolt"></i> Meteo OpenWeatherMap</h1>
-        <div class="nav-buttons">
-            <a href="index.html" class="btn-nav">Conditii curente</a>
-            <a href="#" class="btn-nav">Prognoza</a>
-            <a href="istoric.html" class="btn-nav active">Istoric</a>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            SmartMeteo <i class="fas fa-bars" style="font-size: 18px;"></i>
         </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li class="active"><i class="fas fa-chart-line"></i> Istoric</li>
+            <li><i class="fas fa-microchip"></i> Echipamente</li>
+        </ul>
     </div>
 
-    <div class="container">
-        <div class="filter-section">
-            <div class="filter-group">
-                <label>De la</label>
-                <input type="date" id="date-from">
+    <div class="main-content">
+        <div class="top-header">
+            <h2>Statie Meteo Licenta</h2>
+            <div>
+                <button style="background:#6f42c1; color:white; border:none; padding:5px 15px; border-radius:4px; cursor:pointer;" onclick="location.href='index.html'">Dashboard</button>
             </div>
-            <div class="filter-group">
-                <label>Pana la</label>
-                <input type="date" id="date-to">
-            </div>
-            <div class="filter-group">
-                <label>Grupare date</label>
-                <select id="grupare">
-                    <option value="ora">Ora</option>
-                    <option value="2ore">2 ore</option>
-                    <option value="zi">Zi</option>
-                </select>
-            </div>
-            <button class="btn-nav" style="background:#4a90e2; height:36px;" onclick="loadData()">Incarca date</button>
         </div>
 
-        <div class="sensor-toggles">
-            <label class="toggle-btn color-temp"><input type="checkbox" checked onchange="toggleChart('temp', this)"> Temp. aer</label>
-            <label class="toggle-btn color-hum"><input type="checkbox" checked onchange="toggleChart('hum', this)"> Umiditate</label>
-            <label class="toggle-btn color-pres"><input type="checkbox" checked onchange="toggleChart('pres', this)"> Presiune</label>
-            <label class="toggle-btn color-lux"><input type="checkbox" checked onchange="toggleChart('lux', this)"> Luminozitate</label>
-            <label class="toggle-btn color-soil"><input type="checkbox" checked onchange="toggleChart('soil', this)"> Umiditate Sol</label>
-            <button class="toggle-btn btn-all">Toti senzorii</button>
-        </div>
+        <div class="content-padding">
+            <div class="status-bar">Evoluție Parametri: Statie Meteo - Licenta</div>
 
-        <div class="charts-grid">
-            <div class="chart-container full-width" id="box-temp">
-                <h3>Temperatura atmosferica (Ta) °C</h3>
-                <canvas id="chart-temp"></canvas>
+            <div class="filter-box">
+                <div class="filter-row">
+                    <div class="filter-group"><label>De la</label><input type="date" id="date-from"></div>
+                    <div class="filter-group"><label>Pana la</label><input type="date" id="date-to"></div>
+                    <div class="filter-group">
+                        <label>Grupare</label>
+                        <select id="grup"><option>Ora</option><option>Zi</option></select>
+                    </div>
+                    <button style="background:#5bc0de; color:white; border:none; padding:7px 15px; border-radius:4px;" onclick="loadData()">Incarca date</button>
+                </div>
+
+                <div class="sensor-toggles">
+                    <label class="toggle-btn bg-red"><input type="checkbox" checked onchange="toggle(this, 'temp')"> Temperatura Aer</label>
+                    <label class="toggle-btn bg-blue"><input type="checkbox" checked onchange="toggle(this, 'hum')"> Umiditate Relativă</label>
+                    <label class="toggle-btn bg-orange"><input type="checkbox" checked onchange="toggle(this, 'pres')"> Presiune Atmosferică</label>
+                    <label class="toggle-btn bg-green"><input type="checkbox" checked onchange="toggle(this, 'lux')"> Intensitate Luminoasă</label>
+                    <label class="toggle-btn bg-brown"><input type="checkbox" checked onchange="toggle(this, 'soil')"> Umiditate Sol</label>
+                </div>
             </div>
-            <div class="chart-container" id="box-hum">
-                <h3>Umiditate atmosferica (Rha) %</h3>
-                <canvas id="chart-hum"></canvas>
-            </div>
-            <div class="chart-container" id="box-pres">
-                <h3>Presiune atmosferica (Pa) hPa</h3>
-                <canvas id="chart-pres"></canvas>
-            </div>
-            <div class="chart-container" id="box-lux">
-                <h3>Intensitate luminoasa (Lx)</h3>
-                <canvas id="chart-lux"></canvas>
-            </div>
-            <div class="chart-container" id="box-soil">
-                <h3>Umiditate sol (%)</h3>
-                <canvas id="chart-soil"></canvas>
+
+            <div class="charts-grid">
+                <div class="chart-card full-width" id="box-temp"><canvas id="chart-temp"></canvas></div>
+                <div class="chart-card" id="box-hum"><canvas id="chart-hum"></canvas></div>
+                <div class="chart-card" id="box-pres"><canvas id="chart-pres"></canvas></div>
+                <div class="chart-card" id="box-lux"><canvas id="chart-lux"></canvas></div>
+                <div class="chart-card" id="box-soil"><canvas id="chart-soil"></canvas></div>
             </div>
         </div>
     </div>
 
     <script>
-        function toggleChart(id, cb) {
-            const box = document.getElementById('box-' + id);
+        let charts = {};
+        function toggle(cb, id) {
+            document.getElementById('box-'+id).classList.toggle('hidden', !cb.checked);
             cb.parentElement.classList.toggle('off', !cb.checked);
-            box.classList.toggle('hidden', !cb.checked);
         }
 
         async function loadData() {
-            try {
-                const response = await fetch('/get-history');
-                const data = await response.json();
-                
-                const labels = data.map(item => item.ora);
+            const res = await fetch('/get-history');
+            const data = await res.json();
+            const labels = data.map(d => d.ora);
 
-                const createChart = (id, label, color, key) => {
-                    const ctx = document.getElementById(id).getContext('2d');
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: label,
-                                data: data.map(item => item[key]),
-                                borderColor: color,
-                                backgroundColor: color + '22',
-                                fill: true,
-                                tension: 0.4,
-                                pointRadius: 2
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: { legend: { display: false } },
-                            scales: { x: { grid: { display: false } } }
-                        }
-                    });
-                };
+            const make = (id, label, color, key) => {
+                if(charts[id]) charts[id].destroy();
+                charts[id] = new Chart(document.getElementById(id), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{ label: label, data: data.map(d => d[key]), borderColor: color, tension: 0.3, fill: false }]
+                    },
+                    options: { responsive: true, plugins: { legend: { position: 'top' } } }
+                });
+            };
 
-                createChart('chart-temp', 'Temp', '#ff4757', 'temperature');
-                createChart('chart-hum', 'Hum', '#2f3542', 'humidity');
-                createChart('chart-pres', 'Pres', '#ffa502', 'pressure');
-                createChart('chart-lux', 'Lux', '#2ed573', 'lux');
-                createChart('chart-soil', 'Soil', '#747d8c', 'soil_moisture');
-
-            } catch (e) { console.error("Eroare la incarcare:", e); }
+            make('chart-temp', 'Temperatura (°C)', '#d9534f', 'temperature');
+            make('chart-hum', 'Umiditate (%)', '#5bc0de', 'humidity');
+            make('chart-pres', 'Presiune (hPa)', '#f0ad4e', 'pressure');
+            make('chart-lux', 'Lumina (lx)', '#5cb85c', 'lux');
+            make('chart-soil', 'Sol (%)', '#8d6e63', 'soil_moisture');
         }
 
-        // Setam datele implicite
         document.getElementById('date-from').valueAsDate = new Date();
         document.getElementById('date-to').valueAsDate = new Date();
-        
         loadData();
     </script>
 </body>
