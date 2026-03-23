@@ -2,60 +2,111 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Istoric Senzori - SmartMeteo</title>
+    <title>Evoluție Senzori - SmartMeteo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        .charts-container { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .chart-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .full-width { grid-column: span 2; }
-        h2 { text-align: center; color: #333; }
+        .history-container { padding: 20px; max-width: 1200px; margin: auto; }
+        .filter-bar { background: #f8f9fa; padding: 15px; border-radius: 8px; display: flex; gap: 20px; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .sensor-selectors { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .selector-item { display: flex; align-items: center; gap: 5px; cursor: pointer; padding: 5px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 14px; }
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-box { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .chart-box.hidden { display: none; }
+        .full-row { grid-column: span 2; }
+        
+        /* Culorile senzorilor tale */
+        .bg-red { background: #ff4757; }
+        .bg-blue { background: #2f3542; }
+        .bg-orange { background: #ffa502; }
+        .bg-green { background: #2ed573; }
+        .bg-soil { background: #747d8c; }
     </style>
 </head>
 <body>
     <header class="top-nav">
-        <div class="breadcrumb"><a href="index.html" style="color:white">« Înapoi la Dashboard</a> » <strong>Evoluție Parametri</strong></div>
+        <div class="breadcrumb"><a href="index.html" style="color:white; text-decoration:none;">« Dashboard</a> » <strong>Citiri Senzori</strong></div>
+        <button class="btn btn-blue" onclick="location.reload()"><i class="fas fa-sync"></i> Reîncarcă datele</button>
     </header>
 
-    <div class="charts-container">
-        <div class="chart-card full-width"><canvas id="chart-temp"></canvas></div>
-        <div class="chart-card"><canvas id="chart-hum"></canvas></div>
-        <div class="chart-card"><canvas id="chart-pres"></canvas></div>
-        <div class="chart-card"><canvas id="chart-lux"></canvas></div>
-        <div class="chart-card"><canvas id="chart-soil"></canvas></div>
+    <div class="history-container">
+        <div class="filter-bar">
+            <div><label>De la:</label> <input type="date" id="date-from"></div>
+            <div><label>Până la:</label> <input type="date" id="date-to"></div>
+            <div>
+                <label>Grupare date:</label>
+                <select id="grouping">
+                    <option>Ora</option><option>2 ore</option><option>6 ore</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sensor-selectors">
+            <label class="selector-item bg-red"><input type="checkbox" checked onchange="toggleChart('temp', this)"> Temp. Aer</label>
+            <label class="selector-item bg-blue"><input type="checkbox" checked onchange="toggleChart('hum', this)"> Umiditate</label>
+            <label class="selector-item bg-orange"><input type="checkbox" checked onchange="toggleChart('pres', this)"> Presiune</label>
+            <label class="selector-item bg-green"><input type="checkbox" checked onchange="toggleChart('lux', this)"> Luminozitate</label>
+            <label class="selector-item bg-soil"><input type="checkbox" checked onchange="toggleChart('soil', this)"> Umiditate Sol</label>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-box full-row" id="box-temp"><canvas id="chart-temp"></canvas></div>
+            <div class="chart-box" id="box-hum"><canvas id="chart-hum"></canvas></div>
+            <div class="chart-box" id="box-pres"><canvas id="chart-pres"></canvas></div>
+            <div class="chart-box" id="box-lux"><canvas id="chart-lux"></canvas></div>
+            <div class="chart-box" id="box-soil"><canvas id="chart-soil"></canvas></div>
+        </div>
     </div>
 
     <script>
-        async function loadCharts() {
-            const res = await fetch('/get-history');
-            const data = await res.json();
-
-            const labels = data.map(d => d.ora);
-            
-            const config = (label, color, key) => ({
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: label,
-                        data: data.map(d => d[key]),
-                        borderColor: color,
-                        backgroundColor: color + '22',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: { responsive: true }
-            });
-
-            new Chart(document.getElementById('chart-temp'), config('Temperatură (°C)', '#ff4757', 'temperature'));
-            new Chart(document.getElementById('chart-hum'), config('Umiditate (%)', '#2f3542', 'humidity'));
-            new Chart(document.getElementById('chart-pres'), config('Presiune (hPa)', '#ffa502', 'pressure'));
-            new Chart(document.getElementById('chart-lux'), config('Lumină (lx)', '#2ed573', 'lux'));
-            new Chart(document.getElementById('chart-soil'), config('Umiditate Sol (%)', '#747d8c', 'soil_moisture'));
+        // Funcția care ascunde/arată graficele
+        function toggleChart(id, checkbox) {
+            const element = document.getElementById('box-' + id);
+            if (checkbox.checked) element.classList.remove('hidden');
+            else element.classList.add('hidden');
         }
 
-        loadCharts();
+        async function init() {
+            const res = await fetch('/get-history');
+            const data = await res.json();
+            const labels = data.map(d => d.ora);
+
+            const draw = (ctxId, label, color, key) => {
+                new Chart(document.getElementById(ctxId), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: label,
+                            data: data.map(d => d[key]),
+                            borderColor: color,
+                            backgroundColor: color + '22',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: { 
+                        responsive: true,
+                        plugins: { legend: { display: true } },
+                        scales: { y: { beginAtZero: false } }
+                    }
+                });
+            };
+
+            draw('chart-temp', 'Temperatura Atmosferica (Ta) °C', '#ff4757', 'temperature');
+            draw('chart-hum', 'Umiditatea Atmosferica (Rha) %', '#2f3542', 'humidity');
+            draw('chart-pres', 'Presiunea Atmosferica (Pa) hPa', '#ffa502', 'pressure');
+            draw('chart-lux', 'Intensitate Luminoasa (lx)', '#2ed573', 'lux');
+            draw('chart-soil', 'Umiditatea Solului (%)', '#747d8c', 'soil_moisture');
+        }
+
+        // Setăm data curentă în input-uri
+        document.getElementById('date-from').valueAsDate = new Date();
+        document.getElementById('date-to').valueAsDate = new Date();
+        
+        init();
     </script>
 </body>
 </html>
