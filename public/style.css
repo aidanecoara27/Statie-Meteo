@@ -17,6 +17,7 @@ body {
 }
 
 /* 2. SIDEBAR */
+/* 2. SIDEBAR ACTUALIZAT */
 .sidebar { 
     width: 230px; 
     background: var(--dark); 
@@ -27,33 +28,39 @@ body {
     z-index: 10; 
 }
 
-.sidebar.collapsed { width: 50px; }
-.sidebar.collapsed .nav-text { display: none; }
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px;
-    background: rgba(0,0,0,0.1);
+/* ADAUGĂ ASTA ÎN LOC DE nav a */
+.sidebar-menu {
+    list-style: none; /* Aceasta elimină punctele mov! */
+    padding: 0;
+    margin: 0;
 }
 
-nav a {
+.sidebar-menu li {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sidebar-menu a {
     display: flex;
     align-items: center;
     padding: 12px 15px;
     color: #b8c7ce;
     text-decoration: none;
     transition: 0.3s;
+    font-size: 14px;
 }
 
-nav a:hover, nav a.active {
+.sidebar-menu li:hover a, 
+.sidebar-menu li.active a {
     background: #1e282c;
     color: white;
     border-left: 3px solid var(--green);
 }
 
-nav a i { margin-right: 10px; width: 20px; text-align: center; }
+.sidebar-menu i { 
+    margin-right: 10px; 
+    width: 20px; 
+    text-align: center; 
+}
 
 /* 3. CONTENT AREA */
 .main-content { 
