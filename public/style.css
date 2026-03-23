@@ -29,37 +29,62 @@ body {
 }
 
 /* ADAUGĂ ASTA ÎN LOC DE nav a */
+/* 2. SIDEBAR - VARIANTA AERATĂ */
+.sidebar { 
+    width: 240px; 
+    background: #212529; /* Culoarea închisă din imagini */
+    height: 100vh; 
+    color: white; 
+    position: fixed; 
+    z-index: 10; 
+}
+
+.sidebar-header {
+    padding: 25px 20px; /* Mai mult spațiu în jurul numelui SmartMeteo */
+    font-size: 22px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .sidebar-menu {
-    list-style: none; /* Aceasta elimină punctele mov! */
+    list-style: none;
     padding: 0;
-    margin: 0;
+    margin-top: 10px; /* Separare de header */
 }
 
 .sidebar-menu li {
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 2px; /* O mică distanță între butoane */
 }
 
 .sidebar-menu a {
     display: flex;
     align-items: center;
-    padding: 12px 15px;
-    color: #b8c7ce;
+    padding: 16px 20px; /* Padding generos pentru un aspect aerat */
+    color: #adb5bd; /* Gri-ul deschis din poza ta */
     text-decoration: none;
-    transition: 0.3s;
-    font-size: 14px;
+    font-size: 15px;
+    transition: all 0.2s ease;
 }
 
+/* Efectul de buton activ/hover ca în imagine */
 .sidebar-menu li:hover a, 
 .sidebar-menu li.active a {
-    background: #1e282c;
-    color: white;
-    border-left: 3px solid var(--green);
+    background-color: rgba(255, 255, 255, 0.1); /* Background ușor vizibil */
+    color: white; /* Textul devine alb pur */
+}
+
+/* Linia verde din stânga pentru elementul activ */
+.sidebar-menu li.active {
+    border-left: 4px solid #72b06e; 
 }
 
 .sidebar-menu i { 
-    margin-right: 10px; 
+    margin-right: 15px; /* Spațiu clar între iconiță și text */
     width: 20px; 
-    text-align: center; 
+    text-align: center;
+    font-size: 18px;
 }
 
 /* 3. CONTENT AREA */
