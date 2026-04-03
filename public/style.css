@@ -236,21 +236,40 @@ canvas { flex-grow: 1; width: 100% !important; height: 100% !important; }
     font-weight: bold;
 }
 
+/* REPARAȚIE SENZORI DASHBOARD */
 .sensor-tags {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    padding: 20px;
 }
 
 .tag-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f8f9fa;
-    padding: 10px;
-    border-radius: 4px;
+    background: #ffffff;
+    padding: 12px 15px;
+    border-radius: 6px;
     border: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.tag-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--dashboard-green);
+}
+
+.label {
+    padding: 5px 12px;
+    border-radius: 4px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 140px;
+    text-align: center;
 }
 
 .label {
@@ -266,3 +285,69 @@ canvas { flex-grow: 1; width: 100% !important; height: 100% !important; }
 .label-brown { background: #795548; }
 .label-green { background: #2ecc71; }
 .label-soil { background: #8d6e63; }
+
+
+/* REPARAȚIE OPENWEATHER */
+.weather-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 25px;
+    background: white;
+}
+
+.weather-main-info {
+    flex: 1;
+    min-width: 250px;
+}
+
+.temp-display h1 {
+    font-size: 3.5rem;
+    color: #333;
+    margin: 10px 0;
+}
+
+.weather-big-icon {
+    font-size: 3rem;
+    color: #f39c12;
+}
+
+.weather-indicators {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.indicator-item {
+    text-align: center;
+}
+
+.gauge-circle {
+    width: 100px;
+    height: 100px;
+    border: 8px solid #3498db;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+.gauge-container {
+    width: 100px;
+    height: 100px;
+    border: 8px solid #e74c3c;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.gauge-value { font-size: 1.2rem; font-weight: bold; }
+.gauge-unit { font-size: 0.8rem; color: #777; }
