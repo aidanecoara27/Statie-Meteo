@@ -8,24 +8,65 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --sidebar-width: 240px; --primary-green: #72b06e; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; display: flex; background-color: #f4f7f6; height: 100vh; overflow: hidden; }
+ /* Modifică asta în secțiunea <style> din istoric.html */
+body { 
+    /* Aceasta este stiva de fonturi standard pentru un aspect profesional, sans-serif */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    
+    /* Ne asigurăm că restul proprietăților rămân la fel */
+    margin: 0; 
+    display: flex; 
+    background-color: #f4f7f6; 
+    height: 100vh; 
+    overflow: hidden; 
+}
 
-        /* SIDEBAR (Identic cu poza ta) */
-        .sidebar { width: var(--sidebar-width); background-color: #212529; color: white; display: flex; flex-direction: column; flex-shrink: 0; }
-        .sidebar-header { padding: 20px; font-size: 24px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #3d4145; }
-        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
-        .sidebar-menu li { padding: 15px 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; color: #adb5bd; }
-        .sidebar-menu li:hover, .sidebar-menu li.active { background-color: rgba(255,255,255,0.1); color: white; }
-        .sidebar-menu a { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 10px; width: 100%; }
+        /* SIDEBAR (Actualizat cu tranziții) */
+        .sidebar { 
+            width: var(--sidebar-width); 
+            background-color: #212529; 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            flex-shrink: 0; 
+            transition: width 0.3s ease; /* Animație pentru închidere/deschidere */
+            overflow: hidden;
+        }
+        
+        /* Starea COLLAPSED (când e strâns) */
+        .sidebar.collapsed { width: 70px; }
+        .sidebar.collapsed .sidebar-header span, 
+        .sidebar.collapsed .sidebar-menu span { display: none; }
+        .sidebar.collapsed .sidebar-menu li { justify-content: center; padding: 15px 0; }
+        .sidebar.collapsed .sidebar-menu i { margin: 0; font-size: 20px; }
 
+        /* Ajustări pentru Sidebar ca în Dashboard */
+        .sidebar-header {
+            padding: 25px 20px; /* Padding generos pentru un aspect aerat */
+            font-size: 22px;
+            font-weight: bold;
+            color: white; /* Alb pur pentru titlu */
+        }
+
+        .sidebar-menu a {
+            color: #adb5bd; /* Gri-ul deschis din poza Dashboard */
+            font-size: 15px; /* Dimensiune text meniu */
+            font-weight: normal; /* Nu 'bold' pentru elementele secundare */
+        }
+
+        /* Efectul de activ/hover */
+        .sidebar-menu li:hover a, 
+        .sidebar-menu li.active a {
+            color: white;
+            /* Opțional: o culoare de fundal discretă */
+            background-color: rgba(255, 255, 255, 0.05); 
+        }
         /* MAIN CONTENT */
-        .main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; transition: margin-left 0.3s ease; }
         .top-header { background: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; }
         .top-header h2 { font-size: 16px; color: #555; margin: 0; }
 
         .content-padding { padding: 20px; }
-
-        /* CARDUL VERDE DE TITLU */
         .status-bar { background-color: var(--primary-green); color: white; padding: 12px 20px; border-radius: 4px; margin-bottom: 20px; font-weight: bold; }
 
         /* FILTRE & TOGGLES */
@@ -50,17 +91,20 @@
         .chart-card { background: white; padding: 15px; border-radius: 4px; border: 1px solid #dee2e6; }
         .full-width { grid-column: span 2; }
         .hidden { display: none; }
+        
+        #toggle-btn { cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            SmartMeteo <i class="fas fa-bars" style="font-size: 18px;"></i>
+            <span>SmartMeteo</span>
+            <i class="fas fa-bars" id="toggle-btn" style="font-size: 18px;"></i>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li class="active"><i class="fas fa-chart-line"></i> Istoric</li>
+            <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+            <li class="active"><i class="fas fa-chart-line"></i> <span>Istoric</span></li>
         </ul>
     </div>
 
@@ -106,6 +150,18 @@
     </div>
 
     <script>
+        // --- LOGICA SIDEBAR (Hamburger Menu) ---
+        const btn = document.getElementById('toggle-btn');
+        const side = document.getElementById('sidebar');
+
+        if (btn && side) {
+            btn.onclick = () => {
+                side.classList.toggle('collapsed');
+                console.log("Sidebar toggled");
+            };
+        }
+
+        // --- LOGICA GRAFICE ---
         let charts = {};
         function toggle(cb, id) {
             document.getElementById('box-'+id).classList.toggle('hidden', !cb.checked);
@@ -113,27 +169,33 @@
         }
 
         async function loadData() {
-            const res = await fetch('/get-history');
-            const data = await res.json();
-            const labels = data.map(d => d.ora);
+            try {
+                const res = await fetch('/get-history');
+                const data = await res.json();
+                const labels = data.map(d => d.ora);
 
-            const make = (id, label, color, key) => {
-                if(charts[id]) charts[id].destroy();
-                charts[id] = new Chart(document.getElementById(id), {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{ label: label, data: data.map(d => d[key]), borderColor: color, tension: 0.3, fill: false }]
-                    },
-                    options: { responsive: true, plugins: { legend: { position: 'top' } } }
-                });
-            };
+                const make = (id, label, color, key) => {
+                    const ctx = document.getElementById(id);
+                    if(!ctx) return;
+                    if(charts[id]) charts[id].destroy();
+                    charts[id] = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{ label: label, data: data.map(d => d[key]), borderColor: color, tension: 0.3, fill: false }]
+                        },
+                        options: { responsive: true, plugins: { legend: { position: 'top' } } }
+                    });
+                };
 
-            make('chart-temp', 'Temperatura (°C)', '#d9534f', 'temperature');
-            make('chart-hum', 'Umiditate (%)', '#5bc0de', 'humidity');
-            make('chart-pres', 'Presiune (hPa)', '#f0ad4e', 'pressure');
-            make('chart-lux', 'Lumina (lx)', '#5cb85c', 'lux');
-            make('chart-soil', 'Sol (%)', '#8d6e63', 'soil_moisture');
+                make('chart-temp', 'Temperatura (°C)', '#d9534f', 'temperature');
+                make('chart-hum', 'Umiditate (%)', '#5bc0de', 'humidity');
+                make('chart-pres', 'Presiune (hPa)', '#f0ad4e', 'pressure');
+                make('chart-lux', 'Lumina (lx)', '#5cb85c', 'lux');
+                make('chart-soil', 'Sol (%)', '#8d6e63', 'soil_moisture');
+            } catch (e) {
+                console.error("Eroare la încărcarea datelor:", e);
+            }
         }
 
         document.getElementById('date-from').valueAsDate = new Date();
