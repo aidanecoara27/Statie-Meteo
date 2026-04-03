@@ -6,18 +6,20 @@
     --dashboard-green: #72b06e;
     --bg-light: #f4f7f6;
     --border-color: #dee2e6;
-    --text-main: #333;
 }
 
-* { box-sizing: border-box; }
+* { 
+    box-sizing: border-box !important; 
+}
 
 body { 
-    font-family: 'Segoe UI', Roboto, Arial, sans-serif; 
-    margin: 0; 
-    background: var(--bg-light); 
-    display: flex; 
-    height: 100vh;
-    overflow: hidden; /* Împiedică scroll-ul pe tot body-ul */
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif !important; 
+    margin: 0 !important; 
+    padding: 0 !important;
+    background: var(--bg-light) !important; 
+    display: flex !important; 
+    height: 100vh !important;
+    overflow: hidden !important;
 }
 
 /* 2. SIDEBAR - STIL DASHBOARD */
@@ -208,3 +210,59 @@ input, select {
 }
 
 canvas { flex-grow: 1; width: 100% !important; height: 100% !important; }
+
+/* 6. DASHBOARD SPECIFIC LAYOUT */
+.dashboard-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.col-left { flex: 0 0 65%; }
+.col-right { flex: 0 0 35%; }
+
+.panel {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.panel-header-green {
+    background: #72b06e;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+}
+
+.sensor-tags {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 15px;
+}
+
+.tag-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.label {
+    padding: 4px 8px;
+    border-radius: 3px;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.label-red { background: #e74c3c; }
+.label-blue { background: #3498db; }
+.label-brown { background: #795548; }
+.label-green { background: #2ecc71; }
+.label-soil { background: #8d6e63; }
