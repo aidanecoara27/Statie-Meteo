@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --sidebar-bg: #2d3436;
+            --sidebar-bg: #212529;
             --dashboard-green: #72b06e;
-            --bg-light: #f8f9fa;
+            --bg-light: #f4f7f6;
             --border-color: #dee2e6;
-            --text-main: #4d4d4d;
+            --text-main: #333;
         }
 
         body { 
@@ -20,64 +20,59 @@
             display: flex; 
             background-color: var(--bg-light); 
             height: 100vh; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
             color: var(--text-main);
         }
 
-        /* SIDEBAR ORIGINAL */
-        .sidebar { width: 240px; background-color: #212529; color: white; flex-shrink: 0; }
+        /* SIDEBAR STIL DASHBOARD */
+        .sidebar { width: 240px; background-color: var(--sidebar-bg); color: white; flex-shrink: 0; transition: width 0.3s; }
         .sidebar-header { padding: 20px; font-size: 22px; font-weight: bold; border-bottom: 1px solid #3d4145; display: flex; align-items: center; justify-content: space-between;}
         .sidebar-menu { list-style: none; padding: 0; margin: 0; }
-        .sidebar-menu a { display: flex; align-items: center; padding: 15px 20px; color: #adb5bd; text-decoration: none; transition: 0.2s; }
+        .sidebar-menu a { display: flex; align-items: center; padding: 15px 20px; color: #adb5bd; text-decoration: none; }
         .sidebar-menu li.active a { background-color: rgba(255,255,255,0.1); color: white; }
         .sidebar-menu i { margin-right: 15px; width: 20px; text-align: center; }
 
         .main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; }
 
-        /* BARA DE SUS - Navigație tip Breadcrumb */
-        .top-nav { background: white; padding: 10px 20px; border-bottom: 1px solid var(--border-color); font-size: 13px; color: #888; }
-        .top-nav i { margin: 0 5px; }
+        /* NAVIGAȚIE SUS */
+        .top-nav { background: white; padding: 12px 20px; border-bottom: 1px solid var(--border-color); font-size: 13px; color: #888; }
+        .top-nav b { color: var(--text-main); }
 
         .content-padding { padding: 20px; }
 
-        /* FILTRE ORIZONTALE */
+        /* FILTRE */
         .filters-container { background: white; padding: 20px; border-radius: 4px; border: 1px solid var(--border-color); margin-bottom: 20px; }
-        .filter-row { display: flex; gap: 15px; align-items: center; margin-bottom: 20px; }
+        .filter-row { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
         .input-group { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: bold; }
-        input, select { padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; background: #fff; }
+        input, select { padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; }
 
-        /* BUTOANE TIP TAB (Microclimat / Date Tehnice) */
-        .tab-buttons { display: flex; gap: 2px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #636e72; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .tab-btn.active { background: #4b4b4b; }
+        /* SELECTORI SENZORI (Butoane interactive) */
+        .sensor-selector-container { display: flex; justify-content: flex-end; margin-bottom: 15px; align-items: center; gap: 10px; }
+        .sensor-icons { display: flex; gap: 8px; }
+        .s-btn { width: 32px; height: 32px; border-radius: 4px; border: none; color: white; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .s-btn i { font-size: 14px; }
+        .s-btn.off { opacity: 0.2; filter: grayscale(1); }
 
-        /* SELECTORI SENZORI (Butoanele mici colorate din dreapta) */
-        .sensor-selector-container { display: flex; justify-content: flex-end; margin-bottom: 10px; }
-        .sensor-icons { display: flex; gap: 5px; align-items: center; }
-        .s-box { width: 25px; height: 25px; border-radius: 3px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; cursor: pointer; border: none; }
-        .s-box i { font-size: 12px; }
-        .btn-all { background: #72b06e; padding: 5px 12px; color: white; border: none; border-radius: 3px; font-size: 12px; cursor: pointer; }
-
-        /* GRID GRAFICE */
-        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .chart-card { background: white; padding: 20px; border-radius: 4px; border: 1px solid var(--border-color); height: 400px; display: flex; flex-direction: column; }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .chart-title { font-size: 18px; color: #b2bec3; text-align: center; width: 100%; }
-        .chart-tools { display: flex; gap: 5px; }
-        .tool-btn { padding: 5px 10px; border: 1px solid var(--border-color); background: white; cursor: pointer; font-size: 12px; color: #636e72; }
-
-        /* CULORI ENTEN */
+        /* CULORI BUTOANE */
         .c-temp { background: #e74c3c; }
         .c-hum { background: #3498db; }
         .c-pres { background: #f39c12; }
         .c-lux { background: #2ecc71; }
         .c-soil { background: #795548; }
+
+        /* GRID GRAFICE */
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-card { background: white; padding: 15px; border-radius: 4px; border: 1px solid var(--border-color); height: 350px; display: flex; flex-direction: column; }
+        .chart-card.hidden { display: none; }
+        .chart-title { font-size: 15px; color: #7f8c8d; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
+
+        canvas { flex-grow: 1; max-height: 280px; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="sidebar-header">SmartMeteo <i class="fas fa-bars"></i></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header"><span>SmartMeteo</span> <i class="fas fa-bars" id="toggle-btn" style="cursor:pointer;"></i></div>
         <ul class="sidebar-menu">
             <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
             <li class="active"><a href="istoric.html"><i class="fas fa-chart-line"></i> Istoric</a></li>
@@ -86,7 +81,7 @@
 
     <div class="main-content">
         <div class="top-nav">
-            <i class="fas fa-home"></i> > Echipamente > 1016 LD > Statie Licenta > <b>Citiri</b>
+            <i class="fas fa-home"></i> > Echipamente > Statie Licenta > <b>Istoric Citiri</b>
         </div>
 
         <div class="content-padding">
@@ -94,94 +89,108 @@
                 <div class="filter-row">
                     <div class="input-group"><label>De la</label><input type="date" id="date-from"></div>
                     <div class="input-group"><label>Pana la</label><input type="date" id="date-to"></div>
-                    <div class="input-group"><label>Grupare date</label>
-                        <select><option>Ora</option><option>Zi</option></select>
+                    <div class="input-group">
+                        <label>Grupare</label>
+                        <select id="group-by"><option>Ora</option><option>Zi</option></select>
                     </div>
-                    <button style="margin-left:auto; background:#3498db; color:white; border:none; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold;">
-                        <i class="fas fa-sync"></i> Incarca toate graficele
+                    <button onclick="loadData()" style="background:#3498db; color:white; border:none; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; margin-left: auto;">
+                        <i class="fas fa-sync"></i> Actualizeaza Date
                     </button>
-                    <button style="background:#55acee; color:white; border:none; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold;">
-                        <i class="fas fa-external-link-alt"></i> Export citiri
-                    </button>
-                </div>
-
-                <div class="tab-buttons">
-                    <button class="tab-btn active">Microclimat</button>
-                    <button class="tab-btn">Date tehnice</button>
                 </div>
             </div>
 
             <div class="sensor-selector-container">
+                <span style="font-size: 12px; font-weight: bold; color: #888;">FILTREAZA GRAFICE:</span>
                 <div class="sensor-icons">
-                    <button class="s-box c-temp"><i class="fas fa-check"></i></button>
-                    <button class="s-box c-hum"><i class="fas fa-check"></i></button>
-                    <button class="s-box c-pres"><i class="fas fa-check"></i></button>
-                    <button class="s-box c-lux"><i class="fas fa-check"></i></button>
-                    <button class="s-box c-soil"><i class="fas fa-check"></i></button>
-                    <button class="btn-all">Toti senzorii</button>
+                    <button class="s-btn c-temp" onclick="toggleChart('box-temp', this)" title="Temperatura"><i class="fas fa-thermometer-half"></i></button>
+                    <button class="s-btn c-hum" onclick="toggleChart('box-hum', this)" title="Umiditate"><i class="fas fa-tint"></i></button>
+                    <button class="s-btn c-pres" onclick="toggleChart('box-pres', this)" title="Presiune"><i class="fas fa-compress-arrows-alt"></i></button>
+                    <button class="s-btn c-lux" onclick="toggleChart('box-lux', this)" title="Lumina"><i class="fas fa-sun"></i></button>
+                    <button class="s-btn c-soil" onclick="toggleChart('box-soil', this)" title="Umiditate Sol"><i class="fas fa-seedling"></i></button>
                 </div>
             </div>
 
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div class="chart-title">Temperatura atmosferica (Ta) °C</div>
-                        <div class="chart-tools">
-                            <button class="tool-btn"><i class="fas fa-sync"></i></button>
-                            <button class="tool-btn"><i class="fas fa-expand"></i></button>
-                            <button class="tool-btn">Filters</button>
-                            <button class="tool-btn"><i class="fas fa-cloud-download-alt"></i></button>
-                        </div>
-                    </div>
-                    <canvas id="chart-temp"></canvas>
-                </div>
-
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div class="chart-title">Umiditatea atmosferica (Rha) % Rh</div>
-                        <div class="chart-tools">
-                            <button class="tool-btn"><i class="fas fa-sync"></i></button>
-                            <button class="tool-btn"><i class="fas fa-expand"></i></button>
-                            <button class="tool-btn">Filters</button>
-                        </div>
-                    </div>
-                    <canvas id="chart-hum"></canvas>
-                </div>
+            <div class="charts-grid" id="charts-container">
+                <div class="chart-card" id="box-temp"><div class="chart-title">Temperatura Aer (°C)</div><canvas id="chart-temp"></canvas></div>
+                <div class="chart-card" id="box-hum"><div class="chart-title">Umiditate Relativa (%)</div><canvas id="chart-hum"></canvas></div>
+                <div class="chart-card" id="box-pres"><div class="chart-title">Presiune Atmosferica (hPa)</div><canvas id="chart-pres"></canvas></div>
+                <div class="chart-card" id="box-lux"><div class="chart-title">Intensitate Luminoasa (lx)</div><canvas id="chart-lux"></canvas></div>
+                <div class="chart-card" id="box-soil"><div class="chart-title">Umiditate Sol (%)</div><canvas id="chart-soil"></canvas></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Setăm datele default
-        document.getElementById('date-from').value = '2026-02-21';
-        document.getElementById('date-to').value = '2026-02-23';
+        // --- FUNCTIE TOGGLE GRAFICE ---
+        function toggleChart(boxId, btnElement) {
+            const chartBox = document.getElementById(boxId);
+            chartBox.classList.toggle('hidden');
+            btnElement.classList.toggle('off');
+        }
 
-        // Inițializare grafice cu stil curat (ENTEN)
-        const ctxTemp = document.getElementById('chart-temp').getContext('2d');
-        new Chart(ctxTemp, {
-            type: 'line',
-            data: {
-                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-                datasets: [{
-                    label: 'Senzor 5 RHTP35368',
-                    data: [15, 12, 18, 32, 25, 16],
-                    borderColor: '#72b06e',
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    tension: 0.4,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { grid: { color: '#f0f0f0' }, border: { display: false } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
+        // --- LOGICA SIDEBAR ---
+        document.getElementById('toggle-btn').onclick = () => {
+            const sb = document.getElementById('sidebar');
+            sb.style.width = sb.style.width === '70px' ? '240px' : '70px';
+        };
+
+        // --- INCARCARE DATE SI GRAFICE ---
+        let charts = {};
+        async function loadData() {
+            try {
+                const res = await fetch('/get-history');
+                const data = await res.json();
+                
+                // Formatează ora (Ex: 14:30)
+                const labels = data.map(d => {
+                    const date = new Date(d.data_ora);
+                    return date.getHours().toString().padStart(2, '0') + ":" + date.getMinutes().toString().padStart(2, '0');
+                });
+
+                const setupChart = (id, label, color, key) => {
+                    const ctx = document.getElementById(id);
+                    if(!ctx) return;
+                    if(charts[id]) charts[id].destroy();
+                    
+                    charts[id] = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: label,
+                                data: data.map(d => d[key]),
+                                borderColor: color,
+                                borderWidth: 2,
+                                pointRadius: 2,
+                                tension: 0.3,
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { grid: { color: '#f0f0f0' } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                };
+
+                setupChart('chart-temp', 'Temp', '#e74c3c', 'temperature');
+                setupChart('chart-hum', 'Hum', '#3498db', 'humidity');
+                setupChart('chart-pres', 'Pres', '#f39c12', 'pressure');
+                setupChart('chart-lux', 'Lux', '#2ecc71', 'lux');
+                setupChart('chart-soil', 'Soil', '#795548', 'soil_moisture');
+
+            } catch (e) { console.error("Eroare la incarcare:", e); }
+        }
+
+        // Setari initiale date
+        document.getElementById('date-from').valueAsDate = new Date();
+        document.getElementById('date-to').valueAsDate = new Date();
+        loadData();
     </script>
 </body>
 </html>
