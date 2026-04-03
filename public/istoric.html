@@ -8,20 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --sidebar-width: 240px; --primary-green: #72b06e; }
- /* Modifică asta în secțiunea <style> din istoric.html */
-body { 
-    /* Aceasta este stiva de fonturi standard pentru un aspect profesional, sans-serif */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    
-    /* Ne asigurăm că restul proprietăților rămân la fel */
-    margin: 0; 
-    display: flex; 
-    background-color: #f4f7f6; 
-    height: 100vh; 
-    overflow: hidden; 
-}
+        
+        /* Reset general - Aplicăm fontul modern DOAR pe corpul paginii */
+        body { 
+            margin: 0; 
+            display: flex; 
+            background-color: #f4f7f6; 
+            height: 100vh; 
+            overflow: hidden; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
-        /* SIDEBAR (Actualizat cu tranziții) */
+        /* --- SIDEBAR (Stilul Original din Dashboard) --- */
         .sidebar { 
             width: var(--sidebar-width); 
             background-color: #212529; 
@@ -29,66 +27,96 @@ body {
             display: flex; 
             flex-direction: column; 
             flex-shrink: 0; 
-            transition: width 0.3s ease; /* Animație pentru închidere/deschidere */
-            overflow: hidden;
+            transition: width 0.3s ease;
         }
         
-        /* Starea COLLAPSED (când e strâns) */
         .sidebar.collapsed { width: 70px; }
-        .sidebar.collapsed .sidebar-header span, 
-        .sidebar.collapsed .sidebar-menu span { display: none; }
-        .sidebar.collapsed .sidebar-menu li { justify-content: center; padding: 15px 0; }
-        .sidebar.collapsed .sidebar-menu i { margin: 0; font-size: 20px; }
+        .sidebar.collapsed span { display: none; }
 
-        /* Ajustări pentru Sidebar ca în Dashboard */
-        .sidebar-header {
-            padding: 25px 20px; /* Padding generos pentru un aspect aerat */
-            font-size: 22px;
-            font-weight: bold;
-            color: white; /* Alb pur pentru titlu */
+        .sidebar-header { 
+            padding: 25px 20px; 
+            font-size: 22px; 
+            font-weight: bold; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            border-bottom: 1px solid #343a40;
         }
 
-        .sidebar-menu a {
-            color: #adb5bd; /* Gri-ul deschis din poza Dashboard */
-            font-size: 15px; /* Dimensiune text meniu */
-            font-weight: normal; /* Nu 'bold' pentru elementele secundare */
+        .sidebar-menu { list-style: none; padding: 0; margin: 10px 0; }
+        
+        .sidebar-menu li { padding: 0; margin: 0; }
+        
+        .sidebar-menu a { 
+            display: flex; 
+            align-items: center; 
+            padding: 15px 20px; 
+            color: #adb5bd; 
+            text-decoration: none; 
+            font-size: 15px;
+            transition: all 0.2s;
         }
 
-        /* Efectul de activ/hover */
-        .sidebar-menu li:hover a, 
-        .sidebar-menu li.active a {
-            color: white;
-            /* Opțional: o culoare de fundal discretă */
-            background-color: rgba(255, 255, 255, 0.05); 
+        .sidebar-menu li.active a, .sidebar-menu a:hover { 
+            background-color: rgba(255, 255, 255, 0.1); 
+            color: white; 
         }
-        /* MAIN CONTENT */
-        .main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; transition: margin-left 0.3s ease; }
-        .top-header { background: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; }
-        .top-header h2 { font-size: 16px; color: #555; margin: 0; }
+
+        .sidebar-menu i { margin-right: 15px; width: 20px; text-align: center; font-size: 18px; }
+
+        /* --- MAIN CONTENT (Zona cu grafice) --- */
+        .main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        .top-header { background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; }
+        .top-header h2 { font-size: 18px; color: #333; margin: 0; font-weight: 600; }
 
         .content-padding { padding: 20px; }
-        .status-bar { background-color: var(--primary-green); color: white; padding: 12px 20px; border-radius: 4px; margin-bottom: 20px; font-weight: bold; }
+        
+        /* Cardul Verde */
+        .status-bar { 
+            background-color: var(--primary-green); 
+            color: white; 
+            padding: 15px 20px; 
+            border-radius: 6px; 
+            margin-bottom: 20px; 
+            font-weight: 600;
+            font-size: 16px;
+        }
 
-        /* FILTRE & TOGGLES */
-        .filter-box { background: white; padding: 20px; border-radius: 4px; border: 1px solid #dee2e6; margin-bottom: 20px; }
-        .filter-row { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 15px; }
-        .filter-group { display: flex; flex-direction: column; gap: 5px; font-size: 13px; }
-        input, select { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+        /* Filtre */
+        .filter-box { background: white; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .filter-row { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px; }
+        .filter-group { display: flex; flex-direction: column; gap: 8px; font-size: 14px; font-weight: 500; }
+        
+        input, select { padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-family: inherit; }
 
-        .sensor-toggles { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start; }
-        .toggle-btn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; cursor: pointer; border: none; }
-        .off { opacity: 0.3; filter: grayscale(1); }
+        /* Butoane Bifat Parametri */
+        .sensor-toggles { display: flex; gap: 10px; flex-wrap: wrap; }
+        .toggle-btn { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            padding: 8px 14px; 
+            border-radius: 4px; 
+            color: white; 
+            font-size: 13px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            user-select: none;
+        }
+        .toggle-btn input { cursor: pointer; margin: 0; }
+        .off { opacity: 0.3; filter: grayscale(0.8); }
 
-        /* CULORI BUTOANE */
-        .bg-red { background: #d9534f; }
-        .bg-blue { background: #5bc0de; }
-        .bg-orange { background: #f0ad4e; }
-        .bg-green { background: #5cb85c; }
-        .bg-brown { background: #8d6e63; }
+        /* Culori */
+        .bg-red { background: #dc3545; }
+        .bg-blue { background: #007bff; }
+        .bg-orange { background: #fd7e14; }
+        .bg-green { background: #28a745; }
+        .bg-brown { background: #795548; }
 
-        /* GRAFICE */
+        /* Grafice */
         .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .chart-card { background: white; padding: 15px; border-radius: 4px; border: 1px solid #dee2e6; }
+        .chart-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; min-height: 300px; }
         .full-width { grid-column: span 2; }
         .hidden { display: none; }
         
@@ -100,20 +128,18 @@ body {
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <span>SmartMeteo</span>
-            <i class="fas fa-bars" id="toggle-btn" style="font-size: 18px;"></i>
+            <i class="fas fa-bars" id="toggle-btn"></i>
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-            <li class="active"><i class="fas fa-chart-line"></i> <span>Istoric</span></li>
+            <li class="active"><a href="istoric.html"><i class="fas fa-chart-line"></i> <span>Istoric</span></a></li>
         </ul>
     </div>
 
     <div class="main-content">
         <div class="top-header">
             <h2>Statie Meteo Licenta</h2>
-            <div>
-                <button style="background:#6f42c1; color:white; border:none; padding:5px 15px; border-radius:4px; cursor:pointer;" onclick="location.href='index.html'">Dashboard</button>
-            </div>
+            <button style="background:#6f42c1; color:white; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight: 600;" onclick="location.href='index.html'">Înapoi la Dashboard</button>
         </div>
 
         <div class="content-padding">
@@ -122,16 +148,16 @@ body {
             <div class="filter-box">
                 <div class="filter-row">
                     <div class="filter-group"><label>De la</label><input type="date" id="date-from"></div>
-                    <div class="filter-group"><label>Pana la</label><input type="date" id="date-to"></div>
+                    <div class="filter-group"><label>Până la</label><input type="date" id="date-to"></div>
                     <div class="filter-group">
                         <label>Grupare</label>
-                        <select id="grup"><option>Ora</option><option>Zi</option></select>
+                        <select id="grup"><option>Oră</option><option>Zi</option></select>
                     </div>
-                    <button style="background:#5bc0de; color:white; border:none; padding:7px 15px; border-radius:4px;" onclick="loadData()">Incarca date</button>
+                    <button style="background:#17a2b8; color:white; border:none; padding:9px 20px; border-radius:4px; cursor:pointer; font-weight:600;" onclick="loadData()">Încarcă date</button>
                 </div>
 
                 <div class="sensor-toggles">
-                    <label class="toggle-btn bg-red"><input type="checkbox" checked onchange="toggle(this, 'temp')"> Temperatura Aer</label>
+                    <label class="toggle-btn bg-red"><input type="checkbox" checked onchange="toggle(this, 'temp')"> Temperatură Aer</label>
                     <label class="toggle-btn bg-blue"><input type="checkbox" checked onchange="toggle(this, 'hum')"> Umiditate Relativă</label>
                     <label class="toggle-btn bg-orange"><input type="checkbox" checked onchange="toggle(this, 'pres')"> Presiune Atmosferică</label>
                     <label class="toggle-btn bg-green"><input type="checkbox" checked onchange="toggle(this, 'lux')"> Intensitate Luminoasă</label>
@@ -150,29 +176,24 @@ body {
     </div>
 
     <script>
-        // --- LOGICA SIDEBAR (Hamburger Menu) ---
+        // Toggle Sidebar
         const btn = document.getElementById('toggle-btn');
         const side = document.getElementById('sidebar');
+        if (btn) btn.onclick = () => side.classList.toggle('collapsed');
 
-        if (btn && side) {
-            btn.onclick = () => {
-                side.classList.toggle('collapsed');
-                console.log("Sidebar toggled");
-            };
-        }
-
-        // --- LOGICA GRAFICE ---
-        let charts = {};
+        // Toggle Grafice
         function toggle(cb, id) {
             document.getElementById('box-'+id).classList.toggle('hidden', !cb.checked);
             cb.parentElement.classList.toggle('off', !cb.checked);
         }
 
+        // Load Charts
+        let charts = {};
         async function loadData() {
             try {
                 const res = await fetch('/get-history');
                 const data = await res.json();
-                const labels = data.map(d => d.ora);
+                const labels = data.map(d => new Date(d.data_ora).toLocaleTimeString('ro-RO', {hour: '2-digit', minute:'2-digit'}));
 
                 const make = (id, label, color, key) => {
                     const ctx = document.getElementById(id);
@@ -182,20 +203,25 @@ body {
                         type: 'line',
                         data: {
                             labels: labels,
-                            datasets: [{ label: label, data: data.map(d => d[key]), borderColor: color, tension: 0.3, fill: false }]
+                            datasets: [{ 
+                                label: label, 
+                                data: data.map(d => d[key]), 
+                                borderColor: color, 
+                                backgroundColor: color + '22',
+                                tension: 0.3, 
+                                fill: true 
+                            }]
                         },
-                        options: { responsive: true, plugins: { legend: { position: 'top' } } }
+                        options: { responsive: true, maintainAspectRatio: false }
                     });
                 };
 
-                make('chart-temp', 'Temperatura (°C)', '#d9534f', 'temperature');
-                make('chart-hum', 'Umiditate (%)', '#5bc0de', 'humidity');
-                make('chart-pres', 'Presiune (hPa)', '#f0ad4e', 'pressure');
-                make('chart-lux', 'Lumina (lx)', '#5cb85c', 'lux');
-                make('chart-soil', 'Sol (%)', '#8d6e63', 'soil_moisture');
-            } catch (e) {
-                console.error("Eroare la încărcarea datelor:", e);
-            }
+                make('chart-temp', 'Temperatură (°C)', '#dc3545', 'temperature');
+                make('chart-hum', 'Umiditate (%)', '#007bff', 'humidity');
+                make('chart-pres', 'Presiune (hPa)', '#fd7e14', 'pressure');
+                make('chart-lux', 'Lumină (lx)', '#28a745', 'lux');
+                make('chart-soil', 'Sol (%)', '#795548', 'soil_moisture');
+            } catch(e) { console.error(e); }
         }
 
         document.getElementById('date-from').valueAsDate = new Date();
