@@ -25,15 +25,19 @@
 
     <div class="main-content">
         <header class="top-nav">
-            <div class="breadcrumb"><strong>Statie Meteo Licenta</strong></div>
-            <div class="btn-group">
-                <button class="btn btn-purple" onclick="window.location.href='istoric.html'">
-                    <i class="fas fa-chart-line"></i> Citiri senzori
-                </button>
-                <button class="btn btn-blue"><i class="fas fa-tools"></i> Seteaza</button>
-                <button class="btn btn-red"><i class="fas fa-trash"></i> Sterge</button>
-            </div>
-        </header>
+    <div class="breadcrumb"><strong>Statie Meteo Licenta</strong></div>
+    <div class="btn-group">
+        <button class="btn btn-purple" onclick="window.location.href='istoric.html'">
+            <i class="fas fa-chart-line"></i> Citiri senzori
+        </button>
+        <button class="btn btn-blue">
+            <i class="fas fa-tools"></i> Seteaza Senzori
+        </button>
+        <button class="btn btn-red">
+            <i class="fas fa-trash"></i> Sterge
+        </button>
+    </div>
+</header>
 
         <div class="content-padding">
             <div class="dashboard-container">
@@ -62,48 +66,47 @@
                         </div>
                     </div>
 
-                    <div class="panel">
-                        <div class="panel-header-weather">
-                            <div class="weather-title">
-                                <i class="fas fa-bolt"></i> Meteo <span class="provider">OpenWeatherMap</span>
-                            </div>
-                            <div class="weather-tabs">
-                                <span class="tab active">Conditii curente</span>
-                                <span class="tab" onclick="window.location.href='istoric.html'">Istoric</span>
-                            </div>
-                        </div>
-                        <div class="weather-content">
-                            <div class="weather-main-info">
-                                <p class="location-name">București</p>
-                                <p class="weather-condition" id="open-desc">ÎNCĂRCARE...</p>
-                                <div class="temp-display" style="display: flex; align-items: center; gap: 15px;">
-                                    <h1 id="extern-temp" style="margin:0;">--°C</h1>
-                                    <i class="fas fa-sun weather-big-icon"></i>
-                                </div>
-                                <div class="weather-bottom-stats">
-                                    <p>Presiune: <strong id="open-pres">-- mb</strong></p>
-                                    <p>Vânt: <strong id="open-wind-text">-- km/h</strong></p>
-                                </div>
-                            </div>
-                            
-                            <div class="weather-indicators">
-                                <div class="indicator-item">
-                                    <span class="indicator-label">Viteză Vânt</span>
-                                    <div class="gauge-container">
-                                        <div class="gauge-value" id="open-wind">--</div>
-                                        <div class="gauge-unit">km/h</div>
-                                    </div>
-                                </div>
-                                <div class="indicator-item">
-                                    <span class="indicator-label">Umiditate</span>
-                                    <div class="gauge-circle">
-                                        <span id="open-hum-percent">--%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div class="panel">
+    <div class="panel-header-weather">
+        <div class="weather-title">
+            <i class="fas fa-bolt"></i> Meteo OpenWeatherMap
+        </div>
+        <div class="weather-tabs">
+            <span class="tab active">Conditii curente</span>
+            <span class="tab" onclick="window.location.href='istoric.html'">Istoric</span>
+        </div>
+    </div>
+    <div class="weather-content">
+        <div class="weather-main-info">
+            <p class="location-name">București</p>
+            <p class="weather-condition" id="open-desc">NORI ÎMPRĂȘTIAȚI</p>
+            <div class="temp-display" style="display: flex; align-items: center; gap: 15px;">
+                <h1 id="extern-temp">12°C</h1>
+                <i class="fas fa-sun weather-big-icon"></i>
+            </div>
+            <div class="weather-bottom-stats">
+                <p>Presiune: <strong id="open-pres">1009 mb</strong></p>
+                <p>Vânt: <strong id="open-wind-text">1.54 km/h</strong></p>
+            </div>
+        </div>
+        
+        <div class="weather-indicators">
+            <div class="indicator-item">
+                <span class="indicator-label">Viteză Vânt</span>
+                <div class="gauge-container">
+                    <div class="gauge-value" id="open-wind">1.54</div>
+                    <div class="gauge-unit">km/h</div>
                 </div>
+            </div>
+            <div class="indicator-item">
+                <span class="indicator-label">Umiditate</span>
+                <div class="gauge-circle">
+                    <span id="open-hum-percent">84%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <div class="col-right">
                     <div class="panel">

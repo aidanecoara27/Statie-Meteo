@@ -319,7 +319,31 @@ canvas { flex-grow: 1; width: 100% !important; height: 100% !important; }
     justify-content: center;
     flex: 1;
 }
+.panel-header-weather {
+    background: #72b06e !important; /* Verdele din imaginea dorită */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
 
+.weather-tabs .tab {
+    padding: 5px 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.weather-tabs .tab.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.weather-tabs .tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
 .indicator-item {
     text-align: center;
 }
