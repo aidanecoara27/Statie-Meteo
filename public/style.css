@@ -141,6 +141,24 @@ body {
     filter: grayscale(1);
 }
 
+.charts-grid {
+    display: grid;
+    /* Două coloane egale care ocupă tot spațiul disponibil */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px;
+    width: 100%;
+}
+
+.chart-card {
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    min-height: 350px; /* Înălțime fixă pentru a nu se deforma */
+    display: flex;
+    flex-direction: column;
+}
+
 
 /* 4. TOP NAV & BUTTONS */
 .top-nav { 
