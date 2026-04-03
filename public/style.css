@@ -99,6 +99,49 @@ body {
     width: calc(100% - 50px); 
 }
 
+.sensor-selector-container {
+    display: flex;
+    justify-content: flex-end; /* Împinge totul în dreapta */
+    align-items: center; /* Aliniază vertical textul cu butoanele */
+    gap: 10px; /* Spațiu între text și butoane */
+    margin-top: 10px; /* Spațiu față de rândul de sus */
+}
+
+/* Stil pentru textul "FILTREAZA GRAFICE" */
+.filter-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.sensor-icons {
+    display: flex;
+    flex-direction: row; /* Forțează așezarea orizontală */
+    gap: 5px; /* Spațiu mic între butoane */
+}
+
+/* Stilul pentru butoanele pătrate (deja existent, dar verifică-l) */
+.s-box {
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+/* Efect de 'stins' când sunt dezactivate */
+.s-box.off {
+    opacity: 0.3;
+    filter: grayscale(1);
+}
+
+
 /* 4. TOP NAV & BUTTONS */
 .top-nav { 
     background: white; 
