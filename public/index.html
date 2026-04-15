@@ -165,36 +165,99 @@
     document.getElementById('btn-raport').onclick = async function() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    // --- 1. ANTET STILIZAT ---
+    doc.setFillColor(33, 37, 41); // Fundal închis ca sidebar-ul
+    doc.rect(0, 0, pageWidth, 45, 'F');
     
-    // 1. Adăugăm titlu și metadate
-    doc.setFontSize(18);
-    doc.text("RAPORT EVOLUȚIE PARAMETRI METEO", 105, 20, { align: 'center' });
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("RAPORT TEHNIC STATIE METEO", pageWidth / 2, 20, { align: 'center' });
     
-    doc.setFontSize(12);
-    doc.text(`Data generării: ${new Date().toLocaleString()}`, 20, 30);
-    doc.text(`Stație ID: 1016 | Sample Time: 3000ms`, 20, 37);
-    
-    // 2. "Capturăm" panoul de senzori și cel meteo
-    const dashboardElement = document.querySelector('.dashboard-grid');
-    
-    try {
-        const canvas = await html2canvas(dashboardElement, { scale: 2 });
-        const imgData = canvas.toDataURL('image/png');
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Data emiterii: ${new Date().toLocaleString()}`, pageWidth / 2, 30, { align: 'center' });
+    doc.text("Proiect Licenta - Sistem Monitorizare SmartMeteo", pageWidth / 2, 36, { align: 'center' });
+
+    // --- 2. TABEL PARAMETRI ȘI SENZORI ---
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("1. Analiza Parametrilor si Hardware-ului", 20, 60);
+
+    // Definirea datelor tabelului (Parametru | Senzor | Valoare | Status)
+    const tableData = [
+        ["Parametru", "Senzor Utilizat", "Valoare Curenta", "Interpretare"],
+        ["Temperatura Aer", "BME280 / DHT22", document.getElementById('val-temp').innerText, "Optim"],
+        ["Umiditate Relativa", "BME280 / DHT22", document.getElementById('val-hum').innerText, "Normal"],
+        ["Presiune Atmosferica", "BME280", document.getElementById('val-pres').innerText, "Stabil"],
+        ["Intensitate Luminoasa", "BH1750", document.getElementById('val-lux').innerText, "Ambiental"],
+        ["Umiditate Sol", "Capacitive Soil v1.2", document.getElementById('val-soil').innerText, "Umed"]
+    ];
+
+    // Desenare tabel manual (pentru control total)
+    let yPos = 70;
+    doc.setFontSize(10);
+    tableData.forEach((row, i) => {
+        if(i === 0) {
+            doc.setFillColor(240, 240, 240);
+            doc.rect(15, yPos - 5, pageWidth - 30, 8, 'F');
+            doc.setFont("helvetica", "bold");
+        } else {
+            doc.setFont("helvetica", "normal");
+        }
         
-        // Ajustăm imaginea să încapă în pagină
-        const imgProps = doc.getImageProperties(imgData);
-        const pdfWidth = doc.internal.pageSize.getWidth() - 40;
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        doc.text(row[0], 20, yPos);
+        doc.text(row[1], 60, yPos);
+        doc.text(row[2], 110, yPos);
+        doc.text(row[3], 150, yPos);
         
-        doc.addImage(imgData, 'PNG', 20, 50, pdfWidth, pdfHeight);
+        doc.setDrawColor(200, 200, 200);
+        doc.line(15, yPos + 2, pageWidth - 15, yPos + 2);
+        yPos += 10;
+    });
+
+    // --- 3. SECTIUNE GRAFICE (Daca exista pe pagina) ---
+    const charts = document.querySelectorAll('canvas');
+    if (charts.length > 0) {
+        doc.addPage();
+        doc.setFont("helvetica", "bold");
+        doc.text("2. Evolutie Grafica si Monitorizare", pageWidth / 2, 20, { align: 'center' });
         
-        // 3. Salvăm fișierul
-        doc.save(`Raport_Meteo_${new Date().getTime()}.pdf`);
-        
-    } catch (err) {
-        console.error("Eroare la generarea PDF:", err);
-        alert("A apărut o eroare la generarea raportului.");
+        let chartY = 35;
+        for (let i = 0; i < charts.length; i++) {
+            try {
+                const chartImg = charts[i].toDataURL('image/png', 1.0);
+                
+                // Punem 2 grafice pe pagina A4
+                if (chartY > 200) {
+                    doc.addPage();
+                    chartY = 20;
+                }
+                
+                // Titlu mic deasupra graficului
+                doc.setFontSize(9);
+                doc.text(`Grafic Parametru #${i+1}`, 20, chartY - 5);
+                
+                doc.addImage(chartImg, 'PNG', 20, chartY, 170, 75);
+                chartY += 95;
+            } catch(e) { console.error("Eroare conversie grafic:", e); }
+        }
     }
+
+    // --- 4. SUBSOL (FOOTER) ---
+    const totalPages = doc.internal.getNumberOfPages();
+    for(let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(`Pagina ${i} din ${totalPages} | Raport Generat Automat de Sistemul SmartMeteo`, pageWidth / 2, 285, { align: 'center' });
+    }
+
+    // SALVARE
+    doc.save(`Raport_Tehnic_SmartMeteo_${new Date().getTime()}.pdf`);
 };
     </script>
 </body>
