@@ -86,12 +86,23 @@ body {
 .sidebar.collapsed span { display: none; }
 
 /* 3. CONTENT AREA - FIXED */
-.main-content { 
-    flex-grow: 1; /* Ocupă tot spațiul rămas lângă sidebar */
-    height: 100vh;
-    overflow-y: auto; /* Scroll doar aici */
+/* Containerul care ține tot ce e în dreapta sidebar-ului */
+.main-content {
     display: flex;
     flex-direction: column;
+    align-items: center;      /* Centralizează orizontal */
+    justify-content: center;   /* Centralizează vertical */
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #f4f7f6;
+    width: 100%;
+}
+
+/* Limitează lățimea maximă pentru a nu se "întinde" pe tot ecranul */
+.dashboard-wrapper {
+    width: 100%;
+    max-width: 1200px; /* Ajustează această valoare după bunul plac */
+    margin: 0 auto;
 }
 
 .top-nav { 
