@@ -101,16 +101,35 @@ body {
 /* Limitează lățimea maximă pentru a nu se "întinde" pe tot ecranul */
 .dashboard-wrapper {
     width: 100%;
-    max-width: 1200px; /* Ajustează această valoare după bunul plac */
-    margin: 0 auto;
+    max-width: 1300px; /* Lățimea optimă pentru a arăta ca în poza ta */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.top-nav { 
-    background: white; 
-    padding: 12px 20px; 
-    border-bottom: 1px solid var(--border-color);
-    font-size: 14px;
-    color: #888;
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Partea stângă mai mare, Detalii Echipament mai mică */
+    gap: 20px;
+    width: 100%;
+}
+
+/* Pe ecrane mici (telefoane), coloanele se pun una sub alta */
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 5px;
 }
 
 .top-nav b { color: #000; }
@@ -224,9 +243,10 @@ canvas { flex-grow: 1; width: 100% !important; height: 100% !important; }
 
 /* 6. DASHBOARD SPECIFIC LAYOUT */
 .dashboard-container {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 2.2fr 1fr; 
+    gap: 25px;
+    align-items: start;
 }
 
 .col-left { flex: 0 0 65%; }
