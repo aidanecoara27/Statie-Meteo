@@ -1,4 +1,4 @@
-/* 1. VARIABILE ȘI RESET */
+/* 1. RESET ȘI VARIABILE */
 :root {
     --sidebar-width: 240px;
     --sidebar-collapsed: 70px;
@@ -8,35 +8,30 @@
     --border-color: #dee2e6;
 }
 
-* { 
-    box-sizing: border-box !important; 
-}
+* { box-sizing: border-box !important; }
 
 body { 
     font-family: 'Segoe UI', Roboto, Arial, sans-serif !important; 
     margin: 0 !important; 
-    padding: 0 !important;
     background: var(--bg-light) !important; 
     display: flex !important; 
     height: 100vh !important;
     overflow: hidden !important;
 }
 
-/* 2. SIDEBAR - STIL DASHBOARD */
+/* 2. SIDEBAR */
 .sidebar { 
     width: var(--sidebar-width); 
     background: var(--sidebar-bg); 
     height: 100vh; 
     color: white; 
     flex-shrink: 0;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 100;
+    transition: width 0.3s ease;
     display: flex;
     flex-direction: column;
+    z-index: 100;
 }
-
 .sidebar.collapsed { width: var(--sidebar-collapsed); }
-
 .sidebar-header {
     padding: 25px 20px;
     font-size: 20px;
@@ -46,62 +41,50 @@ body {
     justify-content: space-between;
     white-space: nowrap;
 }
-
-.sidebar-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    flex-grow: 1;
-}
-
-.sidebar-menu li { position: relative; }
-
+.sidebar-menu { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
 .sidebar-menu a {
     display: flex;
     align-items: center;
     padding: 16px 20px;
     color: #adb5bd;
     text-decoration: none;
-    font-size: 15px;
-    transition: all 0.2s;
-    white-space: nowrap;
+    transition: 0.2s;
 }
-
-.sidebar-menu li.active a,
-.sidebar-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+.sidebar-menu li.active a, .sidebar-menu a:hover {
+    background: rgba(255, 255, 255, 0.1);
     color: white;
 }
-
-.sidebar-menu li.active {
-    border-left: 4px solid var(--dashboard-green);
-}
-
-.sidebar-menu i { 
-    min-width: 30px;
-    font-size: 18px;
-    text-align: center;
-}
-
 .sidebar.collapsed span { display: none; }
+.sidebar-menu i { min-width: 30px; text-align: center; font-size: 18px; }
 
-/* 3. CONTENT AREA - FIXED */
-/* Containerul care ține tot ce e în dreapta sidebar-ului */
+/* 3. ARIA PRINCIPALĂ */
 .main-content {
+    flex-grow: 1;
+    height: 100vh;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    align-items: center;      /* Centralizează orizontal */
-    justify-content: center;   /* Centralizează vertical */
-    min-height: 100vh;
-    padding: 20px;
-    background-color: #f4f7f6;
-    width: 100%;
 }
 
-/* Limitează lățimea maximă pentru a nu se "întinde" pe tot ecranul */
+.top-nav {
+    background: white;
+    padding: 15px 25px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.content-padding {
+    padding: 30px;
+    display: flex;
+    justify-content: center; /* Centralizare orizontală a conținutului */
+}
+
+/* 4. DASHBOARD LAYOUT (PAGINA PRINCIPALĂ) */
 .dashboard-wrapper {
     width: 100%;
-    max-width: 1300px; /* Lățimea optimă pentru a arăta ca în poza ta */
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -109,148 +92,9 @@ body {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr; /* Partea stângă mai mare, Detalii Echipament mai mică */
+    grid-template-columns: 1.8fr 1fr;
     gap: 20px;
-    width: 100%;
 }
-
-/* Pe ecrane mici (telefoane), coloanele se pun una sub alta */
-@media (max-width: 992px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.top-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: white;
-    padding: 15px 25px;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-    margin-bottom: 5px;
-}
-
-.top-nav b { color: #000; }
-
-.content-padding { padding: 20px; }
-
-/* 4. FILTRE ȘI SELECTORI ORIZONTALI */
-.filters-container { 
-    background: white; 
-    padding: 20px; 
-    border-radius: 4px; 
-    border: 1px solid var(--border-color);
-    margin-bottom: 15px;
-}
-
-.filter-row { 
-    display: flex; 
-    gap: 15px; 
-    align-items: flex-end; 
-    flex-wrap: wrap; 
-}
-
-.input-group { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 5px; 
-    font-size: 13px; 
-    font-weight: bold; 
-}
-
-input, select { 
-    padding: 8px; 
-    border: 1px solid var(--border-color); 
-    border-radius: 4px; 
-}
-
-/* ALINIEREA ORIZONTALĂ A SIMBOLURILOR LA DREAPTA */
-.sensor-selector-container {
-    display: flex;
-    justify-content: flex-end; /* Împinge în dreapta sub butoane */
-    align-items: center;
-    gap: 10px;
-    margin: 15px 0;
-}
-
-.filter-label {
-    font-size: 11px;
-    font-weight: bold;
-    color: #999;
-    text-transform: uppercase;
-}
-
-.sensor-icons {
-    display: flex;
-    gap: 6px; /* Spațiu între pătrățele */
-}
-
-.s-box {
-    width: 30px;
-    height: 30px;
-    border-radius: 4px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s;
-}
-
-.s-box.off { opacity: 0.2; filter: grayscale(1); }
-
-/* Culori simboluri */
-.c-temp { background: #e74c3c; }
-.c-hum { background: #3498db; }
-.c-pres { background: #f39c12; }
-.c-lux { background: #2ecc71; }
-.c-soil { background: #795548; }
-
-/* 5. GRID GRAFICE */
-.charts-grid {
-    display: grid;
-    /* Forțează 2 coloane egale indiferent de conținut */
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 20px;
-    width: 100%;
-}
-
-.chart-card {
-    background: white;
-    padding: 15px;
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-    height: 380px;
-    display: flex;
-    flex-direction: column;
-}
-
-.chart-card.hidden { display: none; }
-
-.chart-title {
-    font-size: 14px;
-    color: #7f8c8d;
-    font-weight: 600;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    text-align: center;
-}
-
-canvas { flex-grow: 1; width: 100% !important; height: 100% !important; }
-
-/* 6. DASHBOARD SPECIFIC LAYOUT */
-.dashboard-container {
-    display: grid;
-    grid-template-columns: 2.2fr 1fr; 
-    gap: 25px;
-    align-items: start;
-}
-
-.col-left { flex: 0 0 65%; }
-.col-right { flex: 0 0 35%; }
 
 .panel {
     background: white;
@@ -260,149 +104,86 @@ canvas { flex-grow: 1; width: 100% !important; height: 100% !important; }
     overflow: hidden;
 }
 
-.panel-header-green {
-    background: #72b06e;
+.panel-header-green, .panel-header-weather {
+    background: var(--dashboard-green) !important;
     color: white;
-    padding: 10px 15px;
+    padding: 12px 15px;
     font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* REPARAȚIE SENZORI DASHBOARD */
+/* SENZORI TAGS */
 .sensor-tags {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 15px;
-    padding: 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 15px;
 }
-
 .tag-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #ffffff;
-    padding: 12px 15px;
-    border-radius: 6px;
-    border: 1px solid #eee;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.tag-item:hover {
-    transform: translateY(-2px);
-    border-color: var(--dashboard-green);
-}
-
-.label {
-    padding: 5px 12px;
+    background: #f8f9fa;
+    padding: 10px;
     border-radius: 4px;
-    color: white;
-    font-size: 0.85rem;
-    font-weight: 600;
-    min-width: 140px;
-    text-align: center;
+    border: 1px solid #eee;
 }
-
 .label {
     padding: 4px 8px;
     border-radius: 3px;
     color: white;
     font-size: 11px;
     font-weight: bold;
+    min-width: 120px;
+    text-align: center;
 }
 
+/* WEATHER SECTION */
+.weather-content { display: flex; padding: 20px; gap: 20px; flex-wrap: wrap; }
+.weather-main-info { flex: 1; min-width: 200px; }
+.temp-display h1 { font-size: 3rem; margin: 10px 0; }
+.weather-indicators { display: flex; gap: 20px; flex: 1; justify-content: center; }
+.gauge-circle, .gauge-container {
+    width: 90px; height: 90px;
+    border: 6px solid #3498db;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+.gauge-container { border-color: #e74c3c; }
+
+/* 5. ISTORIC LAYOUT (PAGINA CU GRAFICE) */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+}
+.chart-card {
+    background: white;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    height: 350px;
+}
+
+/* CULORI ETICHETE */
 .label-red { background: #e74c3c; }
 .label-blue { background: #3498db; }
 .label-brown { background: #795548; }
 .label-green { background: #2ecc71; }
 .label-soil { background: #8d6e63; }
 
+/* BUTOANE */
+.btn { padding: 8px 15px; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold; }
+.btn-purple { background: #6f42c1; }
+.btn-blue { background: #007bff; }
+.btn-red { background: #dc3545; }
 
-/* REPARAȚIE OPENWEATHER */
-.weather-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    padding: 25px;
-    background: white;
+@media (max-width: 992px) {
+    .dashboard-grid, .charts-grid { grid-template-columns: 1fr; }
 }
-
-.weather-main-info {
-    flex: 1;
-    min-width: 250px;
-}
-
-.temp-display h1 {
-    font-size: 3.5rem;
-    color: #333;
-    margin: 10px 0;
-}
-
-.weather-big-icon {
-    font-size: 3rem;
-    color: #f39c12;
-}
-
-.weather-indicators {
-    display: flex;
-    gap: 40px;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-}
-.panel-header-weather {
-    background: #72b06e !important; /* Verdele din imaginea dorită */
-    color: white;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-}
-
-.weather-tabs .tab {
-    padding: 5px 15px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    border-radius: 4px;
-    transition: 0.3s;
-}
-
-.weather-tabs .tab.active {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.weather-tabs .tab:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-.indicator-item {
-    text-align: center;
-}
-
-.gauge-circle {
-    width: 100px;
-    height: 100px;
-    border: 8px solid #3498db;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-top: 10px;
-}
-
-.gauge-container {
-    width: 100px;
-    height: 100px;
-    border: 8px solid #e74c3c;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-.gauge-value { font-size: 1.2rem; font-weight: bold; }
-.gauge-unit { font-size: 0.8rem; color: #777; }
