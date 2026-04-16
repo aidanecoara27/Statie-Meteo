@@ -5,180 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartMeteo - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* RECONSTRUCȚIE ASPECT ORIGINAL */
-        :root {
-            --sidebar-bg: #212529;
-            --header-bg: #ffffff;
-            --bg-body: #f8f9fa;
-            --green-accent: #72b06e;
-        }
-
-        body {
-            margin: 0;
-            display: flex;
-            background-color: var(--bg-body);
-            height: 100vh;
-            font-family: Arial, sans-serif;
-            overflow: hidden; /* Blocăm body-ul ca să nu se miște sidebar-ul */
-        }
-
-        /* SIDEBAR ORIGINAL */
-        .sidebar {
-            width: 70px; /* Varianta restrânsă din poze */
-            background-color: var(--sidebar-bg);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-            flex-shrink: 0;
-        }
-
-        .sidebar i {
-            font-size: 20px;
-            margin-bottom: 30px;
-            color: #adb5bd;
-            cursor: pointer;
-        }
-
-        .sidebar i.active { color: white; }
-
-        /* MAIN CONTENT - REPARAT PENTRU SCROLL */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow-y: auto; /* DOAR zona asta are scroll */
-        }
-
-        .header {
-            background: white;
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .container { padding: 20px; }
-
-        /* CARDURILE TALE ORIGINALE */
-        .card-meteo {
-            background: white;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .card-header {
-            background: var(--green-accent);
-            color: white;
-            padding: 10px 15px;
-            font-weight: bold;
-        }
-
-        .sensor-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-
-        .sensor-item {
-            display: flex;
-            align-items: center;
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            padding: 10px;
-        }
-
-        /* Etichetele colorate din stânga valorii */
-        .label-box {
-            padding: 5px 10px;
-            border-radius: 4px;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            margin-right: 15px;
-            min-width: 100px;
-            text-align: center;
-        }
-
-        .valoare { font-size: 18px; font-weight: bold; }
-
-        .bg-red { background: #d9534f; }
-        .bg-blue { background: #5bc0de; }
-        .bg-brown { background: #8d6e63; }
-        .bg-orange { background: #f0ad4e; }
-
-        /* OpenWeather Section */
-        .weather-large { padding: 20px; }
-        .temp-main { font-size: 48px; font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div class="sidebar">
-        <i class="fas fa-bars"></i>
-        <i class="fas fa-tachometer-alt active"></i>
-        <i class="fas fa-chart-line"></i>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span>SmartMeteo</span>
+            <i class="fas fa-bars" id="toggle-btn" style="cursor:pointer;"></i>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active">
+                <a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            </li>
+            <li>
+                <a href="istoric.html"><i class="fas fa-chart-line"></i> <span>Istoric</span></a>
+            </li>
+        </ul>
     </div>
 
     <div class="main-content">
-        <div class="header">
-            <h2 style="margin:0; font-size:18px;">Statie Meteo Licenta</h2>
-            <button style="background:#6f42c1; color:white; border:none; padding:8px 15px; border-radius:4px;">
-                <i class="fas fa-chart-line"></i> Citiri senzori
-            </button>
-        </div>
+        <header class="top-nav">
+            <div class="breadcrumb"><strong>Statie Meteo Licenta</strong></div>
+            <div class="btn-group">
+                <button class="btn btn-purple" onclick="window.location.href='istoric.html'"><i class="fas fa-chart-line"></i> Citiri senzori</button>
 
-        <div class="container">
-            <div class="card-meteo">
-                <div class="card-header">Ultima citire: Statie Meteo - Licenta</div>
-                <div style="padding:10px 20px; color:#666; font-size:13px; border-bottom:1px solid #eee;">
-                    Data si ora: 4/16/2026, 7:44:27 PM
-                </div>
-                <div class="sensor-grid">
-                    <div class="sensor-item">
-                        <div class="label-box bg-red">Temperatură Aer</div>
-                        <div class="valoare">22.62 °C</div>
-                    </div>
-                    <div class="sensor-item">
-                        <div class="label-box bg-blue">Umiditate</div>
-                        <div class="valoare">-- %</div>
-                    </div>
-                    <div class="sensor-item">
-                        <div class="label-box bg-orange">Presiune Atmosferică</div>
-                        <div class="valoare">1007.73 hPa</div>
-                    </div>
-                    <div class="sensor-item">
-                        <div class="label-box bg-brown">Umiditate Sol</div>
-                        <div class="valoare">4 %</div>
-                    </div>
-                </div>
             </div>
+        </header>
 
-            <div class="card-meteo">
-                <div class="card-header">
-                    <i class="fas fa-bolt"></i> Meteo OpenWeatherMap
-                </div>
-                <div class="weather-large">
-                    <h3 style="margin:0;">București</h3>
-                    <p style="color:var(--green-accent); font-weight:bold; text-transform:uppercase;">Cer Senin</p>
-                    <div style="display:flex; align-items:center;">
-                        <span class="temp-main">18°C</span>
-                        <i class="fas fa-sun" style="font-size:40px; color:#f1c40f; margin-left:20px;"></i>
-                    </div>
-                    <p>Presiune: <b>1018 mb</b></p>
-                    <p>Vânt: <b>3.6 km/h</b></p>
-                </div>
-            </div>
-        </div>
-    </div>
+        <div class="content-padding">
+            <div class="dashboard-wrapper">
+                <div class="dashboard-grid">
+                    
+                    <div class="col-left">
+                        <div class="panel">
+                            <div class="panel-header-green">Ultima citire: Statie Meteo - Licenta</div>
+                            <div class="panel-body">
+                                <p class="timestamp" style="padding: 10px 15px; margin: 0; font-size: 0.9rem; color: #666;">
+                                    Data si ora: <span id="time">--</span>
+                                </p>
+                                <div class="sensor-tags">
+                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
+                                        <span class="label label-red">Temperatură Aer</span> <strong id="val-temp">--</strong>
+                                    </div>
+                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
+                                        <span class="label label-blue">Umiditate Relativă</span> <strong id="val-hum">--</strong>
+                                    </div>
+                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
+                                        <span class="label label-brown">Presiune Atmosferică</span> <strong id="val-pres">--</strong>
+                                    </div>
+                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
+                                        <span class="label label-green">Intensitate Luminoasă</span> <strong id="val-lux">--</strong>
+                                    </div>
+                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
+                                        <span class="label label-soil">Umiditate Sol</span> <strong id="val-soil">--</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="panel">
+                            <div class="panel-header-weather">
+                                <div class="weather-title"><i class="fas fa-bolt"></i> Meteo OpenWeatherMap</div>
+                                <div class="weather-tabs">
+                                    <span class="tab active">Condiții curente</span>
+                                    
+                                </div>
+                            </div>
+                            <div class="weather-content">
+                                <div class="weather-main-info">
+                                    <p class="location-name" style="font-weight: bold; font-size: 1.2rem; margin: 0;">București</p>
+                                    <p class="weather-condition" id="open-desc" style="color: #72b06e; font-weight: bold;">NORI ÎMPRĂȘTIAȚI</p>
+                                    <div class="temp-display" style="display: flex; align-items: center; gap: 15px;">
+                                        <h1 id="extern-temp" style="margin: 0; font-size: 3rem;">12°C</h1>
+                                        <i class="fas fa-sun weather-big-icon" style="font-size: 2.5rem; color: #f39c12;"></i>
+                                    </div>
+                                    <div class="weather-bottom-stats" style="margin-top: 10px;">
+                                        <p>Presiune: <strong id="open-pres">1009 mb</strong></p>
+                                        <p>Vânt: <strong id="open-wind-text">1.54 km/h</strong></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="weather-indicators">
+                                    <div class="indicator-item">
+                                        <span class="indicator-label">Viteză Vânt</span>
+                                        <div class="gauge-container">
+                                            <div class="gauge-value" id="open-wind">1.54</div>
+                                            <div class="gauge-unit">km/h</div>
+                                        </div>
+                                    </div>
+                                    <div class="indicator-item">
+                                        <span class="indicator-label">Umiditate</span>
+                                        <div class="gauge-circle">
+                                            <span id="open-hum-percent">84%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <div class="col-right">
+                        <div class="panel">
+                            <div class="panel-header-green">Detalii Echipament</div>
+                            <div class="panel-body">
+                                <style>
+                                    .details-table { width: 100%; border-collapse: collapse; }
+                                    .details-table td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+                                    .details-table tr:last-child td { border: none; }
+                                </style>
+                                <table class="details-table">
+                                    <tr><td>Versiune protocol</td><td>v3</td></tr>
+                                    <tr><td>Denumire</td><td>Statie Licenta</td></tr>
+                                    <tr><td>Statie ID</td><td>1016</td></tr>
+                                    <tr><td>Activ</td><td><span style="color: green; font-weight: bold;">Da</span></td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div> </div> </div> </div> </div> 
+<script>
+        // Logică Sidebar
+        document.getElementById('toggle-btn').onclick = () => {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        };
+
+        // Fetch date senzori locali
+        async function updateLocalData() {
+            try {
+                const res = await fetch('/get-latest-data');
+                const d = await res.json();
+                document.getElementById('val-temp').innerText = (d.temperature || "--") + " °C";
+                document.getElementById('val-hum').innerText = (d.humidity || "--") + " %";
+                document.getElementById('val-pres').innerText = (d.pressure || "--") + " hPa";
+                document.getElementById('val-lux').innerText = (d.lux || "--") + " lx";
+                if(d.soil_moisture !== undefined) document.getElementById('val-soil').innerText = d.soil_moisture + " %";
+                document.getElementById('time').innerText = new Date().toLocaleString();
+            } catch(e) { console.error("Eroare senzori:", e); }
+        }
+
+        // Fetch OpenWeather
+        async function updateExternalWeather() {
+            try {
+                const res = await fetch('/get-external-weather'); 
+                const d = await res.json();
+                document.getElementById('extern-temp').innerText = Math.round(d.main.temp) + "°C";
+                document.getElementById('open-desc').innerText = d.weather[0].description.toUpperCase();
+                document.getElementById('open-pres').innerText = d.main.pressure + " mb";
+                document.getElementById('open-wind').innerText = d.wind.speed;
+                document.getElementById('open-wind-text').innerText = d.wind.speed + " km/h";
+                document.getElementById('open-hum-percent').innerText = d.main.humidity + "%";
+            } catch(e) { console.error("Eroare meteo ext:", e); }
+        }
+        
+        setInterval(updateLocalData, 3000);
+        setInterval(updateExternalWeather, 900000);
+        updateLocalData();
+        updateExternalWeather();
+
+  
+    </script>
 </body>
 </html>
