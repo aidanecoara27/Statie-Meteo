@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SmartMeteo</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #212529, #2c3e50);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #212529;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #72b06e;
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-login:hover {
+            background: #5e9c5a;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #72b06e;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="logo">SmartMeteo</div>
+    <div class="login-title">Autentificare</div>
+
+    <div class="input-group">
+        <label>Email</label>
+        <input type="text" id="email">
+    </div>
+
+    <div class="input-group">
+        <label>Parolă</label>
+        <input type="password" id="password">
+    </div>
+
+    <button class="btn-login" onclick="login()">
+        <i class="fas fa-sign-in-alt"></i> Login
+    </button>
+
+    <div class="error" id="error"></div>
+</div>
+
+<script>
+async function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const res = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            window.location.href = "index.html";
+        } else {
+            document.getElementById('error').innerText = "Date invalide!";
+        }
+
+    } catch (err) {
+        document.getElementById('error').innerText = "Eroare server!";
+    }
+}
+</script>
+
+</body>
+</html>

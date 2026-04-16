@@ -84,6 +84,21 @@ app.get('/get-latest-data', (req, res) => {
     });
 });
 
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+
+    const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+    db.query(sql, [email, password], (err, result) => {
+        if (err) return res.json({ success: false });
+
+        if (result.length > 0) {
+            res.json({ success: true });
+        } else {
+            res.json({ success: false });
+        }
+    });
+});
+
 // RUTA: Trimite ultimele 20 de înregistrări pentru grafic
 app.get('/get-history', (req, res) => {
     // Folosim SELECT * pentru a lua toate datele + formatăm ora pentru grafic
