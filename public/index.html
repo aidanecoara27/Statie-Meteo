@@ -123,7 +123,9 @@
 <script>
         // Logică Sidebar
 
-
+if (!localStorage.getItem("logged")) {
+    window.location.href = "login.html";
+}
         document.getElementById('toggle-btn').onclick = () => {
     const sidebar = document.getElementById('sidebar');
     
