@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Istoric - SmartMeteo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> ```
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -145,6 +147,19 @@
         canvas { flex: 1; width: 100% !important; height: 100% !important; }
 
         @media (max-width: 1000px) { .charts-grid { grid-template-columns: 1fr; } }
+
+
+    .btn-blue {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+    .btn-blue:hover { background: #2980b9; }
     </style>
 </head>
 <body>
@@ -188,6 +203,12 @@
                     </button>
                 </div>
             </div>
+
+            <div class="actions-bar">
+    <button class="btn btn-blue" id="btn-raport">
+        <i class="fas fa-file-pdf"></i> Generare Raport PDF Complet
+    </button>
+</div>
 
             <div class="sensor-selector-container">
                 <span style="font-size: 11px; font-weight: bold; color: #999;">FILTREAZA GRAFICE:</span>
@@ -279,6 +300,78 @@
             document.getElementById('date-to').valueAsDate = new Date();
             loadData();
         };
+
+
+        // --- COD GENERARE RAPORT PDF ---
+document.getElementById('btn-raport').onclick = async function() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // Preluăm datele din input-urile de pe pagină
+    const dataDeLa = document.getElementById('date-from').value || new Date().toLocaleDateString('ro-RO');
+    const dataPanaLa = document.getElementById('date-to').value || "Prezent";
+
+    const parametri = [
+        { nume: "Temperatura Aer", senzor: "BME280 / DHT22", id: "chart-temp" },
+        { nume: "Umiditate Relativa", senzor: "BME280 / DHT22", id: "chart-hum" },
+        { nume: "Presiune Atmosferica", senzor: "BME280", id: "chart-pres" },
+        { nume: "Intensitate Luminoasa", senzor: "BH1750", id: "chart-lux" },
+        { nume: "Umiditate Sol", senzor: "Capacitive Soil v1.2", id: "chart-soil" }
+    ];
+
+    parametri.forEach((param, index) => {
+        if (index > 0) doc.addPage();
+
+        // Design Header
+        doc.setFillColor(33, 37, 41);
+        doc.rect(0, 0, pageWidth, 30, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.text(`RAPORT TEHNIC: ${param.nume.toUpperCase()}`, pageWidth / 2, 15, { align: 'center' });
+
+        // Caseta Informații
+        doc.setTextColor(0, 0, 0);
+        doc.setFillColor(245, 245, 245);
+        doc.rect(15, 40, pageWidth - 30, 35, 'F');
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        
+        doc.text(`Senzor utilizat: ${param.senzor}`, 20, 50);
+        doc.text(`Interval monitorizat: ${dataDeLa} - ${dataPanaLa}`, 20, 57);
+        doc.text(`Statie: SmartMeteo ID 1016`, 20, 64);
+
+        // Captură Grafic
+        doc.setFont("helvetica", "bold");
+        doc.text(`Evolutie Grafica:`, 20, 85);
+        
+        const chartCanvas = document.getElementById(param.id);
+        if (chartCanvas) {
+            try {
+                const imgData = chartCanvas.toDataURL('image/png', 1.0);
+                doc.addImage(imgData, 'PNG', 15, 90, pageWidth - 30, 80);
+            } catch (e) {
+                doc.text("Eroare la preluarea graficului.", 25, 100);
+            }
+        }
+
+        // Analiză text standard pentru licență
+        doc.setFont("helvetica", "bold");
+        doc.text("Interpretare date:", 20, 190);
+        doc.setFont("helvetica", "normal");
+        const descriere = `Datele colectate pentru ${param.nume} indica o functionare stabila a sistemului. Graficul de mai sus reprezinta valorile brute transmise de microcontrolerul ESP32 catre baza de date si procesate in timp real.`;
+        const textSplit = doc.splitTextToSize(descriere, pageWidth - 40);
+        doc.text(textSplit, 20, 198);
+
+        // Footer
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(`Pagina ${index + 1} / ${parametri.length} | Generat la ${new Date().toLocaleString()}`, pageWidth / 2, 285, { align: 'center' });
+    });
+
+    doc.save(`Raport_SmartMeteo_${new Date().getTime()}.pdf`);
+};
     </script>
 </body>
 </html>
