@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Istoric - SmartMeteo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -21,12 +20,13 @@
         * { box-sizing: border-box; }
 
         body { 
-    margin: 0; 
-    display: flex; 
-    background-color: var(--bg-light); 
-    min-height: 100vh; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+            margin: 0; 
+            display: flex; 
+            background-color: var(--bg-light); 
+            height: 100vh; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Îngheață body-ul pentru a permite scroll doar în main-content */
+        }
 
         /* SIDEBAR */
         .sidebar { 
@@ -70,27 +70,15 @@
         .sidebar-menu i { min-width: 30px; font-size: 18px; }
         .sidebar.collapsed span { display: none; }
 
-        .btn-blue {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-    .btn-blue:hover { background: #2980b9; }
-
-        /* MAIN CONTENT - REPARAT */
+        /* MAIN CONTENT - ZONA SCROLLABILĂ */
         .main-content { 
-    flex: 1; 
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Păstrează height aici pentru a activa scroll-ul intern */
-    overflow-y: auto; 
-    min-width: 0; 
-}
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            height: 100vh; 
+            overflow-y: auto; /* Aici se activează scroll-ul pe verticală */
+            min-width: 0; 
+        }
 
         .top-nav { 
             background: white; 
@@ -102,7 +90,20 @@
 
         .content-padding { padding: 20px; width: 100%; }
 
-        /* FILTRE */
+        /* BUTOANE ȘI FILTRE */
+        .btn-blue {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .btn-blue:hover { background: #2980b9; }
+
         .filters-container { 
             background: white; 
             padding: 20px; 
@@ -113,7 +114,6 @@
 
         .filter-row { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
         
-        /* SELECTORI SIMBOLURI - ORIZONTAL */
         .sensor-selector-container { 
             display: flex; 
             justify-content: flex-end; 
@@ -135,10 +135,9 @@
         .c-pres { background: #f39c12; } .c-lux { background: #2ecc71; }
         .c-soil { background: #795548; }
 
-        /* GRID GRAFICE - REPARAT */
         .charts-grid { 
             display: grid; 
-            grid-template-columns: repeat(2, 1fr); /* Forțează 2 coloane egale */
+            grid-template-columns: repeat(2, 1fr); 
             gap: 20px; 
             width: 100%;
         }
@@ -158,9 +157,6 @@
         canvas { flex: 1; width: 100% !important; height: 100% !important; }
 
         @media (max-width: 1000px) { .charts-grid { grid-template-columns: 1fr; } }
-
-
-    
     </style>
 </head>
 <body>
@@ -176,6 +172,10 @@
         </ul>
     </div>
 
+    <div class="main-content">
+        <div class="top-nav">
+            <i class="fas fa-home"></i> > Statie Licenta > <b>Istoric Citiri</b>
+        </div>
 
         <div class="content-padding">
             <div class="filters-container">
@@ -202,10 +202,10 @@
             </div>
 
             <div class="actions-bar">
-    <button class="btn btn-blue" id="btn-raport">
-        <i class="fas fa-file-pdf"></i> Generare Raport PDF Complet
-    </button>
-</div>
+                <button class="btn-blue" id="btn-raport">
+                    <i class="fas fa-file-pdf"></i> Generare Raport PDF Complet
+                </button>
+            </div>
 
             <div class="sensor-selector-container">
                 <span style="font-size: 11px; font-weight: bold; color: #999;">FILTREAZA GRAFICE:</span>
@@ -225,14 +225,10 @@
                 <div class="chart-card" id="box-lux"><div class="chart-title">Intensitate Luminoasa (lx)</div><canvas id="chart-lux"></canvas></div>
                 <div class="chart-card" id="box-soil"><div class="chart-title">Umiditate Sol (%)</div><canvas id="chart-soil"></canvas></div>
             </div>
-        </div>
-    </div>
-
-    <script>
+        </div> </div> <script>
         // Toggle Sidebar
         document.getElementById('toggle-sidebar').onclick = function() {
             document.getElementById('sidebar').classList.toggle('collapsed');
-            // Redimensionare grafice după tranzitie
             setTimeout(() => { Object.values(charts).forEach(c => c.resize()); }, 350);
         };
 
@@ -246,6 +242,7 @@
         let charts = {};
         async function loadData() {
             try {
+                // Înlocuiește cu URL-ul tău real către API
                 const res = await fetch('/get-history');
                 const data = await res.json();
                 
@@ -255,7 +252,9 @@
                 });
 
                 const render = (id, label, color, key) => {
-                    const ctx = document.getElementById(id).getContext('2d');
+                    const canvas = document.getElementById(id);
+                    if (!canvas) return;
+                    const ctx = canvas.getContext('2d');
                     if(charts[id]) charts[id].destroy();
                     charts[id] = new Chart(ctx, {
                         type: 'line',
@@ -298,77 +297,70 @@
             loadData();
         };
 
-
         // --- COD GENERARE RAPORT PDF ---
-document.getElementById('btn-raport').onclick = async function() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
-    const pageWidth = doc.internal.pageSize.getWidth();
-    
-    // Preluăm datele din input-urile de pe pagină
-    const dataDeLa = document.getElementById('date-from').value || new Date().toLocaleDateString('ro-RO');
-    const dataPanaLa = document.getElementById('date-to').value || "Prezent";
+        document.getElementById('btn-raport').onclick = async function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = doc.internal.pageSize.getWidth();
+            
+            const dataDeLa = document.getElementById('date-from').value || new Date().toLocaleDateString('ro-RO');
+            const dataPanaLa = document.getElementById('date-to').value || "Prezent";
 
-    const parametri = [
-        { nume: "Temperatura Aer", senzor: "BME280 / DHT22", id: "chart-temp" },
-        { nume: "Umiditate Relativa", senzor: "BME280 / DHT22", id: "chart-hum" },
-        { nume: "Presiune Atmosferica", senzor: "BME280", id: "chart-pres" },
-        { nume: "Intensitate Luminoasa", senzor: "BH1750", id: "chart-lux" },
-        { nume: "Umiditate Sol", senzor: "Capacitive Soil v1.2", id: "chart-soil" }
-    ];
+            const parametri = [
+                { nume: "Temperatura Aer", senzor: "BME280 / DHT22", id: "chart-temp" },
+                { nume: "Umiditate Relativa", senzor: "BME280 / DHT22", id: "chart-hum" },
+                { nume: "Presiune Atmosferica", senzor: "BME280", id: "chart-pres" },
+                { nume: "Intensitate Luminoasa", senzor: "BH1750", id: "chart-lux" },
+                { nume: "Umiditate Sol", senzor: "Capacitive Soil v1.2", id: "chart-soil" }
+            ];
 
-    parametri.forEach((param, index) => {
-        if (index > 0) doc.addPage();
+            parametri.forEach((param, index) => {
+                if (index > 0) doc.addPage();
 
-        // Design Header
-        doc.setFillColor(33, 37, 41);
-        doc.rect(0, 0, pageWidth, 30, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(16);
-        doc.setFont("helvetica", "bold");
-        doc.text(`RAPORT TEHNIC: ${param.nume.toUpperCase()}`, pageWidth / 2, 15, { align: 'center' });
+                doc.setFillColor(33, 37, 41);
+                doc.rect(0, 0, pageWidth, 30, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(16);
+                doc.setFont("helvetica", "bold");
+                doc.text(`RAPORT TEHNIC: ${param.nume.toUpperCase()}`, pageWidth / 2, 15, { align: 'center' });
 
-        // Caseta Informații
-        doc.setTextColor(0, 0, 0);
-        doc.setFillColor(245, 245, 245);
-        doc.rect(15, 40, pageWidth - 30, 35, 'F');
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "normal");
-        
-        doc.text(`Senzor utilizat: ${param.senzor}`, 20, 50);
-        doc.text(`Interval monitorizat: ${dataDeLa} - ${dataPanaLa}`, 20, 57);
-        doc.text(`Statie: SmartMeteo ID 1016`, 20, 64);
+                doc.setTextColor(0, 0, 0);
+                doc.setFillColor(245, 245, 245);
+                doc.rect(15, 40, pageWidth - 30, 35, 'F');
+                doc.setFontSize(10);
+                doc.setFont("helvetica", "normal");
+                
+                doc.text(`Senzor utilizat: ${param.senzor}`, 20, 50);
+                doc.text(`Interval monitorizat: ${dataDeLa} - ${dataPanaLa}`, 20, 57);
+                doc.text(`Statie: SmartMeteo ID 1016`, 20, 64);
 
-        // Captură Grafic
-        doc.setFont("helvetica", "bold");
-        doc.text(`Evolutie Grafica:`, 20, 85);
-        
-        const chartCanvas = document.getElementById(param.id);
-        if (chartCanvas) {
-            try {
-                const imgData = chartCanvas.toDataURL('image/png', 1.0);
-                doc.addImage(imgData, 'PNG', 15, 90, pageWidth - 30, 80);
-            } catch (e) {
-                doc.text("Eroare la preluarea graficului.", 25, 100);
-            }
-        }
+                doc.setFont("helvetica", "bold");
+                doc.text(`Evolutie Grafica:`, 20, 85);
+                
+                const chartCanvas = document.getElementById(param.id);
+                if (chartCanvas) {
+                    try {
+                        const imgData = chartCanvas.toDataURL('image/png', 1.0);
+                        doc.addImage(imgData, 'PNG', 15, 90, pageWidth - 30, 80);
+                    } catch (e) {
+                        doc.text("Eroare la preluarea graficului.", 25, 100);
+                    }
+                }
 
-        // Analiză text standard pentru licență
-        doc.setFont("helvetica", "bold");
-        doc.text("Interpretare date:", 20, 190);
-        doc.setFont("helvetica", "normal");
-        const descriere = `Datele colectate pentru ${param.nume} indica o functionare stabila a sistemului. Graficul de mai sus reprezinta valorile brute transmise de microcontrolerul ESP32 catre baza de date si procesate in timp real.`;
-        const textSplit = doc.splitTextToSize(descriere, pageWidth - 40);
-        doc.text(textSplit, 20, 198);
+                doc.setFont("helvetica", "bold");
+                doc.text("Interpretare date:", 20, 190);
+                doc.setFont("helvetica", "normal");
+                const descriere = `Datele colectate pentru ${param.nume} indica o functionare stabila a sistemului. Graficul de mai sus reprezinta valorile brute transmise de microcontrolerul ESP32 catre baza de date si procesate in timp real.`;
+                const textSplit = doc.splitTextToSize(descriere, pageWidth - 40);
+                doc.text(textSplit, 20, 198);
 
-        // Footer
-        doc.setFontSize(8);
-        doc.setTextColor(150, 150, 150);
-        doc.text(`Pagina ${index + 1} / ${parametri.length} | Generat la ${new Date().toLocaleString()}`, pageWidth / 2, 285, { align: 'center' });
-    });
+                doc.setFontSize(8);
+                doc.setTextColor(150, 150, 150);
+                doc.text(`Pagina ${index + 1} / ${parametri.length} | Generat la ${new Date().toLocaleString()}`, pageWidth / 2, 285, { align: 'center' });
+            });
 
-    doc.save(`Raport_SmartMeteo_${new Date().getTime()}.pdf`);
-};
+            doc.save(`Raport_SmartMeteo_${new Date().getTime()}.pdf`);
+        };
     </script>
 </body>
 </html>
