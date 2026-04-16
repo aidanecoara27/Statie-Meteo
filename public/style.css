@@ -115,42 +115,40 @@ body {
 }
 
 /* SENZORI TAGS */
+/* Containerul care ține toți senzorii */
 .sensor-tags {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 15px;
+    gap: 10px;
+    padding: 10px;
 }
 
-/* Repară rândul fiecărui senzor */
+/* Fiecare rând de senzor (ex: Temperatura 24°C) */
 .tag-item {
     display: flex;
-    justify-content: space-between; /* Împinge eticheta la stânga și valoarea la dreapta */
+    justify-content: space-between; /* Împinge eticheta la stânga și cifra la dreapta */
     align-items: center;
-    background: #f8f9fa;
-    padding: 10px 15px;
-    border-radius: 6px;
-    width: 100%; /* Ocupă tot rândul disponibil */
-    cursor: pointer;
+    width: 100%;
+    background: #fff;
+    padding: 8px 12px;
+    border: 1px solid #eee;
+    border-radius: 5px;
 }
 
-/* Etichetele colorate (Temperatură, Umiditate etc.) */
+/* Eticheta colorată (ex: Temperatura Aer) */
 .label {
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    color: white;
-    font-weight: bold;
-    min-width: 130px; /* Le dăm o lățime fixă ca să fie aliniate frumos */
+    min-width: 130px; /* Îi dăm o lățime minimă ca să nu se strivească textul */
     text-align: center;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    white-space: nowrap; /* Împiedică textul să treacă pe două rânduri */
 }
 
+/* Valoarea (ex: 24°C) */
 .tag-item strong {
-    font-size: 1.1rem;
-    color: #333;
-    white-space: nowrap; /* Împiedică ruperea textului pe două rânduri */
+    font-size: 1rem;
+    margin-left: 10px;
 }
-
 /* WEATHER SECTION */
 .weather-content { display: flex; padding: 20px; gap: 20px; flex-wrap: wrap; }
 .weather-main-info { flex: 1; min-width: 200px; }
@@ -198,18 +196,18 @@ body {
 
 /* Asigură-te că sidebar-ul stă deasupra conținutului pe mobil */
 @media (max-width: 768px) {
+    /* Sidebar-ul pe mobil */
     .sidebar {
-        position: fixed; /* Schimbă din absolute în fixed dacă e cazul */
+        position: fixed; /* Trebuie să fie FIXED ca să stea peste restul paginii */
         left: -240px;
-        top: 0;
-        height: 100vh;
-        z-index: 9999; /* Valoare mare ca să fie deasupra tuturor */
-        transition: left 0.3s ease;
+        z-index: 9999;
     }
 
+    /* Când JavaScript adaugă clasa .active, bara glisează în ecran */
     .sidebar.active {
-        left: 0;
+        left: 0 !important;
     }
+}
 
 
     .sidebar.active {
