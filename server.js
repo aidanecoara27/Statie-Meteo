@@ -7,7 +7,8 @@ app.use(cors());
 app.use(express.json());
 
 // Linie CRITICA: Permite serverului să arate fișierele din folderul 'public'
-app.use(express.static('public'));
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 
 // 1. Conexiunea la baza de date
 // TEST TEMPORAR (nu lăsa așa pe termen lung din motive de securitate)
