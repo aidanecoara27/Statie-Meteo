@@ -25,7 +25,7 @@
             background-color: var(--bg-light); 
             height: 100vh; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Îngheață body-ul pentru a permite scroll doar în main-content */
+            overflow: hidden;
         }
 
         /* SIDEBAR */
@@ -35,9 +35,7 @@
             color: white; 
             height: 100vh;
             flex-shrink: 0; 
-            transition: width 0.3s ease;
-            display: flex;
-            flex-direction: column;
+            transition: all 0.3s ease;
             z-index: 1000;
         }
 
@@ -51,11 +49,9 @@
             display: flex; 
             align-items: center; 
             justify-content: space-between;
-            white-space: nowrap;
-            overflow: hidden;
         }
 
-        .sidebar-menu { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
         .sidebar-menu a { 
             display: flex; 
             align-items: center; 
@@ -68,15 +64,14 @@
         .sidebar-menu li.active { border-left: 4px solid var(--dashboard-green); background: rgba(255,255,255,0.05); }
         .sidebar-menu li.active a { color: white; }
         .sidebar-menu i { min-width: 30px; font-size: 18px; }
-        .sidebar.collapsed span { display: none; }
 
-        /* MAIN CONTENT - ZONA SCROLLABILĂ */
+        /* MAIN CONTENT */
         .main-content { 
             flex: 1; 
             display: flex;
             flex-direction: column;
             height: 100vh; 
-            overflow-y: auto; /* Aici se activează scroll-ul pe verticală */
+            overflow-y: auto; 
             min-width: 0; 
         }
 
@@ -88,22 +83,9 @@
             color: #666;
         }
 
-        .content-padding { padding: 20px; width: 100%; }
+        .content-padding { padding: 20px; }
 
-        /* BUTOANE ȘI FILTRE */
-        .btn-blue {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 20px;
-            display: inline-block;
-        }
-        .btn-blue:hover { background: #2980b9; }
-
+        /* FILTRE */
         .filters-container { 
             background: white; 
             padding: 20px; 
@@ -114,32 +96,21 @@
 
         .filter-row { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
         
-        .sensor-selector-container { 
-            display: flex; 
-            justify-content: flex-end; 
-            align-items: center; 
-            gap: 10px; 
-            margin-bottom: 20px;
+        .btn-blue {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
-        .sensor-icons { display: flex; gap: 8px; }
-        
-        .s-box { 
-            width: 32px; height: 32px; border-radius: 4px; border: none; 
-            color: white; cursor: pointer; display: flex; align-items: center; 
-            justify-content: center; transition: 0.2s; font-size: 14px;
-        }
-
-        .s-box.off { opacity: 0.2; filter: grayscale(1); }
-        .c-temp { background: #e74c3c; } .c-hum { background: #3498db; }
-        .c-pres { background: #f39c12; } .c-lux { background: #2ecc71; }
-        .c-soil { background: #795548; }
-
+        /* GRID GRAFICE */
         .charts-grid { 
             display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
+            grid-template-columns: repeat(2, 1fr); /* 2 coloane pe Laptop */
             gap: 20px; 
-            width: 100%;
         }
 
         .chart-card { 
@@ -147,16 +118,34 @@
             padding: 15px; 
             border-radius: 4px; 
             border: 1px solid var(--border-color); 
-            height: 400px; 
+            height: 350px; 
             display: flex;
             flex-direction: column;
         }
         
-        .chart-card.hidden { display: none; }
         .chart-title { font-size: 13px; font-weight: bold; color: #888; margin-bottom: 10px; text-transform: uppercase; }
-        canvas { flex: 1; width: 100% !important; height: 100% !important; }
 
-        @media (max-width: 1000px) { .charts-grid { grid-template-columns: 1fr; } }
+        /* RESPONSIVE DESIGN (PENTRU TELEFON) */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                left: -240px; /* Ascunde sidebar-ul pe mobil */
+            }
+            .sidebar.active {
+                left: 0; /* Îl arată când e activat */
+            }
+            .charts-grid { 
+                grid-template-columns: 1fr; /* 1 singură coloană pe mobil */
+            }
+            .filter-row {
+                flex-direction: column; /* Filtrele se pun unul sub altul */
+                align-items: stretch;
+            }
+            .filter-row button {
+                margin-left: 0 !important;
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -174,193 +163,51 @@
 
     <div class="main-content">
         <div class="top-nav">
+            <i class="fas fa-bars" id="mobile-menu-btn" style="display:none; cursor:pointer; margin-right:10px;"></i>
             <i class="fas fa-home"></i> > Statie Licenta > <b>Istoric Citiri</b>
         </div>
 
         <div class="content-padding">
             <div class="filters-container">
                 <div class="filter-row">
-                    <div style="display:flex; flex-direction:column; gap:5px;">
-                        <label style="font-size:12px; font-weight:bold;">De la</label>
-                        <input type="date" id="date-from" style="padding:8px; border:1px solid #ddd; border-radius:4px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:5px;">De la</label>
+                        <input type="date" id="date-from" style="width:100%; padding:8px; border:1px solid #ddd;">
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:5px;">
-                        <label style="font-size:12px; font-weight:bold;">Pana la</label>
-                        <input type="date" id="date-to" style="padding:8px; border:1px solid #ddd; border-radius:4px;">
+                    <div style="flex:1; min-width:150px;">
+                        <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:5px;">Pana la</label>
+                        <input type="date" id="date-to" style="width:100%; padding:8px; border:1px solid #ddd;">
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:5px;">
-                        <label style="font-size:12px; font-weight:bold;">Grupare</label>
-                        <select id="group-by" style="padding:8px; border:1px solid #ddd; border-radius:4px;">
-                            <option>Ora</option>
-                            <option>Zi</option>
-                        </select>
-                    </div>
-                    <button onclick="loadData()" style="background:#3498db; color:white; border:none; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; margin-left:auto;">
-                        <i class="fas fa-sync"></i> Actualizeaza Date
-                    </button>
-                </div>
-            </div>
-
-            <div class="actions-bar">
-                <button class="btn-blue" id="btn-raport">
-                    <i class="fas fa-file-pdf"></i> Generare Raport PDF Complet
-                </button>
-            </div>
-
-            <div class="sensor-selector-container">
-                <span style="font-size: 11px; font-weight: bold; color: #999;">FILTREAZA GRAFICE:</span>
-                <div class="sensor-icons">
-                    <button class="s-box c-temp" onclick="toggleChart('box-temp', this)"><i class="fas fa-thermometer-half"></i></button>
-                    <button class="s-box c-hum" onclick="toggleChart('box-hum', this)"><i class="fas fa-tint"></i></button>
-                    <button class="s-box c-pres" onclick="toggleChart('box-pres', this)"><i class="fas fa-compress-arrows-alt"></i></button>
-                    <button class="s-box c-lux" onclick="toggleChart('box-lux', this)"><i class="fas fa-sun"></i></button>
-                    <button class="s-box c-soil" onclick="toggleChart('box-soil', this)"><i class="fas fa-seedling"></i></button>
+                    <button class="btn-blue" style="margin-left:auto;">Actualizeaza</button>
                 </div>
             </div>
 
             <div class="charts-grid">
-                <div class="chart-card" id="box-temp"><div class="chart-title">Temperatura Aer (°C)</div><canvas id="chart-temp"></canvas></div>
-                <div class="chart-card" id="box-hum"><div class="chart-title">Umiditate Relativa (%)</div><canvas id="chart-hum"></canvas></div>
-                <div class="chart-card" id="box-pres"><div class="chart-title">Presiune Atmosferica (hPa)</div><canvas id="chart-pres"></canvas></div>
-                <div class="chart-card" id="box-lux"><div class="chart-title">Intensitate Luminoasa (lx)</div><canvas id="chart-lux"></canvas></div>
-                <div class="chart-card" id="box-soil"><div class="chart-title">Umiditate Sol (%)</div><canvas id="chart-soil"></canvas></div>
+                <div class="chart-card"><div class="chart-title">Temperatura</div><canvas id="chart-temp"></canvas></div>
+                <div class="chart-card"><div class="chart-title">Umiditate</div><canvas id="chart-hum"></canvas></div>
+                <div class="chart-card"><div class="chart-title">Presiune</div><canvas id="chart-pres"></canvas></div>
+                <div class="chart-card"><div class="chart-title">Luminozitate</div><canvas id="chart-lux"></canvas></div>
             </div>
-        </div> </div> <script>
-        // Toggle Sidebar
+        </div>
+    </div>
+
+    <script>
+        // Logica de toggle care știe dacă ești pe mobil sau laptop
         document.getElementById('toggle-sidebar').onclick = function() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            setTimeout(() => { Object.values(charts).forEach(c => c.resize()); }, 350);
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('active');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
         };
 
-        // Toggle Grafice
-        function toggleChart(boxId, btn) {
-            const box = document.getElementById(boxId);
-            box.classList.toggle('hidden');
-            btn.classList.toggle('off');
-        }
-
-        let charts = {};
-        async function loadData() {
-            try {
-                // Înlocuiește cu URL-ul tău real către API
-                const res = await fetch('/get-history');
-                const data = await res.json();
-                
-                const labels = data.map(d => {
-                    const dt = new Date(d.data_ora);
-                    return dt.getHours().toString().padStart(2,'0') + ":" + dt.getMinutes().toString().padStart(2,'0');
-                });
-
-                const render = (id, label, color, key) => {
-                    const canvas = document.getElementById(id);
-                    if (!canvas) return;
-                    const ctx = canvas.getContext('2d');
-                    if(charts[id]) charts[id].destroy();
-                    charts[id] = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: label,
-                                data: data.map(d => d[key]),
-                                borderColor: color,
-                                backgroundColor: color + '22',
-                                fill: true,
-                                tension: 0.4,
-                                pointRadius: 2
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { display: false } },
-                            scales: {
-                                y: { beginAtZero: false, grid: { color: '#f0f0f0' } },
-                                x: { grid: { display: false } }
-                            }
-                        }
-                    });
-                };
-
-                render('chart-temp', 'Temp', '#e74c3c', 'temperature');
-                render('chart-hum', 'Umiditate', '#3498db', 'humidity');
-                render('chart-pres', 'Presiune', '#f39c12', 'pressure');
-                render('chart-lux', 'Luminozitate', '#2ecc71', 'lux');
-                render('chart-soil', 'Umiditate Sol', '#795548', 'soil_moisture');
-
-            } catch (err) { console.error("Eroare incarcare date:", err); }
-        }
-
-        window.onload = () => {
-            document.getElementById('date-from').valueAsDate = new Date();
-            document.getElementById('date-to').valueAsDate = new Date();
-            loadData();
-        };
-
-        // --- COD GENERARE RAPORT PDF ---
-        document.getElementById('btn-raport').onclick = async function() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = doc.internal.pageSize.getWidth();
-            
-            const dataDeLa = document.getElementById('date-from').value || new Date().toLocaleDateString('ro-RO');
-            const dataPanaLa = document.getElementById('date-to').value || "Prezent";
-
-            const parametri = [
-                { nume: "Temperatura Aer", senzor: "BME280 / DHT22", id: "chart-temp" },
-                { nume: "Umiditate Relativa", senzor: "BME280 / DHT22", id: "chart-hum" },
-                { nume: "Presiune Atmosferica", senzor: "BME280", id: "chart-pres" },
-                { nume: "Intensitate Luminoasa", senzor: "BH1750", id: "chart-lux" },
-                { nume: "Umiditate Sol", senzor: "Capacitive Soil v1.2", id: "chart-soil" }
-            ];
-
-            parametri.forEach((param, index) => {
-                if (index > 0) doc.addPage();
-
-                doc.setFillColor(33, 37, 41);
-                doc.rect(0, 0, pageWidth, 30, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(16);
-                doc.setFont("helvetica", "bold");
-                doc.text(`RAPORT TEHNIC: ${param.nume.toUpperCase()}`, pageWidth / 2, 15, { align: 'center' });
-
-                doc.setTextColor(0, 0, 0);
-                doc.setFillColor(245, 245, 245);
-                doc.rect(15, 40, pageWidth - 30, 35, 'F');
-                doc.setFontSize(10);
-                doc.setFont("helvetica", "normal");
-                
-                doc.text(`Senzor utilizat: ${param.senzor}`, 20, 50);
-                doc.text(`Interval monitorizat: ${dataDeLa} - ${dataPanaLa}`, 20, 57);
-                doc.text(`Statie: SmartMeteo ID 1016`, 20, 64);
-
-                doc.setFont("helvetica", "bold");
-                doc.text(`Evolutie Grafica:`, 20, 85);
-                
-                const chartCanvas = document.getElementById(param.id);
-                if (chartCanvas) {
-                    try {
-                        const imgData = chartCanvas.toDataURL('image/png', 1.0);
-                        doc.addImage(imgData, 'PNG', 15, 90, pageWidth - 30, 80);
-                    } catch (e) {
-                        doc.text("Eroare la preluarea graficului.", 25, 100);
-                    }
-                }
-
-                doc.setFont("helvetica", "bold");
-                doc.text("Interpretare date:", 20, 190);
-                doc.setFont("helvetica", "normal");
-                const descriere = `Datele colectate pentru ${param.nume} indica o functionare stabila a sistemului. Graficul de mai sus reprezinta valorile brute transmise de microcontrolerul ESP32 catre baza de date si procesate in timp real.`;
-                const textSplit = doc.splitTextToSize(descriere, pageWidth - 40);
-                doc.text(textSplit, 20, 198);
-
-                doc.setFontSize(8);
-                doc.setTextColor(150, 150, 150);
-                doc.text(`Pagina ${index + 1} / ${parametri.length} | Generat la ${new Date().toLocaleString()}`, pageWidth / 2, 285, { align: 'center' });
-            });
-
-            doc.save(`Raport_SmartMeteo_${new Date().getTime()}.pdf`);
-        };
+        // Opțional: Închide sidebar-ul pe mobil când dai click în afara lui sau pe un link
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
