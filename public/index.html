@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
+    <script>
+        if (localStorage.getItem("logged") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartMeteo - Dashboard</title>
@@ -123,9 +128,6 @@
 <script>
         // Logică Sidebar
 
-if (!localStorage.getItem("logged")) {
-    window.location.href = "login.html";
-}
         document.getElementById('toggle-btn').onclick = () => {
     const sidebar = document.getElementById('sidebar');
     
