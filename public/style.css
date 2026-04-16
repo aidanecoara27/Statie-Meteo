@@ -115,40 +115,42 @@ body {
 }
 
 /* SENZORI TAGS */
-/* Containerul care ține toți senzorii */
 .sensor-tags {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 10px;
+    gap: 12px;
+    padding: 15px;
 }
 
-/* Fiecare rând de senzor (ex: Temperatura 24°C) */
+/* Repară rândul fiecărui senzor */
 .tag-item {
     display: flex;
-    justify-content: space-between; /* Împinge eticheta la stânga și cifra la dreapta */
+    justify-content: space-between; /* Împinge eticheta la stânga și valoarea la dreapta */
     align-items: center;
-    width: 100%;
-    background: #fff;
-    padding: 8px 12px;
-    border: 1px solid #eee;
-    border-radius: 5px;
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 6px;
+    width: 100%; /* Ocupă tot rândul disponibil */
+    cursor: pointer;
 }
 
-/* Eticheta colorată (ex: Temperatura Aer) */
+/* Etichetele colorate (Temperatură, Umiditate etc.) */
 .label {
-    min-width: 130px; /* Îi dăm o lățime minimă ca să nu se strivească textul */
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: white;
+    font-weight: bold;
+    min-width: 130px; /* Le dăm o lățime fixă ca să fie aliniate frumos */
     text-align: center;
-    padding: 4px 8px;
-    font-size: 0.8rem;
-    white-space: nowrap; /* Împiedică textul să treacă pe două rânduri */
 }
 
-/* Valoarea (ex: 24°C) */
 .tag-item strong {
-    font-size: 1rem;
-    margin-left: 10px;
+    font-size: 1.1rem;
+    color: #333;
+    white-space: nowrap; /* Împiedică ruperea textului pe două rânduri */
 }
+
 /* WEATHER SECTION */
 .weather-content { display: flex; padding: 20px; gap: 20px; flex-wrap: wrap; }
 .weather-main-info { flex: 1; min-width: 200px; }
