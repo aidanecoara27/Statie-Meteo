@@ -71,6 +71,18 @@
         .sidebar-menu i { min-width: 30px; font-size: 18px; }
         .sidebar.collapsed span { display: none; }
 
+        .btn-blue {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+    .btn-blue:hover { background: #2980b9; }
+
         /* MAIN CONTENT - REPARAT */
         .main-content { 
             flex: 1; /* Ocupă tot spațiul rămas la dreapta sidebar-ului */
@@ -149,17 +161,7 @@
         @media (max-width: 1000px) { .charts-grid { grid-template-columns: 1fr; } }
 
 
-    .btn-blue {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-    .btn-blue:hover { background: #2980b9; }
+    
     </style>
 </head>
 <body>
@@ -175,10 +177,6 @@
         </ul>
     </div>
 
-    <div class="main-content">
-        <div class="top-nav">
-            <i class="fas fa-home"></i> > Statie Licenta > <b>Istoric Citiri</b>
-        </div>
 
         <div class="content-padding">
             <div class="filters-container">
