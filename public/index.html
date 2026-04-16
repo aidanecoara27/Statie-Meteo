@@ -3,247 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - SmartMeteo</title>
+    <title>SmartMeteo - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* RECONSTRUCȚIE ASPECT ORIGINAL */
         :root {
-            --sidebar-width: 240px;
-            --sidebar-collapsed: 70px;
             --sidebar-bg: #212529;
-            --dashboard-green: #72b06e;
-            --bg-light: #f4f7f6;
-            --border-color: #dee2e6;
-            --text-main: #333;
+            --header-bg: #ffffff;
+            --bg-body: #f8f9fa;
+            --green-accent: #72b06e;
         }
 
-        * { box-sizing: border-box; }
-
-        body { 
-            margin: 0; 
-            display: flex; 
-            background-color: var(--bg-light); 
-            height: 100vh; 
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            overflow: hidden; /* Blocăm scroll-ul pe body pentru a-l activa pe main-content */
-        }
-
-        /* SIDEBAR STYLES */
-        .sidebar { 
-            width: var(--sidebar-width); 
-            background-color: var(--sidebar-bg); 
-            color: white; 
+        body {
+            margin: 0;
+            display: flex;
+            background-color: var(--bg-body);
             height: 100vh;
-            flex-shrink: 0; 
-            transition: all 0.3s ease;
-            z-index: 1000;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Blocăm body-ul ca să nu se miște sidebar-ul */
         }
 
-        .sidebar.collapsed { width: var(--sidebar-collapsed); }
-
-        .sidebar-header { 
-            padding: 20px; 
-            font-size: 20px; 
-            font-weight: bold; 
-            border-bottom: 1px solid #3d4145; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
-        .sidebar-menu a { 
-            display: flex; 
-            align-items: center; 
-            padding: 15px 20px; 
-            color: #adb5bd; 
-            text-decoration: none; 
-            white-space: nowrap;
-            transition: 0.2s;
-        }
-
-        .sidebar-menu li.active { border-left: 4px solid var(--dashboard-green); background: rgba(255,255,255,0.05); }
-        .sidebar-menu li.active a { color: white; }
-        .sidebar-menu i { min-width: 30px; font-size: 18px; }
-        .sidebar.collapsed span { display: none; }
-
-        /* MAIN CONTENT AREA */
-        .main-content { 
-            flex: 1; 
+        /* SIDEBAR ORIGINAL */
+        .sidebar {
+            width: 70px; /* Varianta restrânsă din poze */
+            background-color: var(--sidebar-bg);
+            color: white;
             display: flex;
             flex-direction: column;
-            height: 100vh; 
-            overflow-y: auto; /* Activează scroll-ul aici */
-            min-width: 0; 
-        }
-
-        .top-nav { 
-            background: white; 
-            padding: 15px 20px; 
-            border-bottom: 1px solid var(--border-color); 
-            font-size: 14px; 
-            color: #666;
-            display: flex;
             align-items: center;
+            padding-top: 20px;
+            flex-shrink: 0;
         }
 
-        .content-padding { padding: 25px; }
-
-        /* DASHBOARD CARDS */
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
-            gap: 20px; 
+        .sidebar i {
+            font-size: 20px;
             margin-bottom: 30px;
+            color: #adb5bd;
+            cursor: pointer;
         }
 
-        .stat-card {
+        .sidebar i.active { color: white; }
+
+        /* MAIN CONTENT - REPARAT PENTRU SCROLL */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto; /* DOAR zona asta are scroll */
+        }
+
+        .header {
             background: white;
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+            padding: 15px 25px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border-bottom: 1px solid #dee2e6;
         }
 
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+        .container { padding: 20px; }
+
+        /* CARDURILE TALE ORIGINALE */
+        .card-meteo {
+            background: white;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: var(--green-accent);
             color: white;
-            margin-right: 20px;
+            padding: 10px 15px;
+            font-weight: bold;
         }
 
-        .stat-info h3 { margin: 0; font-size: 12px; color: #888; text-transform: uppercase; }
-        .stat-info p { margin: 5px 0 0; font-size: 24px; font-weight: bold; color: var(--text-main); }
-
-        /* Colors for icons */
-        .bg-temp { background: #e74c3c; }
-        .bg-hum { background: #3498db; }
-        .bg-pres { background: #f39c12; }
-        .bg-lux { background: #2ecc71; }
-        .bg-soil { background: #795548; }
-
-        /* RESPONSIVE MEDIA QUERIES */
-        @media (max-width: 768px) {
-            .sidebar {
-                position: absolute;
-                left: -240px; /* Ascuns pe mobil implicit */
-            }
-            .sidebar.active {
-                left: 0; /* Apare când dai click pe meniu */
-            }
-            .content-padding { padding: 15px; }
-            .stat-card { padding: 15px; }
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
         }
+
+        .sensor-item {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        /* Etichetele colorate din stânga valorii */
+        .label-box {
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 15px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .valoare { font-size: 18px; font-weight: bold; }
+
+        .bg-red { background: #d9534f; }
+        .bg-blue { background: #5bc0de; }
+        .bg-brown { background: #8d6e63; }
+        .bg-orange { background: #f0ad4e; }
+
+        /* OpenWeather Section */
+        .weather-large { padding: 20px; }
+        .temp-main { font-size: 48px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <span>SmartMeteo</span> 
-            <i class="fas fa-bars" id="toggle-sidebar" style="cursor:pointer;"></i>
-        </div>
-        <ul class="sidebar-menu">
-            <li class="active"><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-            <li><a href="istoric.html"><i class="fas fa-chart-line"></i> <span>Istoric</span></a></li>
-        </ul>
+    <div class="sidebar">
+        <i class="fas fa-bars"></i>
+        <i class="fas fa-tachometer-alt active"></i>
+        <i class="fas fa-chart-line"></i>
     </div>
 
     <div class="main-content">
-        <div class="top-nav">
-            <i class="fas fa-home" style="margin-right: 8px;"></i> > <b>Statie Monitorizare Live</b>
+        <div class="header">
+            <h2 style="margin:0; font-size:18px;">Statie Meteo Licenta</h2>
+            <button style="background:#6f42c1; color:white; border:none; padding:8px 15px; border-radius:4px;">
+                <i class="fas fa-chart-line"></i> Citiri senzori
+            </button>
         </div>
 
-        <div class="content-padding">
-            <h2 style="margin-top: 0; margin-bottom: 25px;">Date Senzori (Timp Real)</h2>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon bg-temp"><i class="fas fa-thermometer-half"></i></div>
-                    <div class="stat-info">
-                        <h3>Temperatura</h3>
-                        <p id="live-temp">-- °C</p>
-                    </div>
+        <div class="container">
+            <div class="card-meteo">
+                <div class="card-header">Ultima citire: Statie Meteo - Licenta</div>
+                <div style="padding:10px 20px; color:#666; font-size:13px; border-bottom:1px solid #eee;">
+                    Data si ora: 4/16/2026, 7:44:27 PM
                 </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon bg-hum"><i class="fas fa-tint"></i></div>
-                    <div class="stat-info">
-                        <h3>Umiditate</h3>
-                        <p id="live-hum">-- %</p>
+                <div class="sensor-grid">
+                    <div class="sensor-item">
+                        <div class="label-box bg-red">Temperatură Aer</div>
+                        <div class="valoare">22.62 °C</div>
                     </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon bg-pres"><i class="fas fa-compress-arrows-alt"></i></div>
-                    <div class="stat-info">
-                        <h3>Presiune</h3>
-                        <p id="live-pres">-- hPa</p>
+                    <div class="sensor-item">
+                        <div class="label-box bg-blue">Umiditate</div>
+                        <div class="valoare">-- %</div>
                     </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon bg-lux"><i class="fas fa-sun"></i></div>
-                    <div class="stat-info">
-                        <h3>Luminozitate</h3>
-                        <p id="live-lux">-- lx</p>
+                    <div class="sensor-item">
+                        <div class="label-box bg-orange">Presiune Atmosferică</div>
+                        <div class="valoare">1007.73 hPa</div>
                     </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon bg-soil"><i class="fas fa-seedling"></i></div>
-                    <div class="stat-info">
-                        <h3>Umiditate Sol</h3>
-                        <p id="live-soil">-- %</p>
+                    <div class="sensor-item">
+                        <div class="label-box bg-brown">Umiditate Sol</div>
+                        <div class="valoare">4 %</div>
                     </div>
                 </div>
             </div>
 
-            <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
-                <h4>Status Statie: <span style="color: #2ecc71;">ONLINE</span></h4>
-                <p style="color: #666; font-size: 13px;">Ultima actualizare: <span id="last-update">--:--:--</span></p>
+            <div class="card-meteo">
+                <div class="card-header">
+                    <i class="fas fa-bolt"></i> Meteo OpenWeatherMap
+                </div>
+                <div class="weather-large">
+                    <h3 style="margin:0;">București</h3>
+                    <p style="color:var(--green-accent); font-weight:bold; text-transform:uppercase;">Cer Senin</p>
+                    <div style="display:flex; align-items:center;">
+                        <span class="temp-main">18°C</span>
+                        <i class="fas fa-sun" style="font-size:40px; color:#f1c40f; margin-left:20px;"></i>
+                    </div>
+                    <p>Presiune: <b>1018 mb</b></p>
+                    <p>Vânt: <b>3.6 km/h</b></p>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Logica de Toggle Sidebar (Laptop vs Mobil)
-        document.getElementById('toggle-sidebar').onclick = function() {
-            const sidebar = document.getElementById('sidebar');
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('active');
-            } else {
-                sidebar.classList.toggle('collapsed');
-            }
-        };
-
-        // Simulare sau fetch date live
-        async function fetchLiveValues() {
-            try {
-                // Înlocuiește cu endpoint-ul tău real (ex: /get-latest)
-                // const res = await fetch('/get-latest');
-                // const data = await res.json();
-                
-                // Exemplu actualizare elemente (folosind date dummy momentan)
-                document.getElementById('live-temp').innerText = "24.5 °C";
-                document.getElementById('live-hum').innerText = "55 %";
-                document.getElementById('last-update').innerText = new Date().toLocaleTimeString();
-            } catch (err) {
-                console.log("Eroare la preluarea datelor live.");
-            }
-        }
-
-        // Pornim actualizarea la fiecare 5 secunde
-        setInterval(fetchLiveValues, 5000);
-        window.onload = fetchLiveValues;
-    </script>
 </body>
 </html>
