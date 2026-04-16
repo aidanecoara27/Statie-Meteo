@@ -95,7 +95,15 @@ body {
     grid-template-columns: 1.8fr 1fr;
     gap: 20px;
 }
+.dashboard-row {
+    display: flex;
+    gap: 20px;
+}
 
+/* fiecare ocupă jumătate */
+.dashboard-row .panel {
+    flex: 1;
+}
 .panel {
     background: white;
     border: 1px solid var(--border-color);
@@ -104,11 +112,16 @@ body {
     overflow: hidden;
 }
 
-.panel-header-green, .panel-header-weather {
-    background: var(--dashboard-green) !important;
+.panel-header-green,
+.panel-header-weather {
+    background: #72b06e;
     color: white;
     padding: 12px 15px;
-    font-weight: bold;
+
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    font-weight: 600; /* 🔥 IMPORTANT */
+    font-size: 16px;  /* 🔥 IMPORTANT */
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -239,6 +252,10 @@ body {
         display: flex;
         flex-direction: column; /* Pune panourile unul sub altul pe iPhone */
         gap: 20px;
+    }
+    
+    .dashboard-row {
+        flex-direction: column;
     }
     
     .col-left, .col-right {

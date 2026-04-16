@@ -1,180 +1,185 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartMeteo - Dashboard</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- 🔒 PROTECTIE LOGIN -->
     <script>
         if (localStorage.getItem("logged") !== "true") {
             window.location.href = "login.html";
         }
     </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartMeteo - Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .dashboard-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .dashboard-row .panel {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-row {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <span>SmartMeteo</span>
-            <i class="fas fa-bars" id="toggle-btn" style="cursor:pointer;"></i>
-        </div>
-        <ul class="sidebar-menu">
-            <li class="active">
-                <a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
-            </li>
-            <li>
-                <a href="istoric.html"><i class="fas fa-chart-line"></i> <span>Istoric</span></a>
-            </li>
-        </ul>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <span>SmartMeteo</span>
+        <i class="fas fa-bars" id="toggle-btn"></i>
     </div>
 
-    <div class="main-content">
-        <header class="top-nav">
-            <div class="breadcrumb"><strong>Stație Meteo Licenta</strong></div>
-            <div class="btn-group">
-                <button class="btn btn-purple" onclick="window.location.href='istoric.html'"><i class="fas fa-chart-line"></i> Citiri senzori</button>
+    <ul class="sidebar-menu">
+        <li class="active">
+            <a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+        </li>
+        <li>
+            <a href="istoric.html"><i class="fas fa-chart-line"></i> <span>Istoric</span></a>
+        </li>
+        <li>
+            <a href="statistica.html"><i class="fas fa-table"></i> <span>Statistica</span></a>
+        </li>
+    </ul>
+</div>
 
+<div class="main-content">
+
+<header class="top-nav">
+    <strong>Statie Meteo Licenta</strong>
+    <button onclick="logout()" class="btn btn-red">Logout</button>
+</header>
+
+<div class="content-padding">
+<div class="dashboard-wrapper">
+
+<!-- 🔥 NOU: layout pe rand -->
+<div class="dashboard-row">
+
+    <!-- LEFT -->
+    <div class="panel">
+        <div class="panel-header-green">Ultima citire: Statie Meteo - Licență</div>
+        <div class="panel-body">
+
+            <p>Data si ora: <span id="time">--</span></p>
+
+            <div class="sensor-tags">
+                <div class="tag-item">
+                    <span class="label label-red">Temperatură Aer</span>
+                    <strong id="val-temp">--</strong>
+                </div>
+
+                <div class="tag-item">
+                    <span class="label label-blue">Umiditate Relativă</span>
+                    <strong id="val-hum">--</strong>
+                </div>
+
+                <div class="tag-item">
+                    <span class="label label-brown">Presiune</span>
+                    <strong id="val-pres">--</strong>
+                </div>
+
+                <div class="tag-item">
+                    <span class="label label-green">Luminozitate</span>
+                    <strong id="val-lux">--</strong>
+                </div>
+
+                <div class="tag-item">
+                    <span class="label label-soil">Umiditate Sol</span>
+                    <strong id="val-soil">--</strong>
+                </div>
             </div>
-        </header>
 
-        <div class="content-padding">
-            <div class="dashboard-wrapper">
-                <div class="dashboard-grid">
-                    
-                    <div class="col-left">
-                        <div class="panel">
-                            <div class="panel-header-green">Ultima citire: Stație Meteo - Licență</div>
-                            <div class="panel-body">
-                                <p class="timestamp" style="padding: 10px 15px; margin: 0; font-size: 0.9rem; color: #666;">
-                                    Data și ora: <span id="time">--</span>
-                                </p>
-                                <div class="sensor-tags">
-                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
-                                        <span class="label label-red">Temperatură Aer</span> <strong id="val-temp">--</strong>
-                                    </div>
-                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
-                                        <span class="label label-blue">Umiditate Relativă</span> <strong id="val-hum">--</strong>
-                                    </div>
-                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
-                                        <span class="label label-brown">Presiune Atmosferică</span> <strong id="val-pres">--</strong>
-                                    </div>
-                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
-                                        <span class="label label-green">Intensitate Luminoasă</span> <strong id="val-lux">--</strong>
-                                    </div>
-                                    <div class="tag-item" onclick="window.location.href='istoric.html'">
-                                        <span class="label label-soil">Umiditate Sol</span> <strong id="val-soil">--</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        </div>
+    </div>
 
-                        <div class="panel">
-                            <div class="panel-header-weather">
-                                <div class="weather-title"><i class="fas fa-bolt"></i> Meteo OpenWeatherMap</div>
-                                <div class="weather-tabs">
-                                    <span class="tab active">Condiții curente</span>
-                                    
-                                </div>
-                            </div>
-                            <div class="weather-content">
-                                <div class="weather-main-info">
-                                    <p class="location-name" style="font-weight: bold; font-size: 1.2rem; margin: 0;">București</p>
-                                    <p class="weather-condition" id="open-desc" style="color: #72b06e; font-weight: bold;">NORI ÎMPRĂȘTIAȚI</p>
-                                    <div class="temp-display" style="display: flex; align-items: center; gap: 15px;">
-                                        <h1 id="extern-temp" style="margin: 0; font-size: 3rem;">12°C</h1>
-                                        <i class="fas fa-sun weather-big-icon" style="font-size: 2.5rem; color: #f39c12;"></i>
-                                    </div>
-                                    <div class="weather-bottom-stats" style="margin-top: 10px;">
-                                        <p>Presiune: <strong id="open-pres">1009 mb</strong></p>
-                                        <p>Vânt: <strong id="open-wind-text">1.54 km/h</strong></p>
-                                    </div>
-                                </div>
-                                
-                                <div class="weather-indicators">
-                                    <div class="indicator-item">
-                                        <span class="indicator-label">Viteză Vânt</span>
-                                        <div class="gauge-container">
-                                            <div class="gauge-value" id="open-wind">1.54</div>
-                                            <div class="gauge-unit">km/h</div>
-                                        </div>
-                                    </div>
-                                    <div class="indicator-item">
-                                        <span class="indicator-label">Umiditate</span>
-                                        <div class="gauge-circle">
-                                            <span id="open-hum-percent">84%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> <div class="col-right">
-                        <div class="panel">
-                            <div class="panel-header-green">Detalii Echipament</div>
-                            <div class="panel-body">
-                                <style>
-                                    .details-table { width: 100%; border-collapse: collapse; }
-                                    .details-table td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-                                    .details-table tr:last-child td { border: none; }
-                                </style>
-                                <table class="details-table">
-                                    <tr><td>Versiune protocol</td><td>v3</td></tr>
-                                    <tr><td>Denumire</td><td>Stație Licență</td></tr>
-                                    <tr><td>Stație ID</td><td>1016</td></tr>
-                                    <tr><td>Activ</td><td><span style="color: green; font-weight: bold;">Da</span></td></tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div> </div> </div> </div> </div> 
+    <!-- RIGHT -->
+    <div class="panel">
+        <div class="panel-header-green">Meteo OpenWeatherMap</div>
+
+        <div class="panel-body">
+
+            <h3>București</h3>
+            <p id="open-desc">--</p>
+
+            <h1 id="extern-temp">--°C</h1>
+
+            <p>Presiune: <span id="open-pres">--</span></p>
+            <p>Vânt: <span id="open-wind-text">--</span></p>
+            <p>Umiditate: <span id="open-hum-percent">--</span></p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+</div>
+
 <script>
-        // Logică Sidebar
-
-        document.getElementById('toggle-btn').onclick = () => {
-    const sidebar = document.getElementById('sidebar');
-    
-    // Verificăm dacă suntem pe mobil
-    if (window.innerWidth <= 768) {
-        // Pe mobil activăm/dezactivăm clasa "active" (care mută sidebar-ul de la -240px la 0px)
-        sidebar.classList.toggle('active');
-    } else {
-        // Pe laptop folosim funcția ta originală de "collapsed"
-        sidebar.classList.toggle('collapsed');
-    }
+document.getElementById('toggle-btn').onclick = () => {
+    document.getElementById('sidebar').classList.toggle('collapsed');
 };
 
-        // Fetch date senzori locali
-        async function updateLocalData() {
-            try {
-                const res = await fetch('/get-latest-data');
-                const d = await res.json();
-                document.getElementById('val-temp').innerText = (d.temperature || "--") + " °C";
-                document.getElementById('val-hum').innerText = (d.humidity || "--") + " %";
-                document.getElementById('val-pres').innerText = (d.pressure || "--") + " hPa";
-                document.getElementById('val-lux').innerText = (d.lux || "--") + " lx";
-                if(d.soil_moisture !== undefined) document.getElementById('val-soil').innerText = d.soil_moisture + " %";
-                document.getElementById('time').innerText = new Date().toLocaleString();
-            } catch(e) { console.error("Eroare senzori:", e); }
-        }
+function logout() {
+    localStorage.removeItem("logged");
+    window.location.href = "login.html";
+}
 
-        // Fetch OpenWeather
-        async function updateExternalWeather() {
-            try {
-                const res = await fetch('/get-external-weather'); 
-                const d = await res.json();
-                document.getElementById('extern-temp').innerText = Math.round(d.main.temp) + "°C";
-                document.getElementById('open-desc').innerText = d.weather[0].description.toUpperCase();
-                document.getElementById('open-pres').innerText = d.main.pressure + " mb";
-                document.getElementById('open-wind').innerText = d.wind.speed;
-                document.getElementById('open-wind-text').innerText = d.wind.speed + " km/h";
-                document.getElementById('open-hum-percent').innerText = d.main.humidity + "%";
-            } catch(e) { console.error("Eroare meteo ext:", e); }
-        }
-        
-        setInterval(updateLocalData, 3000);
-        setInterval(updateExternalWeather, 900000);
-        updateLocalData();
-        updateExternalWeather();
+// LOCAL DATA
+async function updateLocalData() {
+    try {
+        const res = await fetch('/get-latest-data');
+        const d = await res.json();
 
-  
-    </script>
+        document.getElementById('val-temp').innerText = d.temperature + " °C";
+        document.getElementById('val-hum').innerText = d.humidity + " %";
+        document.getElementById('val-pres').innerText = d.pressure + " hPa";
+        document.getElementById('val-lux').innerText = d.lux + " lx";
+        document.getElementById('val-soil').innerText = d.soil_moisture + " %";
+
+        document.getElementById('time').innerText = new Date().toLocaleString();
+
+    } catch(e) {
+        console.error(e);
+    }
+}
+
+// EXTERNAL WEATHER
+async function updateExternalWeather() {
+    try {
+        const res = await fetch('/get-external-weather');
+        const d = await res.json();
+
+        document.getElementById('extern-temp').innerText = Math.round(d.main.temp) + "°C";
+        document.getElementById('open-desc').innerText = d.weather[0].description;
+        document.getElementById('open-pres').innerText = d.main.pressure + " mb";
+        document.getElementById('open-wind-text').innerText = d.wind.speed + " km/h";
+        document.getElementById('open-hum-percent').innerText = d.main.humidity + "%";
+
+    } catch(e) {
+        console.error(e);
+    }
+}
+
+setInterval(updateLocalData, 3000);
+setInterval(updateExternalWeather, 900000);
+
+updateLocalData();
+updateExternalWeather();
+</script>
+
 </body>
 </html>
