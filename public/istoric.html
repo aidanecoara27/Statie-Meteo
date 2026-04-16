@@ -21,13 +21,12 @@
         * { box-sizing: border-box; }
 
         body { 
-            margin: 0; 
-            display: flex; 
-            background-color: var(--bg-light); 
-            height: 100vh; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-        }
+    margin: 0; 
+    display: flex; 
+    background-color: var(--bg-light); 
+    min-height: 100vh; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
         /* SIDEBAR */
         .sidebar { 
@@ -85,13 +84,13 @@
 
         /* MAIN CONTENT - REPARAT */
         .main-content { 
-            flex: 1; /* Ocupă tot spațiul rămas la dreapta sidebar-ului */
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow-y: auto;
-            min-width: 0; /* Important pentru flexbox */
-        }
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Păstrează height aici pentru a activa scroll-ul intern */
+    overflow-y: auto; 
+    min-width: 0; 
+}
 
         .top-nav { 
             background: white; 
