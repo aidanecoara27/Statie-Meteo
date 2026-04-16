@@ -102,16 +102,19 @@ app.post('/login', (req, res) => {
 
 // RUTA: Trimite ultimele 20 de înregistrări pentru grafic
 app.get('/get-history', (req, res) => {
-    // Folosim SELECT * pentru a lua toate datele + formatăm ora pentru grafic
-    const sql = "SELECT *, DATE_FORMAT(data_ora, '%H:%i:%s') as ora FROM istoric_meteo ORDER BY id DESC LIMIT 20";
-    
+    const range = req.query.range;
+
+    let sql;
+
+    if(range === "day")
+        sql = "SELECT * FROM istoric_meteo WHERE data_ora >= NOW() - INTERVAL 1 DAY";
+    else if(range === "week")
+        sql = "SELECT * FROM istoric_meteo WHERE data_ora >= NOW() - INTERVAL 7 DAY";
+    else
+        sql = "SELECT * FROM istoric_meteo WHERE data_ora >= NOW() - INTERVAL 1 MONTH";
+
     db.query(sql, (err, results) => {
-        if (err) {
-            console.error("Eroare la preluare istoric:", err);
-            return res.status(500).json(err);
-        }
-        // Trimitem datele inversate (cele mai vechi la stânga, cele mai noi la dreapta)
-        res.json(results.reverse());
+        res.json(results);
     });
 });
 

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>Statistica Descriptiva</title>
+<link rel="stylesheet" href="style.css">
+
+<script>
+if (localStorage.getItem("logged") !== "true") {
+    window.location.href = "login.html";
+}
+</script>
+
+<style>
+.table-container {
+    background: white;
+    padding: 20px;
+    border-radius: 6px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+th {
+    background: #72b06e;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="main-content">
+<div class="content-padding">
+
+<h2>Statistica Descriptiva</h2>
+
+<select id="range">
+    <option value="day">1 zi</option>
+    <option value="week">1 saptamana</option>
+    <option value="month">1 luna</option>
+</select>
+
+<button onclick="loadStats()">Calculeaza</button>
+
+<div class="table-container">
+<table>
+<tr><th>Parametru</th><th>Valoare</th></tr>
+
+<tr><td>Mean</td><td id="mean"></td></tr>
+<tr><td>Standard Error</td><td id="se"></td></tr>
+<tr><td>Median</td><td id="median"></td></tr>
+<tr><td>Mode</td><td id="mode"></td></tr>
+<tr><td>Standard Deviation</td><td id="std"></td></tr>
+<tr><td>Variance</td><td id="var"></td></tr>
+<tr><td>Kurtosis</td><td id="kurt"></td></tr>
+<tr><td>Skewness</td><td id="skew"></td></tr>
+<tr><td>Range</td><td id="rangeVal"></td></tr>
+<tr><td>Minimum</td><td id="min"></td></tr>
+<tr><td>Maximum</td><td id="max"></td></tr>
+<tr><td>Sum</td><td id="sum"></td></tr>
+<tr><td>Count</td><td id="count"></td></tr>
+<tr><td>Confidence Level (95%)</td><td id="conf"></td></tr>
+
+</table>
+</div>
+
+</div>
+</div>
+
+<script>
+function calcStats(values) {
+    const n = values.length;
+    const sum = values.reduce((a,b)=>a+b,0);
+    const mean = sum / n;
+
+    const sorted = [...values].sort((a,b)=>a-b);
+    const median = sorted[Math.floor(n/2)];
+
+    const variance = values.reduce((a,b)=>a+(b-mean)**2,0)/n;
+    const std = Math.sqrt(variance);
+
+    const se = std / Math.sqrt(n);
+
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+
+    const range = max - min;
+
+    // MODE
+    const freq = {};
+    let mode = values[0], maxCount = 0;
+    values.forEach(v=>{
+        freq[v] = (freq[v]||0)+1;
+        if(freq[v]>maxCount){
+            maxCount = freq[v];
+            mode = v;
+        }
+    });
+
+    // SKEWNESS
+    const skew = values.reduce((a,b)=>a+((b-mean)/std)**3,0)/n;
+
+    // KURTOSIS
+    const kurt = values.reduce((a,b)=>a+((b-mean)/std)**4,0)/n - 3;
+
+    const conf = (1.96 * se).toFixed(2);
+
+    return {mean,se,median,mode,std,variance,kurt,skew,range,min,max,sum,count:n,conf};
+}
+
+async function loadStats() {
+    const range = document.getElementById("range").value;
+
+    const res = await fetch(`/get-history?range=${range}`);
+    const data = await res.json();
+
+    const values = data.map(d=>parseFloat(d.temperature));
+
+    const s = calcStats(values);
+
+    document.getElementById("mean").innerText = s.mean.toFixed(2);
+    document.getElementById("se").innerText = s.se.toFixed(2);
+    document.getElementById("median").innerText = s.median.toFixed(2);
+    document.getElementById("mode").innerText = s.mode;
+    document.getElementById("std").innerText = s.std.toFixed(2);
+    document.getElementById("var").innerText = s.variance.toFixed(2);
+    document.getElementById("kurt").innerText = s.kurt.toFixed(2);
+    document.getElementById("skew").innerText = s.skew.toFixed(2);
+    document.getElementById("rangeVal").innerText = s.range.toFixed(2);
+    document.getElementById("min").innerText = s.min;
+    document.getElementById("max").innerText = s.max;
+    document.getElementById("sum").innerText = s.sum.toFixed(2);
+    document.getElementById("count").innerText = s.count;
+    document.getElementById("conf").innerText = "± " + s.conf;
+}
+</script>
+
+</body>
+</html>
