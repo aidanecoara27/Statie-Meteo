@@ -97,13 +97,12 @@ body {
 .dashboard-row {
     display: flex;
     gap: 20px;
-    align-items: stretch; /* 🔥 cheia */
+    flex-wrap: nowrap; /* 🔥 IMPORTANT */
 }
 
 .dashboard-row .panel {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    width: 50% !important; /* 🔥 CHEIA */
+    margin-bottom: 0;
 }
 .panel {
     background: white;
@@ -170,22 +169,62 @@ body {
 }
 
 /* WEATHER SECTION */
-.weather-content { display: flex; padding: 20px; gap: 20px; flex-wrap: wrap; }
-.weather-main-info { flex: 1; min-width: 200px; }
-.temp-display h1 { font-size: 3rem; margin: 10px 0; }
-.weather-indicators { display: flex; gap: 20px; flex: 1; justify-content: center; }
-.gauge-circle, .gauge-container {
-    width: 90px; height: 90px;
-    border: 6px solid #3498db;
-    border-radius: 50%;
+.weather-content {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
+    padding: 20px;
+}
+
+.weather-main-info {
+    flex: 1;
+}
+
+.location-name {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.weather-condition {
+    color: #72b06e;
     font-weight: bold;
 }
-.gauge-container { border-color: #e74c3c; }
 
+.temp-display {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.weather-big-icon {
+    font-size: 40px;
+    color: orange;
+}
+
+.weather-indicators {
+    display: flex;
+    gap: 30px;
+}
+
+.indicator-item {
+    text-align: center;
+}
+
+.gauge-circle, .gauge-container {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 6px solid #3498db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-weight: bold;
+}
+
+.gauge-container {
+    border-color: #e74c3c;
+}
 /* 5. ISTORIC LAYOUT (PAGINA CU GRAFICE) */
 .charts-grid {
     display: grid;
@@ -251,6 +290,16 @@ body {
     .weather-indicators {
         flex-direction: column; /* Indicatorii de vânt/umiditate se pun vertical */
         align-items: center;
+    }
+
+    .weather-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .weather-indicators {
+        flex-direction: column;
     }
 
     .dashboard-grid {

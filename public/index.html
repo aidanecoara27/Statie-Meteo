@@ -106,21 +106,49 @@
 
     <!-- RIGHT -->
     <div class="panel">
-        <div class="panel-header-green">Meteo OpenWeatherMap</div>
+    <div class="panel-header-weather">
+        <div><i class="fas fa-bolt"></i> Meteo OpenWeatherMap</div>
+        <div>Conditii curente Istoric</div>
+    </div>
 
-        <div class="panel-body">
+    <div class="weather-content">
 
-            <h3>București</h3>
-            <p id="open-desc">--</p>
+        <!-- STANGA -->
+        <div class="weather-main-info">
+            <p class="location-name">București</p>
+            <p class="weather-condition" id="open-desc">--</p>
 
-            <h1 id="extern-temp">--°C</h1>
+            <div class="temp-display">
+                <h1 id="extern-temp">--°C</h1>
+                <i class="fas fa-sun weather-big-icon"></i>
+            </div>
 
-            <p>Presiune: <span id="open-pres">--</span></p>
-            <p>Vânt: <span id="open-wind-text">--</span></p>
-            <p>Umiditate: <span id="open-hum-percent">--</span></p>
+            <p>Presiune: <strong id="open-pres">--</strong></p>
+            <p>Vânt: <strong id="open-wind-text">--</strong></p>
+        </div>
+
+        <!-- DREAPTA -->
+        <div class="weather-indicators">
+
+            <div class="indicator-item">
+                <span>Viteză Vânt</span>
+                <div class="gauge-container">
+                    <div id="open-wind">--</div>
+                    <div>km/h</div>
+                </div>
+            </div>
+
+            <div class="indicator-item">
+                <span>Umiditate</span>
+                <div class="gauge-circle">
+                    <span id="open-hum-percent">--%</span>
+                </div>
+            </div>
 
         </div>
+
     </div>
+</div>
 
 </div>
 
