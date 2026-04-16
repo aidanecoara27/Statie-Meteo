@@ -120,12 +120,11 @@ async function login() {
         const data = await res.json();
 
         if (data.success) {
-    localStorage.setItem("logged", "true"); 
-    window.location.href = "index.html";
-}
-        } else {
-            document.getElementById('error').innerText = "Date invalide!";
-        }
+        localStorage.setItem("logged", "true");
+        window.location.href = "index.html";} 
+        else {
+                document.getElementById('error').innerText = "Date invalide!";
+            }
 
     } catch (err) {
         document.getElementById('error').innerText = "Eroare server!";
