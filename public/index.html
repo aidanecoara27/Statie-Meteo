@@ -122,9 +122,20 @@
                     </div> </div> </div> </div> </div> 
 <script>
         // Logică Sidebar
+
+
         document.getElementById('toggle-btn').onclick = () => {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-        };
+    const sidebar = document.getElementById('sidebar');
+    
+    // Verificăm dacă suntem pe mobil
+    if (window.innerWidth <= 768) {
+        // Pe mobil activăm/dezactivăm clasa "active" (care mută sidebar-ul de la -240px la 0px)
+        sidebar.classList.toggle('active');
+    } else {
+        // Pe laptop folosim funcția ta originală de "collapsed"
+        sidebar.classList.toggle('collapsed');
+    }
+};
 
         // Fetch date senzori locali
         async function updateLocalData() {

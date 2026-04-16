@@ -184,6 +184,41 @@ body {
 .btn-blue { background: #007bff; }
 .btn-red { background: #dc3545; }
 
-@media (max-width: 992px) {
-    .dashboard-grid, .charts-grid { grid-template-columns: 1fr; }
+
+@media (max-width: 768px) {
+    /* 1. Facem coloanele să ocupe toată lățimea */
+    .col-left, .col-right {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    /* 2. Ascundem sidebar-ul parțial sau îl gestionăm să nu ocupe ecranul */
+    .sidebar {
+        position: absolute;
+        left: -240px; /* Îl scoatem din cadru pe mobil */
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0; /* Apare doar când e activat (dacă adaugi clasa din JS) */
+    }
+
+    /* 3. Ajustăm header-ul să nu dea pe afară */
+    .top-nav {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* 4. Mărim senzorii să fie mai ușor de apăsat pe touch */
+    .tag-item {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+
+    .weather-indicators {
+        flex-direction: column; /* Indicatorii de vânt/umiditate se pun vertical */
+        align-items: center;
+    }
 }

@@ -164,7 +164,6 @@
     <div class="main-content">
         <div class="top-nav">
             <i class="fas fa-bars" id="mobile-menu-btn" style="display:none; cursor:pointer; margin-right:10px;"></i>
-            <i class="fas fa-home"></i> > Statie Licenta > <b>Istoric Citiri</b>
         </div>
 
         <div class="content-padding">
@@ -208,6 +207,62 @@
                 document.getElementById('sidebar').classList.remove('active');
             }
         });
+
+// Funcție generică pentru a crea un grafic
+function createChart(canvasId, label, color) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'], // Exemplu de ore
+            datasets: [{
+                label: label,
+                data: [0, 0, 0, 0, 0, 0], // Date inițiale (vor fi înlocuite de fetch)
+                borderColor: color,
+                backgroundColor: color + '22',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+}
+
+// Inițializăm cele 4 grafice
+const tempChart = createChart('chart-temp', 'Temperatură (°C)', '#e74c3c');
+const humChart  = createChart('chart-hum', 'Umiditate (%)', '#3498db');
+const presChart = createChart('chart-pres', 'Presiune (hPa)', '#f39c12');
+const luxChart  = createChart('chart-lux', 'Luminozitate (lx)', '#2ecc71');
+
+// Exemplu: Cum încarci datele (trebuie adaptat la API-ul tău)
+async function updateCharts() {
+    try {
+        // Aici vei face fetch la datele tale din baza de date
+        // const response = await fetch('/api/get-history?from=...');
+        // const data = await response.json();
+        
+        // Exemplu de actualizare manuală pentru test:
+        tempChart.data.datasets[0].data = [20, 22, 21, 23, 25, 24];
+        tempChart.update();
+        
+        humChart.data.datasets[0].data = [50, 55, 52, 58, 60, 57];
+        humChart.update();
+        
+    } catch (error) {
+        console.error("Eroare la încărcarea datelor:", error);
+    }
+}
+
+// Apelăm funcția la încărcare
+updateCharts();
+
     </script>
 </body>
 </html>
