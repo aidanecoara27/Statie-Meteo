@@ -33,7 +33,35 @@ th {
 </head>
 
 <body>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <span>SmartMeteo</span>
+        <i class="fas fa-bars" id="toggle-btn"></i>
+    </div>
 
+    <ul class="sidebar-menu">
+        <li>
+            <a href="index.html">
+                <i class="fas fa-tachometer-alt"></i> 
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="istoric.html">
+                <i class="fas fa-chart-line"></i> 
+                <span>Istoric</span>
+            </a>
+        </li>
+
+        <li class="active">
+            <a href="statistica.html">
+                <i class="fas fa-table"></i> 
+                <span>Statistica</span>
+            </a>
+        </li>
+    </ul>
+</div>
 <div class="main-content">
 <div class="content-padding">
 
@@ -68,7 +96,121 @@ th {
 
 </table>
 </div>
+<div class="stats-grid">
 
+    <div class="panel">
+        <div class="panel-header-green">Mean (Media)</div>
+        <div class="panel-body">
+            <p>Media aritmetică a valorilor măsurate.</p>
+            <p><strong>Aplicație:</strong> determinarea valorii medii a parametrilor (ex: temperatură medie zilnică).</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Standard Error</div>
+        <div class="panel-body">
+            <p>Măsoară precizia mediei calculate.</p>
+            <p><strong>Aplicație:</strong> evaluarea stabilității datelor colectate de senzori.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Median (Mediană)</div>
+        <div class="panel-body">
+            <p>Valoarea din mijlocul setului de date ordonate.</p>
+            <p><strong>Aplicație:</strong> determinarea valorii tipice fără influența extremelor.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Mode (Mod)</div>
+        <div class="panel-body">
+            <p>Valoarea care apare cel mai frecvent.</p>
+            <p><strong>Aplicație:</strong> identificarea valorii dominante a parametrilor.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Standard Deviation</div>
+        <div class="panel-body">
+            <p>Măsoară dispersia valorilor față de medie.</p>
+            <p><strong>Aplicație:</strong> analiza variațiilor temperaturii sau umidității.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Variance (Varianță)</div>
+        <div class="panel-body">
+            <p>Pătratul deviației standard.</p>
+            <p><strong>Aplicație:</strong> analiză matematică a variațiilor climatice.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Kurtosis</div>
+        <div class="panel-body">
+            <p>Indică gradul de „ascuțime” al distribuției.</p>
+            <p><strong>Aplicație:</strong> detectarea valorilor extreme (anomalii).</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Skewness</div>
+        <div class="panel-body">
+            <p>Arată asimetria distribuției datelor.</p>
+            <p><strong>Aplicație:</strong> identificarea tendințelor (valori mai mari sau mai mici predominante).</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Range (Interval)</div>
+        <div class="panel-body">
+            <p>Diferența dintre valoarea maximă și minimă.</p>
+            <p><strong>Aplicație:</strong> determinarea variației parametrilor.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Minimum</div>
+        <div class="panel-body">
+            <p>Cea mai mică valoare înregistrată.</p>
+            <p><strong>Aplicație:</strong> identificarea valorii minime (ex: temperatură minimă).</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Maximum</div>
+        <div class="panel-body">
+            <p>Cea mai mare valoare înregistrată.</p>
+            <p><strong>Aplicație:</strong> identificarea valorii maxime.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Sum</div>
+        <div class="panel-body">
+            <p>Totalul valorilor măsurate.</p>
+            <p><strong>Aplicație:</strong> utilizat în calculul mediei.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Count</div>
+        <div class="panel-body">
+            <p>Numărul total de valori înregistrate.</p>
+            <p><strong>Aplicație:</strong> determinarea volumului de date colectate.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header-green">Confidence Level (95%)</div>
+        <div class="panel-body">
+            <p>Intervalul în care se află media reală cu o probabilitate de 95%.</p>
+            <p><strong>Aplicație:</strong> evaluarea preciziei datelor sistemului.</p>
+        </div>
+    </div>
+
+</div>
 </div>
 </div>
 
