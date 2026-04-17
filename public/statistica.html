@@ -66,6 +66,13 @@ if (localStorage.getItem("logged") !== "true") {
     <option value="week">1 săptămână</option>
     <option value="month">1 lună</option>
 </select>
+<select id="sensor">
+    <option value="temperature">Temperatură</option>
+    <option value="humidity">Umiditate</option>
+    <option value="pressure">Presiune</option>
+    <option value="lux">Luminozitate</option>
+    <option value="soil_moisture">Umiditate Sol</option>
+</select>
 
 <button onclick="loadStats()" class="btn btn-blue">Calculează</button>
 
@@ -185,6 +192,39 @@ if (localStorage.getItem("logged") !== "true") {
         </div>
     </div>
 
+    <!-- STANDARD ERROR -->
+<div class="panel">
+    <div class="panel-header-green">Standard Error</div>
+    <div class="panel-body">
+        <div class="stat-row">
+            <span>Valoare</span>
+            <strong id="se">--</strong>
+        </div>
+    </div>
+</div>
+
+<!-- VARIANCE -->
+<div class="panel">
+    <div class="panel-header-green">Variance</div>
+    <div class="panel-body">
+        <div class="stat-row">
+            <span>Valoare</span>
+            <strong id="variance">--</strong>
+        </div>
+    </div>
+</div>
+
+<!-- SUM -->
+<div class="panel">
+    <div class="panel-header-green">Sum</div>
+    <div class="panel-body">
+        <div class="stat-row">
+            <span>Total</span>
+            <strong id="sum">--</strong>
+        </div>
+    </div>
+</div>
+
     <!-- CONF -->
     <div class="panel">
         <div class="panel-header-green">Confidence (95%)</div>
@@ -212,41 +252,41 @@ function calcStats(values) {
     const sorted = [...values].sort((a,b)=>a-b);
     const median = sorted[Math.floor(n/2)];
 
-    const variance = values.reduce((a,b)=>a+(b-mean)**2,0)/n;
+    const variance = values.reduce((a,b)=>a+(b-mean)**2,0)/(n-1);
     const std = Math.sqrt(variance);
 
     const se = std / Math.sqrt(n);
 
     const min = Math.min(...values);
     const max = Math.max(...values);
-
     const range = max - min;
 
     const freq = {};
     let mode = values[0], maxCount = 0;
     values.forEach(v=>{
-        freq[v] = (freq[v]||0)+1;
+        freq[v]=(freq[v]||0)+1;
         if(freq[v]>maxCount){
-            maxCount = freq[v];
-            mode = v;
+            maxCount=freq[v];
+            mode=v;
         }
     });
 
     const skew = values.reduce((a,b)=>a+((b-mean)/std)**3,0)/n;
     const kurt = values.reduce((a,b)=>a+((b-mean)/std)**4,0)/n - 3;
 
-    const conf = (1.96 * se).toFixed(2);
+    const conf = 1.96 * se;
 
-    return {mean,median,mode,std,variance,kurt,skew,range,min,max,count:n,conf};
+    return {mean,median,mode,std,variance,se,kurt,skew,range,min,max,sum,count:n,conf};
 }
 
 async function loadStats() {
     const range = document.getElementById("range").value;
+    const sensor = document.getElementById("sensor").value;
 
     const res = await fetch(`/get-history?range=${range}`);
     const data = await res.json();
 
-    const values = data.map(d=>parseFloat(d.temperature));
+    const values = data.map(d => parseFloat(d[sensor])).filter(v => !isNaN(v));
 
     const s = calcStats(values);
 
@@ -254,13 +294,16 @@ async function loadStats() {
     document.getElementById("median").innerText = s.median.toFixed(2);
     document.getElementById("mode").innerText = s.mode;
     document.getElementById("std").innerText = s.std.toFixed(2);
+    document.getElementById("variance").innerText = s.variance.toFixed(2);
+    document.getElementById("se").innerText = s.se.toFixed(2);
     document.getElementById("kurt").innerText = s.kurt.toFixed(2);
     document.getElementById("skew").innerText = s.skew.toFixed(2);
     document.getElementById("rangeVal").innerText = s.range.toFixed(2);
     document.getElementById("min").innerText = s.min;
     document.getElementById("max").innerText = s.max;
     document.getElementById("count").innerText = s.count;
-    document.getElementById("conf").innerText = "± " + s.conf;
+    document.getElementById("sum").innerText = s.sum.toFixed(2);
+    document.getElementById("conf").innerText = "± " + s.conf.toFixed(2);
 }
 
 </script>
