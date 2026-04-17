@@ -148,6 +148,17 @@
         </div>
 
     </div>
+
+    <div class="card">
+    <div class="card-header bg-secondary text-white">
+        Date Tehnice
+    </div>
+    <div class="card-body">
+        <p><strong>Stație:</strong> Stație Meteo Licență</p>
+        <p><strong>Versiune:</strong> v1.0</p>
+        <p><strong>Status:</strong> Online</p>
+    </div>
+</div>
 </div>
 
 </div>
@@ -160,6 +171,7 @@
 document.getElementById('toggle-btn').onclick = () => {
     document.getElementById('sidebar').classList.toggle('collapsed');
 };
+document.getElementById("lastUpdate").innerText = new Date().toLocaleString();
 
 function logout() {
     localStorage.removeItem("logged");
