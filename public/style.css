@@ -167,9 +167,16 @@ body {
 }
 
 .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    align-items: stretch; /* 🔥 CHEIA */
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-body {
+    flex: 1;
 }
 
 .stat-card, .panel {

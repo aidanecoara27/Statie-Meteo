@@ -250,9 +250,14 @@ function calcStats(values) {
     const mean = sum / n;
 
     const sorted = [...values].sort((a,b)=>a-b);
-    const median = sorted[Math.floor(n/2)];
+    let median;
+        if (n % 2 === 0) {
+            median = (sorted[n/2 - 1] + sorted[n/2]) / 2;
+        } else {
+            median = sorted[Math.floor(n/2)];
+        }
 
-    const variance = values.reduce((a,b)=>a+(b-mean)**2,0)/(n-1);
+    const variance = n > 1 ? values.reduce((a,b)=>a+(b-mean)**2,0)/(n-1): 0;
     const std = Math.sqrt(variance);
 
     const se = std / Math.sqrt(n);
