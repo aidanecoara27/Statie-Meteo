@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Statistica Descriptiva</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <script>
 if (localStorage.getItem("logged") !== "true") {
@@ -12,27 +13,35 @@ if (localStorage.getItem("logged") !== "true") {
 </script>
 
 <style>
-.table-container {
-    background: white;
-    padding: 20px;
-    border-radius: 6px;
+
+/* GRID */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
-table {
-    width: 100%;
-    border-collapse: collapse;
+
+/* fiecare rand */
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
 }
-th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
+
+/* descriere */
+.stat-desc {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #666;
 }
-th {
-    background: #72b06e;
-    color: white;
-}
+
 </style>
 </head>
 
 <body>
+
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <span>SmartMeteo</span>
@@ -40,180 +49,161 @@ th {
     </div>
 
     <ul class="sidebar-menu">
-        <li>
-            <a href="index.html">
-                <i class="fas fa-tachometer-alt"></i> 
-                <span>Dashboard</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="istoric.html">
-                <i class="fas fa-chart-line"></i> 
-                <span>Istoric</span>
-            </a>
-        </li>
-
-        <li class="active">
-            <a href="statistica.html">
-                <i class="fas fa-table"></i> 
-                <span>Statistica</span>
-            </a>
-        </li>
+        <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+        <li><a href="istoric.html"><i class="fas fa-chart-line"></i><span>Istoric</span></a></li>
+        <li class="active"><a href="statistica.html"><i class="fas fa-table"></i><span>Statistica</span></a></li>
     </ul>
 </div>
+
 <div class="main-content">
+
 <div class="content-padding">
 
-<h2>Statistica Descriptiva</h2>
+<h2>Statistică Descriptivă</h2>
 
 <select id="range">
     <option value="day">1 zi</option>
-    <option value="week">1 saptamana</option>
-    <option value="month">1 luna</option>
+    <option value="week">1 săptămână</option>
+    <option value="month">1 lună</option>
 </select>
 
-<button onclick="loadStats()">Calculeaza</button>
+<button onclick="loadStats()" class="btn btn-blue">Calculează</button>
 
-<div class="table-container">
-<table>
-<tr><th>Parametru</th><th>Valoare</th></tr>
+<br><br>
 
-<tr><td>Mean</td><td id="mean"></td></tr>
-<tr><td>Standard Error</td><td id="se"></td></tr>
-<tr><td>Median</td><td id="median"></td></tr>
-<tr><td>Mode</td><td id="mode"></td></tr>
-<tr><td>Standard Deviation</td><td id="std"></td></tr>
-<tr><td>Variance</td><td id="var"></td></tr>
-<tr><td>Kurtosis</td><td id="kurt"></td></tr>
-<tr><td>Skewness</td><td id="skew"></td></tr>
-<tr><td>Range</td><td id="rangeVal"></td></tr>
-<tr><td>Minimum</td><td id="min"></td></tr>
-<tr><td>Maximum</td><td id="max"></td></tr>
-<tr><td>Sum</td><td id="sum"></td></tr>
-<tr><td>Count</td><td id="count"></td></tr>
-<tr><td>Confidence Level (95%)</td><td id="conf"></td></tr>
-
-</table>
-</div>
 <div class="stats-grid">
 
+    <!-- MEAN -->
     <div class="panel">
-        <div class="panel-header-green">Mean (Media)</div>
+        <div class="panel-header-green">Mean</div>
         <div class="panel-body">
-            <p>Media aritmetică a valorilor măsurate.</p>
-            <p><strong>Aplicație:</strong> determinarea valorii medii a parametrilor (ex: temperatură medie zilnică).</p>
+            <div class="stat-row">
+                <span>Valoare</span>
+                <strong id="mean">--</strong>
+            </div>
+            <p class="stat-desc">Media aritmetică a valorilor măsurate.</p>
         </div>
     </div>
 
-    <div class="panel">
-        <div class="panel-header-green">Standard Error</div>
-        <div class="panel-body">
-            <p>Măsoară precizia mediei calculate.</p>
-            <p><strong>Aplicație:</strong> evaluarea stabilității datelor colectate de senzori.</p>
-        </div>
-    </div>
-
-    <div class="panel">
-        <div class="panel-header-green">Median (Mediană)</div>
-        <div class="panel-body">
-            <p>Valoarea din mijlocul setului de date ordonate.</p>
-            <p><strong>Aplicație:</strong> determinarea valorii tipice fără influența extremelor.</p>
-        </div>
-    </div>
-
-    <div class="panel">
-        <div class="panel-header-green">Mode (Mod)</div>
-        <div class="panel-body">
-            <p>Valoarea care apare cel mai frecvent.</p>
-            <p><strong>Aplicație:</strong> identificarea valorii dominante a parametrilor.</p>
-        </div>
-    </div>
-
+    <!-- STD -->
     <div class="panel">
         <div class="panel-header-green">Standard Deviation</div>
         <div class="panel-body">
-            <p>Măsoară dispersia valorilor față de medie.</p>
-            <p><strong>Aplicație:</strong> analiza variațiilor temperaturii sau umidității.</p>
+            <div class="stat-row">
+                <span>Valoare</span>
+                <strong id="std">--</strong>
+            </div>
+            <p class="stat-desc">Arată cât de mult variază datele față de medie.</p>
         </div>
     </div>
 
+    <!-- MEDIAN -->
     <div class="panel">
-        <div class="panel-header-green">Variance (Varianță)</div>
+        <div class="panel-header-green">Median</div>
         <div class="panel-body">
-            <p>Pătratul deviației standard.</p>
-            <p><strong>Aplicație:</strong> analiză matematică a variațiilor climatice.</p>
+            <div class="stat-row">
+                <span>Valoare</span>
+                <strong id="median">--</strong>
+            </div>
+            <p class="stat-desc">Valoarea din mijlocul setului de date.</p>
         </div>
     </div>
 
+    <!-- MODE -->
     <div class="panel">
-        <div class="panel-header-green">Kurtosis</div>
+        <div class="panel-header-green">Mode</div>
         <div class="panel-body">
-            <p>Indică gradul de „ascuțime” al distribuției.</p>
-            <p><strong>Aplicație:</strong> detectarea valorilor extreme (anomalii).</p>
+            <div class="stat-row">
+                <span>Valoare</span>
+                <strong id="mode">--</strong>
+            </div>
+            <p class="stat-desc">Valoarea care apare cel mai des.</p>
         </div>
     </div>
 
+    <!-- MIN MAX -->
+    <div class="panel">
+        <div class="panel-header-green">Min / Max</div>
+        <div class="panel-body">
+            <div class="stat-row">
+                <span>Min</span>
+                <strong id="min">--</strong>
+            </div>
+            <div class="stat-row">
+                <span>Max</span>
+                <strong id="max">--</strong>
+            </div>
+            <p class="stat-desc">Valorile extreme înregistrate.</p>
+        </div>
+    </div>
+
+    <!-- RANGE -->
+    <div class="panel">
+        <div class="panel-header-green">Range</div>
+        <div class="panel-body">
+            <div class="stat-row">
+                <span>Valoare</span>
+                <strong id="rangeVal">--</strong>
+            </div>
+            <p class="stat-desc">Diferența dintre maxim și minim.</p>
+        </div>
+    </div>
+
+    <!-- SKEW -->
     <div class="panel">
         <div class="panel-header-green">Skewness</div>
         <div class="panel-body">
-            <p>Arată asimetria distribuției datelor.</p>
-            <p><strong>Aplicație:</strong> identificarea tendințelor (valori mai mari sau mai mici predominante).</p>
+            <div class="stat-row">
+                <span>Valoare</span>
+                <strong id="skew">--</strong>
+            </div>
+            <p class="stat-desc">Indică dacă distribuția este înclinată.</p>
         </div>
     </div>
 
+    <!-- KURT -->
     <div class="panel">
-        <div class="panel-header-green">Range (Interval)</div>
+        <div class="panel-header-green">Kurtosis</div>
         <div class="panel-body">
-            <p>Diferența dintre valoarea maximă și minimă.</p>
-            <p><strong>Aplicație:</strong> determinarea variației parametrilor.</p>
+            <div class="stat-row">
+                <span>Valoare</span>
+                <strong id="kurt">--</strong>
+            </div>
+            <p class="stat-desc">Arată cât de multe valori extreme există.</p>
         </div>
     </div>
 
-    <div class="panel">
-        <div class="panel-header-green">Minimum</div>
-        <div class="panel-body">
-            <p>Cea mai mică valoare înregistrată.</p>
-            <p><strong>Aplicație:</strong> identificarea valorii minime (ex: temperatură minimă).</p>
-        </div>
-    </div>
-
-    <div class="panel">
-        <div class="panel-header-green">Maximum</div>
-        <div class="panel-body">
-            <p>Cea mai mare valoare înregistrată.</p>
-            <p><strong>Aplicație:</strong> identificarea valorii maxime.</p>
-        </div>
-    </div>
-
-    <div class="panel">
-        <div class="panel-header-green">Sum</div>
-        <div class="panel-body">
-            <p>Totalul valorilor măsurate.</p>
-            <p><strong>Aplicație:</strong> utilizat în calculul mediei.</p>
-        </div>
-    </div>
-
+    <!-- COUNT -->
     <div class="panel">
         <div class="panel-header-green">Count</div>
         <div class="panel-body">
-            <p>Numărul total de valori înregistrate.</p>
-            <p><strong>Aplicație:</strong> determinarea volumului de date colectate.</p>
+            <div class="stat-row">
+                <span>Valoare</span>
+                <strong id="count">--</strong>
+            </div>
+            <p class="stat-desc">Numărul de măsurători.</p>
         </div>
     </div>
 
+    <!-- CONF -->
     <div class="panel">
-        <div class="panel-header-green">Confidence Level (95%)</div>
+        <div class="panel-header-green">Confidence (95%)</div>
         <div class="panel-body">
-            <p>Intervalul în care se află media reală cu o probabilitate de 95%.</p>
-            <p><strong>Aplicație:</strong> evaluarea preciziei datelor sistemului.</p>
+            <div class="stat-row">
+                <span>Interval</span>
+                <strong id="conf">--</strong>
+            </div>
+            <p class="stat-desc">Precizia estimării mediei.</p>
         </div>
     </div>
+
+</div>
 
 </div>
 </div>
 
 <script>
+
 function calcStats(values) {
     const n = values.length;
     const sum = values.reduce((a,b)=>a+b,0);
@@ -232,7 +222,6 @@ function calcStats(values) {
 
     const range = max - min;
 
-    // MODE
     const freq = {};
     let mode = values[0], maxCount = 0;
     values.forEach(v=>{
@@ -243,15 +232,12 @@ function calcStats(values) {
         }
     });
 
-    // SKEWNESS
     const skew = values.reduce((a,b)=>a+((b-mean)/std)**3,0)/n;
-
-    // KURTOSIS
     const kurt = values.reduce((a,b)=>a+((b-mean)/std)**4,0)/n - 3;
 
     const conf = (1.96 * se).toFixed(2);
 
-    return {mean,se,median,mode,std,variance,kurt,skew,range,min,max,sum,count:n,conf};
+    return {mean,median,mode,std,variance,kurt,skew,range,min,max,count:n,conf};
 }
 
 async function loadStats() {
@@ -265,20 +251,18 @@ async function loadStats() {
     const s = calcStats(values);
 
     document.getElementById("mean").innerText = s.mean.toFixed(2);
-    document.getElementById("se").innerText = s.se.toFixed(2);
     document.getElementById("median").innerText = s.median.toFixed(2);
     document.getElementById("mode").innerText = s.mode;
     document.getElementById("std").innerText = s.std.toFixed(2);
-    document.getElementById("var").innerText = s.variance.toFixed(2);
     document.getElementById("kurt").innerText = s.kurt.toFixed(2);
     document.getElementById("skew").innerText = s.skew.toFixed(2);
     document.getElementById("rangeVal").innerText = s.range.toFixed(2);
     document.getElementById("min").innerText = s.min;
     document.getElementById("max").innerText = s.max;
-    document.getElementById("sum").innerText = s.sum.toFixed(2);
     document.getElementById("count").innerText = s.count;
     document.getElementById("conf").innerText = "± " + s.conf;
 }
+
 </script>
 
 </body>
