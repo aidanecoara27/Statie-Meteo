@@ -68,101 +68,105 @@
 <div class="dashboard-row">
 
     <!-- LEFT -->
-    <div class="panel">
-        <div class="panel-header-green">Ultima citire: Statie Meteo - Licență</div>
-        <div class="panel-body">
+    <div style="flex:1;">
 
-            <p>Data si ora: <span id="time">--</span></p>
+        <!-- Ultima citire -->
+        <div class="panel">
+            <div class="panel-header-green">Ultima citire: Statie Meteo - Licență</div>
+            <div class="panel-body">
 
-            <div class="sensor-tags">
-                <div class="tag-item">
-                    <span class="label label-red">Temperatură Aer</span>
-                    <strong id="val-temp">--</strong>
+                <p>Data si ora: <span id="time">--</span></p>
+
+                <div class="sensor-tags">
+                    <div class="tag-item">
+                        <span class="label label-red">Temperatură Aer</span>
+                        <strong id="val-temp">--</strong>
+                    </div>
+
+                    <div class="tag-item">
+                        <span class="label label-blue">Umiditate Relativă</span>
+                        <strong id="val-hum">--</strong>
+                    </div>
+
+                    <div class="tag-item">
+                        <span class="label label-brown">Presiune</span>
+                        <strong id="val-pres">--</strong>
+                    </div>
+
+                    <div class="tag-item">
+                        <span class="label label-green">Luminozitate</span>
+                        <strong id="val-lux">--</strong>
+                    </div>
+
+                    <div class="tag-item">
+                        <span class="label label-soil">Umiditate Sol</span>
+                        <strong id="val-soil">--</strong>
+                    </div>
                 </div>
 
-                <div class="tag-item">
-                    <span class="label label-blue">Umiditate Relativă</span>
-                    <strong id="val-hum">--</strong>
-                </div>
-
-                <div class="tag-item">
-                    <span class="label label-brown">Presiune</span>
-                    <strong id="val-pres">--</strong>
-                </div>
-
-                <div class="tag-item">
-                    <span class="label label-green">Luminozitate</span>
-                    <strong id="val-lux">--</strong>
-                </div>
-
-                <div class="tag-item">
-                    <span class="label label-soil">Umiditate Sol</span>
-                    <strong id="val-soil">--</strong>
-                </div>
             </div>
-
         </div>
+
+        <!-- ✅ Date Tehnice (ACUM CORECT) -->
+        <div class="panel mt-3">
+            <div class="panel-header-green">
+                Date Tehnice
+            </div>
+            <div class="panel-body">
+                <p><strong>Stație:</strong> Stație Meteo Licență</p>
+                <p><strong>Versiune:</strong> v1.0</p>
+                <p><strong>Status:</strong> Online</p>
+            </div>
+        </div>
+
     </div>
 
     <!-- RIGHT -->
-    <div class="panel">
-    <div class="panel-header-weather">
-        <div><i class="fas fa-bolt"></i> Meteo OpenWeatherMap</div>
-        <div>Conditii curente Istoric</div>
-    </div>
-
-    <div class="weather-content">
-
-        <!-- STANGA -->
-        <div class="weather-main-info">
-            <p class="location-name">București</p>
-            <p class="weather-condition" id="open-desc">--</p>
-
-            <div class="temp-display">
-                <h1 id="extern-temp">--°C</h1>
-                <i class="fas fa-sun weather-big-icon"></i>
+    <div style="flex:1;">
+        <div class="panel">
+            <div class="panel-header-weather">
+                <div><i class="fas fa-bolt"></i> Meteo OpenWeatherMap</div>
+                <div>Conditii curente Istoric</div>
             </div>
 
-            <p>Presiune: <strong id="open-pres">--</strong></p>
-            <p>Vânt: <strong id="open-wind-text">--</strong></p>
-        </div>
+            <div class="weather-content">
 
-        <!-- DREAPTA -->
-        <div class="weather-indicators">
+                <div class="weather-main-info">
+                    <p class="location-name">București</p>
+                    <p class="weather-condition" id="open-desc">--</p>
 
-            <div class="indicator-item">
-                <span>Viteză Vânt</span>
-                <div class="gauge-container">
-                    <div id="open-wind">--</div>
-                    <div>km/h</div>
+                    <div class="temp-display">
+                        <h1 id="extern-temp">--°C</h1>
+                        <i class="fas fa-sun weather-big-icon"></i>
+                    </div>
+
+                    <p>Presiune: <strong id="open-pres">--</strong></p>
+                    <p>Vânt: <strong id="open-wind-text">--</strong></p>
                 </div>
-            </div>
 
-            <div class="indicator-item">
-                <span>Umiditate</span>
-                <div class="gauge-circle">
-                    <span id="open-hum-percent">--%</span>
+                <div class="weather-indicators">
+
+                    <div class="indicator-item">
+                        <span>Viteză Vânt</span>
+                        <div class="gauge-container">
+                            <div id="open-wind">--</div>
+                            <div>km/h</div>
+                        </div>
+                    </div>
+
+                    <div class="indicator-item">
+                        <span>Umiditate</span>
+                        <div class="gauge-circle">
+                            <span id="open-hum-percent">--%</span>
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
-
         </div>
+    </div>
 
-    </div>
-</div>
-
-</div>
-<div class="panel mt-3">
-    <div class="panel-header-green">
-        Date Tehnice
-    </div>
-    <div class="panel-body">
-        <p><strong>Stație:</strong> Stație Meteo Licență</p>
-        <p><strong>Versiune:</strong> v1.0</p>
-        <p><strong>Status:</strong> Online</p>
-    </div>
-</div>
-</div>
-</div>
 </div>
 
 <script>
