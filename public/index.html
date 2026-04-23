@@ -103,20 +103,9 @@
     </div>
 
 </div>
-
-                    <div class="tag-item">
-                        <span class="label label-green">Luminozitate</span>
-                        <strong id="val-lux">--</strong>
-                    </div>
-
-                    <div class="tag-item">
-                        <span class="label label-soil">Umiditate Sol</span>
-                        <strong id="val-soil">--</strong>
-                    </div>
-                </div>
-
             </div>
         </div>
+        
 
         <div class="panel mt-3">
             <div class="panel-header-green">
@@ -217,14 +206,12 @@ if (d) {
     const pres = document.getElementById('val-pres');
     const lux = document.getElementById('val-lux');
     const soil = document.getElementById('val-soil');
-    const time = document.getElementById('time');
 
     if (temp) temp.innerText = d.temperature + " °C";
     if (hum) hum.innerText = d.humidity + " %";
     if (pres) pres.innerText = d.pressure + " hPa";
     if (lux) lux.innerText = d.lux + " lx";
     if (soil) soil.innerText = d.soil_moisture + " %";
-    if (time) time.innerText = new Date().toLocaleString();
 }
 
     } catch(e) {
