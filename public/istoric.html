@@ -265,10 +265,13 @@
                 const data = await res.json();
                 
                 const labels = data.map(d => {
-                    const dt = new Date(d.data_ora);
-                    dt.setHours(dt.getHours() + 3);
-                    return dt.getHours().toString().padStart(2,'0') + ":" + dt.getMinutes().toString().padStart(2,'0');
-                });
+    const dt = new Date(d.data_ora.replace(" ", "T"));
+
+    return dt.toLocaleTimeString('ro-RO', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+});
 
                 const render = (id, label, color, key) => {
                     const canvas = document.getElementById(id);
