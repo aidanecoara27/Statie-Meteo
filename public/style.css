@@ -186,7 +186,9 @@ body {
 }
 
 .stats-grid {
-    align-items: stretch; /* 🔥 CHEIA */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
 }
 
 .panel {
