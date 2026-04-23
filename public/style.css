@@ -126,6 +126,13 @@ body {
     background: #f8f9fa;
     padding: 10px 15px;
     border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+
+.tag-item:hover {
+    background: #e9ecef;
 }
 
 .label {

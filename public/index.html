@@ -79,20 +79,33 @@
                 <p>Data și ora: <span id="time">--</span></p>
 
                 <div class="sensor-tags">
-                    <div class="tag-item">
-                        <span class="label label-red">Temperatură Aer</span>
-                        <strong id="val-temp">--</strong>
-                    </div>
 
-                    <div class="tag-item">
-                        <span class="label label-blue">Umiditate Relativă</span>
-                        <strong id="val-hum">--</strong>
-                    </div>
+    <div class="tag-item" onclick="goToIstoric('temperature')">
+        <span class="label label-red">Temperatură Aer</span>
+        <strong id="val-temp">--</strong>
+    </div>
 
-                    <div class="tag-item">
-                        <span class="label label-brown">Presiune</span>
-                        <strong id="val-pres">--</strong>
-                    </div>
+    <div class="tag-item" onclick="goToIstoric('humidity')">
+        <span class="label label-blue">Umiditate Relativă</span>
+        <strong id="val-hum">--</strong>
+    </div>
+
+    <div class="tag-item" onclick="goToIstoric('pressure')">
+        <span class="label label-brown">Presiune Atmosferică</span>
+        <strong id="val-pres">--</strong>
+    </div>
+
+    <div class="tag-item" onclick="goToIstoric('lux')">
+        <span class="label label-green">Intensitate Luminoasă</span>
+        <strong id="val-lux">--</strong>
+    </div>
+
+    <div class="tag-item" onclick="goToIstoric('soil_moisture')">
+        <span class="label label-soil">Umiditate Sol</span>
+        <strong id="val-soil">--</strong>
+    </div>
+
+</div>
 
                     <div class="tag-item">
                         <span class="label label-green">Luminozitate</span>
@@ -170,6 +183,10 @@
 </div>
 
 <script>
+
+ function goToIstoric(sensor) {
+    window.location.href = "istoric.html?sensor=" + sensor;
+}   
 document.getElementById('toggle-btn').onclick = () => {
     document.getElementById('sidebar').classList.toggle('collapsed');
 };
