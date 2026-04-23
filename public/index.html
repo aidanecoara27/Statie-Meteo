@@ -75,9 +75,6 @@
         <div class="panel">
             <div class="panel-header-green">Ultima citire: Statie Meteo - Licență</div>
             <div class="panel-body">
-
-                <p>Data și ora: <span id="time">--</span></p>
-
                 <div class="sensor-tags">
 
     <div class="tag-item" onclick="goToIstoric('temperature')">
@@ -190,7 +187,18 @@
 document.getElementById('toggle-btn').onclick = () => {
     document.getElementById('sidebar').classList.toggle('collapsed');
 };
-document.getElementById("lastUpdate").innerText = new Date().toLocaleString();
+function updateClock() {
+    const el = document.getElementById("lastUpdate");
+    if (el) {
+        el.innerText = new Date().toLocaleString('ro-RO');
+    }
+}
+
+// actualizează la fiecare secundă
+setInterval(updateClock, 1000);
+
+// rulează imediat
+updateClock();
 
 function logout() {
     localStorage.removeItem("logged");
