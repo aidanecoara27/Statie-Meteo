@@ -185,13 +185,21 @@ async function updateLocalData() {
         const res = await fetch('/get-latest-data');
         const d = await res.json();
 
-        document.getElementById('val-temp').innerText = d.temperature + " °C";
-        document.getElementById('val-hum').innerText = d.humidity + " %";
-        document.getElementById('val-pres').innerText = d.pressure + " hPa";
-        document.getElementById('val-lux').innerText = d.lux + " lx";
-        document.getElementById('val-soil').innerText = d.soil_moisture + " %";
+if (d) {
+    const temp = document.getElementById('val-temp');
+    const hum = document.getElementById('val-hum');
+    const pres = document.getElementById('val-pres');
+    const lux = document.getElementById('val-lux');
+    const soil = document.getElementById('val-soil');
+    const time = document.getElementById('time');
 
-        document.getElementById('time').innerText = new Date().toLocaleString();
+    if (temp) temp.innerText = d.temperature + " °C";
+    if (hum) hum.innerText = d.humidity + " %";
+    if (pres) pres.innerText = d.pressure + " hPa";
+    if (lux) lux.innerText = d.lux + " lx";
+    if (soil) soil.innerText = d.soil_moisture + " %";
+    if (time) time.innerText = new Date().toLocaleString();
+}
 
     } catch(e) {
         console.error(e);
