@@ -110,27 +110,19 @@ body {
 }
 /* PANELS */
 .panel {
-    background: white;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    overflow: hidden;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* 🔥 spațiu între carduri din aceeași coloană */
-.panel + .panel {
-    margin-top: 20px;
+.panel-body {
+    padding: 10px;
 }
 
-.panel-header-green,
-.panel-header-weather {
-    background: var(--dashboard-green);
-    color: white;
-    padding: 12px 15px;
-    font-weight: 600;
-    display: flex;
-    justify-content: space-between;
+.panel-header-green {
+    font-size: 13px;
+    padding: 8px 10px;
 }
-
 /* SENSOR TAGS */
 .sensor-tags {
     display: flex;
@@ -211,8 +203,11 @@ body {
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 .stat-row {
-    padding: 8px 0;
-    font-size: 14px;
+    font-size: 13px;
+}
+
+.stat-desc {
+    font-size: 12px;
 }
 
 .stat-row strong {
@@ -278,6 +273,7 @@ select {
     }
 
     .stats-grid {
-        grid-template-columns: 1fr;
-    }
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
 }
