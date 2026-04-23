@@ -87,7 +87,27 @@ body {
 .dashboard-row > div {
     flex: 1;
 }
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr;
+    gap: 20px;
+}
 
+/* coloane */
+.col-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.col-right {
+    display: flex;
+    flex-direction: column;
+}
+
+/* spațiu între panouri */
+.col-left .panel + .panel {
+    margin-top: 20px;
+}
 /* PANELS */
 .panel {
     background: white;
@@ -232,8 +252,8 @@ select {
 /* 📱 MOBILE */
 @media (max-width: 768px) {
 
-    .dashboard-row {
-        flex-direction: column;
+    .dashboard-grid {
+        grid-template-columns: 1fr;
     }
 
     .sidebar {
