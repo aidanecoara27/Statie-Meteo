@@ -245,7 +245,7 @@
             </div>
         </div> </div> <script>
         // Toggle Sidebar
-        document.getElementById('toggle-sidebar').onclick = function() {
+        document.getElementById('toggle-btn').onclick = function() {
             document.getElementById('sidebar').classList.toggle('collapsed');
             setTimeout(() => { Object.values(charts).forEach(c => c.resize()); }, 350);
         };
