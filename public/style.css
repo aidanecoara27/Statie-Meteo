@@ -16,7 +16,7 @@ body {
     background: var(--bg-light) !important; 
     display: flex !important; 
     height: 100vh !important;
-    overflow: hidden !important;
+    overflow: auto !important;
 }
 
 /* 2. SIDEBAR */
@@ -110,18 +110,23 @@ body {
 }
 /* PANELS */
 .panel {
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden; /* 🔥 FOARTE IMPORTANT */
+    display: flex;
+    flex-direction: column;
 }
 
 .panel-body {
-    padding: 10px;
+    padding: 15px;
 }
 
 .panel-header-green {
-    font-size: 13px;
-    padding: 8px 10px;
+    background: var(--dashboard-green);
+    color: white;
+    padding: 12px 15px;
+    font-weight: 600;
 }
 /* SENSOR TAGS */
 .sensor-tags {
@@ -187,17 +192,18 @@ body {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 15px;
 }
 
 .panel {
     display: flex;
     flex-direction: column;
+    padding: 10px;
 }
 
 .panel-body {
-    flex: 1;
+    padding: 10px;
 }
 
 .stat-card, .panel {
