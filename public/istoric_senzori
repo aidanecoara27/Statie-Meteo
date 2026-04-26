@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Istoric Detaliat Senzor</title>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
 
     <style>
         body {
@@ -20,8 +22,26 @@
         }
 
         h1 {
-            color: #222d32;
+            margin-bottom: 15px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
+        }
+
+        select, button {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #72b06e;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
 
         canvas {
@@ -33,19 +53,33 @@
 <body>
 
 <div class="container">
+
     <h1 id="titlu-senzor">Istoric</h1>
+
+    <div class="controls">
+        <select id="range">
+            <option value="day">1 zi</option>
+            <option value="week">1 săptămână</option>
+            <option value="month">1 lună</option>
+        </select>
+
+        <button onclick="randeazaGrafic()">Actualizează</button>
+        <button onclick="downloadChart()">Descarcă PNG</button>
+    </div>
+
     <canvas id="graficDetaliat"></canvas>
+
 </div>
 
 <script>
 
-// 🔹 citire parametru din URL
+// 🔹 parametru URL
 const params = new URLSearchParams(window.location.search);
 const sensorType = params.get('sensor') || 'temperature';
 
-// 🔹 denumiri frumoase
+// 🔹 denumiri
 const sensorNames = {
-    temperature: "Temperatură Aer (°C)",
+    temperature: "Temperatură (°C)",
     humidity: "Umiditate (%)",
     pressure: "Presiune (hPa)",
     lux: "Luminozitate (lx)",
@@ -56,20 +90,28 @@ document.getElementById('titlu-senzor').innerText =
     "Istoric: " + (sensorNames[sensorType] || sensorType);
 
 
-// 🔹 functie grafic
+// 🔹 EXPORT
+function downloadChart() {
+    const link = document.createElement('a');
+    link.download = sensorType + ".png";
+    link.href = document.getElementById('graficDetaliat').toDataURL();
+    link.click();
+}
+
+
+// 🔹 GRAFIC
 async function randeazaGrafic() {
     try {
-        const res = await fetch('/get-history');
+
+        const range = document.getElementById("range").value;
+
+        const res = await fetch(`/get-history?range=${range}`);
         const history = await res.json();
 
-        console.log("Date:", history[0]);
-
-        // 🔥 FILTRARE valori invalide
         const valori = history
             .map(h => parseFloat(h[sensorType]))
             .filter(v => !isNaN(v) && v !== 0);
 
-        // 🔥 TIMP CORECT
         const labels = history.map(h => {
             const dt = new Date(h.data_ora);
             return dt.toLocaleTimeString('ro-RO', {
@@ -85,44 +127,48 @@ async function randeazaGrafic() {
         window.myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels,
                 datasets: [{
-                    label: sensorNames[sensorType] || sensorType,
+                    label: sensorNames[sensorType],
                     data: valori,
-
                     borderColor: '#e74c3c',
-                    backgroundColor: 'rgba(231, 76, 60, 0.15)',
-
+                    backgroundColor: 'rgba(231,76,60,0.15)',
                     fill: true,
                     tension: 0.3,
-                    pointRadius: 2,
-                    borderWidth: 2
+                    pointRadius: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
 
-                interaction: {
-                    mode: 'index',
-                    intersect: false
-                },
-
                 plugins: {
-                    legend: {
-                        display: true
+                    legend: { display: true },
+
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.raw + " " + sensorNames[sensorType]
+                        }
+                    },
+
+                    zoom: {
+                        zoom: {
+                            wheel: { enabled: true },
+                            pinch: { enabled: true },
+                            mode: 'x'
+                        },
+                        pan: {
+                            enabled: true,
+                            mode: 'x'
+                        }
                     }
                 },
 
                 scales: {
                     x: {
-                        title: {
-                            display: true,
-                            text: "Timp"
-                        }
+                        title: { display: true, text: "Timp" }
                     },
                     y: {
-                        beginAtZero: false,
                         title: {
                             display: true,
                             text: sensorNames[sensorType]
@@ -133,11 +179,11 @@ async function randeazaGrafic() {
         });
 
     } catch (err) {
-        console.error("Eroare:", err);
+        console.error(err);
     }
 }
 
-// 🔥 IMPORTANT — fără asta NU rulează
+// 🔥 rulare initiala
 randeazaGrafic();
 
 </script>
