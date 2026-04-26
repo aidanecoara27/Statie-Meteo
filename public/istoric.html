@@ -265,7 +265,7 @@
                 const data = await res.json();
                 
                 const labels = data.map(d => {
-    const dt = new Date(d.data_ora.replace(" ", "T"));
+    const dt = new Date(d.data_ora);
 
     return dt.toLocaleTimeString('ro-RO', {
         hour: '2-digit',
@@ -284,7 +284,10 @@
                             labels: labels,
                             datasets: [{
                                 label: label,
-                                data: data.map(d => d[key]),
+                                data: data.map(d => {
+    const v = parseFloat(d[key]);
+    return (isNaN(v) || v === 0) ? null : v;
+}),
                                 borderColor: color,
                                 backgroundColor: color + '22',
                                 fill: true,
@@ -342,9 +345,9 @@
                 doc.setFillColor(33, 37, 41);
                 doc.rect(0, 0, pageWidth, 30, 'F');
                 doc.setTextColor(255, 255, 255);
-                doc.setFontSize(16);
+                doc.setFontSize(18);
                 doc.setFont("helvetica", "bold");
-                doc.text(`RAPORT TEHNIC: ${param.nume.toUpperCase()}`, pageWidth / 2, 15, { align: 'center' });
+                doc.text(`Raport Tehnic - ${param.nume}`, pageWidth / 2, 15, { align: 'center' });
 
                 doc.setTextColor(0, 0, 0);
                 doc.setFillColor(245, 245, 245);
@@ -363,16 +366,19 @@
                 if (chartCanvas) {
                     try {
                         const imgData = chartCanvas.toDataURL('image/png', 1.0);
-                        doc.addImage(imgData, 'PNG', 15, 90, pageWidth - 30, 80);
+                        doc.setDrawColor(200);
+doc.rect(15, 88, pageWidth - 30, 85); // chenar
+
+doc.addImage(imgData, 'PNG', 20, 90, pageWidth - 40, 75);
                     } catch (e) {
                         doc.text("Eroare la preluarea graficului.", 25, 100);
                     }
                 }
 
-                doc.setFont("helvetica", "bold");
+                doc.setCharSpace(0);
                 doc.text("Interpretare date:", 20, 190);
                 doc.setFont("helvetica", "normal");
-                const descriere = `Datele colectate pentru ${param.nume} indică o functionare stabilă a sistemului. Graficul de mai sus reprezintă valorile brute transmise de microcontrolerul ESP32 către baza de date si procesate în timp real.`;
+                const descriere = `Valorile măsurate pentru ${param.nume} indică o funcționare stabilă a sistemului SmartMeteo. Datele sunt colectate în timp real de microcontrolerul ESP32 și reflectă condițiile mediului monitorizat.`;
                 const textSplit = doc.splitTextToSize(descriere, pageWidth - 40);
                 doc.text(textSplit, 20, 198);
 

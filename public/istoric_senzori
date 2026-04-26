@@ -108,16 +108,26 @@ async function randeazaGrafic() {
         const res = await fetch(`/get-history?range=${range}`);
         const history = await res.json();
 
-        const valori = history
-            .map(h => parseFloat(h[sensorType]))
-            .filter(v => !isNaN(v) && v !== 0);
+        // 🔥 CONSTRUIRE DATE CORECTĂ (fără desincronizare)
+        const labels = [];
+        const valori = [];
 
-        const labels = history.map(h => {
-            const dt = new Date(h.data_ora);
-            return dt.toLocaleTimeString('ro-RO', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+        history.forEach(h => {
+            const val = parseFloat(h[sensorType]);
+
+            // ignoră valori invalide
+            if (!isNaN(val) && val !== 0) {
+                const dt = new Date(h.data_ora);
+
+                labels.push(
+                    dt.toLocaleTimeString('ro-RO', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                );
+
+                valori.push(val);
+            }
         });
 
         const ctx = document.getElementById('graficDetaliat').getContext('2d');
@@ -131,11 +141,14 @@ async function randeazaGrafic() {
                 datasets: [{
                     label: sensorNames[sensorType],
                     data: valori,
+
                     borderColor: '#e74c3c',
                     backgroundColor: 'rgba(231,76,60,0.15)',
+
                     fill: true,
-                    tension: 0.3,
-                    pointRadius: 2
+                    tension: 0.35,
+                    pointRadius: 2,
+                    borderWidth: 2
                 }]
             },
             options: {
@@ -147,7 +160,8 @@ async function randeazaGrafic() {
 
                     tooltip: {
                         callbacks: {
-                            label: ctx => ctx.raw + " " + sensorNames[sensorType]
+                            label: ctx =>
+                                ctx.raw + " " + (sensorNames[sensorType] || "")
                         }
                     },
 
@@ -166,7 +180,14 @@ async function randeazaGrafic() {
 
                 scales: {
                     x: {
-                        title: { display: true, text: "Timp" }
+                        title: {
+                            display: true,
+                            text: "Timp"
+                        },
+                        ticks: {
+                            maxRotation: 0,
+                            autoSkip: true
+                        }
                     },
                     y: {
                         title: {

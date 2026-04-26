@@ -31,7 +31,9 @@ body {
     flex-direction: column;
     z-index: 100;
 }
-.sidebar.collapsed { width: var(--sidebar-collapsed); }
+.sidebar.collapsed + .main-content {
+    margin-left: var(--sidebar-collapsed);
+}
 
 .sidebar-header {
     padding: 25px 20px;
@@ -63,6 +65,8 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.3s ease;
 }
 
 .top-nav {
@@ -162,6 +166,56 @@ body {
     text-align: center;
 }
 
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.controls select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.controls button {
+    background: var(--dashboard-green);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.controls button:hover {
+    background: #5c9e58;
+}
+
+canvas {
+    width: 100% !important;
+    height: 400px !important;
+}
+
 /* WEATHER */
 .weather-content {
     display: flex;
@@ -196,11 +250,6 @@ body {
     gap: 15px;
 }
 
-.panel {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-}
 
 .panel-body {
     padding: 10px;
