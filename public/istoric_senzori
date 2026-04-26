@@ -4,65 +4,143 @@
     <meta charset="UTF-8">
     <title>Istoric Detaliat Senzor</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #ecf0f5; }
-        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: #222d32; text-transform: capitalize; }
+        body {
+            font-family: 'Segoe UI', Arial;
+            padding: 20px;
+            background: #ecf0f5;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #222d32;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            height: 400px !important;
+        }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1 id="titlu-senzor">Variatie Senzor</h1>
-        <canvas id="graficDetaliat" height="400"></canvas>
-    </div>
 
-    <script>
-        // Preluăm tipul senzorului din URL (ex: ?sensor=temperature)
-        const params = new URLSearchParams(window.location.search);
-        const sensorType = params.get('sensor');
-        document.getElementById('titlu-senzor').innerText = "Istoric: " + sensorType;
+<div class="container">
+    <h1 id="titlu-senzor">Istoric</h1>
+    <canvas id="graficDetaliat"></canvas>
+</div>
 
-        async function randeazaGrafic() {
+<script>
+
+// 🔹 citire parametru din URL
+const params = new URLSearchParams(window.location.search);
+const sensorType = params.get('sensor') || 'temperature';
+
+// 🔹 denumiri frumoase
+const sensorNames = {
+    temperature: "Temperatură Aer (°C)",
+    humidity: "Umiditate (%)",
+    pressure: "Presiune (hPa)",
+    lux: "Luminozitate (lx)",
+    soil_moisture: "Umiditate Sol (%)"
+};
+
+document.getElementById('titlu-senzor').innerText =
+    "Istoric: " + (sensorNames[sensorType] || sensorType);
+
+
+// 🔹 functie grafic
+async function randeazaGrafic() {
     try {
         const res = await fetch('/get-history');
         const history = await res.json();
-        
-        // Debug: Verificăm în consolă dacă datele conțin coloana cerută
-        console.log("Date primite:", history[0]); 
+
+        console.log("Date:", history[0]);
+
+        // 🔥 FILTRARE valori invalide
+        const valori = history
+            .map(h => parseFloat(h[sensorType]))
+            .filter(v => !isNaN(v) && v !== 0);
+
+        // 🔥 TIMP CORECT
+        const labels = history.map(h => {
+            const dt = new Date(h.data_ora);
+            return dt.toLocaleTimeString('ro-RO', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        });
 
         const ctx = document.getElementById('graficDetaliat').getContext('2d');
-        
-        // Distrugem graficul vechi dacă există (previne suprapunerea la refresh)
+
         if (window.myChart) window.myChart.destroy();
 
         window.myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: history.map(h => h.ora),
+                labels: labels,
                 datasets: [{
-                    label: "Nivel " + sensorType,
-                    data: history.map(h => h[sensorType]), // EX: h['soil_moisture']
-                    borderColor: sensorType === 'soil_moisture' ? '#3498db' : '#5cb85c',
-                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    label: sensorNames[sensorType] || sensorType,
+                    data: valori,
+
+                    borderColor: '#e74c3c',
+                    backgroundColor: 'rgba(231, 76, 60, 0.15)',
+
                     fill: true,
-                    tension: 0.4,
-                    pointRadius: 5
+                    tension: 0.3,
+                    pointRadius: 2,
+                    borderWidth: 2
                 }]
             },
-            options: { 
-                responsive: true, 
+            options: {
+                responsive: true,
                 maintainAspectRatio: false,
+
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+
                 scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Timp"
+                        }
+                    },
                     y: {
-                        beginAtZero: true // Important pentru umiditate (%)
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: sensorNames[sensorType]
+                        }
                     }
                 }
             }
         });
-    } catch (eroare) {
-        console.error("Eroare la încărcarea graficului:", eroare);
+
+    } catch (err) {
+        console.error("Eroare:", err);
     }
 }
-    </script>
+
+// 🔥 IMPORTANT — fără asta NU rulează
+randeazaGrafic();
+
+</script>
+
 </body>
 </html>
