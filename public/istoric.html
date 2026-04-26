@@ -323,72 +323,100 @@
         };
 
         // --- COD GENERARE RAPORT PDF ---
-        document.getElementById('btn-raport').onclick = async function() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = doc.internal.pageSize.getWidth();
-            
-            const dataDeLa = document.getElementById('date-from').value || new Date().toLocaleDateString('ro-RO');
-            const dataPanaLa = document.getElementById('date-to').value || "Prezent";
+// --- COD GENERARE RAPORT PDF ---
+document.getElementById('btn-raport').onclick = async function() {
 
-            const parametri = [
-                { nume: "Temperatură Aer", senzor: "BME280 / DHT22", id: "chart-temp" },
-                { nume: "Umiditate Relativă", senzor: "BME280 / DHT22", id: "chart-hum" },
-                { nume: "Presiune Atmosferică", senzor: "BME280", id: "chart-pres" },
-                { nume: "Intensitate Luminoasă", senzor: "BH1750", id: "chart-lux" },
-                { nume: "Umiditate Sol", senzor: "Capacitive Soil v1.2", id: "chart-soil" }
-            ];
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
 
-            parametri.forEach((param, index) => {
-                if (index > 0) doc.addPage();
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-                doc.setFillColor(33, 37, 41);
-                doc.rect(0, 0, pageWidth, 30, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(18);
-                doc.setFont("helvetica", "bold");
-                doc.text(`Raport Tehnic - ${param.nume}`, pageWidth / 2, 15, { align: 'center' });
+    const dataDeLa = document.getElementById('date-from').value || new Date().toLocaleDateString('ro-RO');
+    const dataPanaLa = document.getElementById('date-to').value || "Prezent";
 
-                doc.setTextColor(0, 0, 0);
-                doc.setFillColor(245, 245, 245);
-                doc.rect(15, 40, pageWidth - 30, 35, 'F');
-                doc.setFontSize(10);
-                doc.setFont("helvetica", "normal");
-                
-                doc.text(`Senzor utilizat: ${param.senzor}`, 20, 50);
-                doc.text(`Interval monitorizat: ${dataDeLa} - ${dataPanaLa}`, 20, 57);
-                doc.text(`Stație: SmartMeteo ID 1016`, 20, 64);
+    const parametri = [
+        { nume: "Temperatura Aer", senzor: "BME280 / DHT22", id: "chart-temp" },
+        { nume: "Umiditate Relativa", senzor: "BME280 / DHT22", id: "chart-hum" },
+        { nume: "Presiune Atmosferica", senzor: "BME280", id: "chart-pres" },
+        { nume: "Intensitate Luminoasa", senzor: "BH1750", id: "chart-lux" },
+        { nume: "Umiditate Sol", senzor: "Capacitive Soil", id: "chart-soil" }
+    ];
 
-                doc.setFont("helvetica", "bold");
-                doc.text(`Evoluție Grafică:`, 20, 85);
-                
-                const chartCanvas = document.getElementById(param.id);
-                if (chartCanvas) {
-                    try {
-                        const imgData = chartCanvas.toDataURL('image/png', 1.0);
-                        doc.setDrawColor(200);
-doc.rect(15, 88, pageWidth - 30, 85); // chenar
+    parametri.forEach((param, index) => {
 
-doc.addImage(imgData, 'PNG', 20, 90, pageWidth - 40, 75);
-                    } catch (e) {
-                        doc.text("Eroare la preluarea graficului.", 25, 100);
-                    }
-                }
+        if (index > 0) doc.addPage();
 
-                doc.setCharSpace(0);
-                doc.text("Interpretare date:", 20, 190);
-                doc.setFont("helvetica", "normal");
-                const descriere = `Valorile măsurate pentru ${param.nume} indică o funcționare stabilă a sistemului SmartMeteo. Datele sunt colectate în timp real de microcontrolerul ESP32 și reflectă condițiile mediului monitorizat.`;
-                const textSplit = doc.splitTextToSize(descriere, pageWidth - 40);
-                doc.text(textSplit, 20, 198);
+        // 🔥 HEADER
+        doc.setFillColor(33, 37, 41);
+        doc.rect(0, 0, pageWidth, 25, 'F');
 
-                doc.setFontSize(8);
-                doc.setTextColor(150, 150, 150);
-                doc.text(`Pagina ${index + 1} / ${parametri.length} | Generat la ${new Date().toLocaleString()}`, pageWidth / 2, 285, { align: 'center' });
-            });
+        doc.setTextColor(255,255,255);
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Raport Tehnic - ${param.nume}`, pageWidth / 2, 15, { align: "center" });
 
-            doc.save(`Raport_SmartMeteo_${new Date().getTime()}.pdf`);
-        };
+        // 🔥 INFO BOX
+        doc.setTextColor(0,0,0);
+        doc.setFillColor(245,245,245);
+        doc.roundedRect(15, 35, pageWidth - 30, 30, 3, 3, 'F');
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+
+        doc.text(`Senzor utilizat: ${param.senzor}`, 20, 45);
+        doc.text(`Interval monitorizat: ${dataDeLa} - ${dataPanaLa}`, 20, 52);
+        doc.text(`Statie: SmartMeteo ID 1016`, 20, 59);
+
+        // 🔥 TITLU GRAFIC
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text("Evolutie grafica:", 20, 75);
+
+        // 🔥 GRAFIC
+        const chartCanvas = document.getElementById(param.id);
+        if (chartCanvas) {
+            try {
+                const imgData = chartCanvas.toDataURL('image/png', 1.0);
+
+                doc.setDrawColor(200);
+                doc.rect(15, 78, pageWidth - 30, 90);
+
+                doc.addImage(imgData, 'PNG', 20, 80, pageWidth - 40, 80);
+
+            } catch (e) {
+                doc.text("Eroare la grafic.", 20, 90);
+            }
+        }
+
+        // 🔥 INTERPRETARE
+        doc.setFont("helvetica", "bold");
+        doc.text("Interpretare date:", 20, 180);
+
+        doc.setFont("helvetica", "normal");
+
+        const descriere = `Valorile masurate pentru ${param.nume} indica o functionare stabila a sistemului SmartMeteo. Datele sunt colectate in timp real de ESP32 si reflecta conditiile mediului monitorizat.`;
+
+        const textSplit = doc.splitTextToSize(descriere, pageWidth - 40);
+
+        doc.text(textSplit, 20, 188, {
+            maxWidth: pageWidth - 40,
+            lineHeightFactor: 1.4
+        });
+
+        // 🔥 FOOTER
+        doc.setFontSize(8);
+        doc.setTextColor(120,120,120);
+
+        doc.text(
+            `Pagina ${index + 1} / ${parametri.length} | ${new Date().toLocaleString()}`,
+            pageWidth / 2,
+            285,
+            { align: 'center' }
+        );
+    });
+
+    doc.save(`Raport_SmartMeteo_${Date.now()}.pdf`);
+};
     </script>
 </body>
 </html>

@@ -31,8 +31,8 @@ body {
     flex-direction: column;
     z-index: 100;
 }
-.sidebar.collapsed + .main-content {
-    margin-left: var(--sidebar-collapsed);
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed);
 }
 
 .sidebar-header {
