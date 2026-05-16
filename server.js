@@ -30,6 +30,11 @@ db.connect((err) => {
 
 const axios = require('axios'); // Asigură-te că linia asta e la începutul fișierului server.js
 
+let lastUpdate = Date.now();
+
+let lastTemp = null;
+let sameTempCount = 0;
+
 // Ruta pentru OpenWeatherMap
 // Ruta pentru OpenWeatherMap
 app.get('/get-external-weather', async (req, res) => {
@@ -61,6 +66,90 @@ app.get('/update-sensors', (req, res) => {
     const s = req.query.s || 0;
     const dir = req.query.dir || 0; // Direcția vântului
     const vit = req.query.vit || 0; // Viteza vântului (rotații)
+
+    lastUpdate = Date.now();
+    const temp = parseFloat(t);
+const hum = parseFloat(h);
+const lux = parseFloat(l);
+const soil = parseFloat(s);
+const soil = parseFloat(s);
+
+/* TEMPERATURA MARE */
+if(temp > 35){
+    saveAlarm(
+        "temperature",
+        "Temperatură ridicată detectată",
+        temp
+    );
+}
+
+/* TEMPERATURA MICĂ */
+if(temp < 0){
+    saveAlarm(
+        "temperature",
+        "Temperatură foarte scăzută",
+        temp
+    );
+}
+
+/* UMIDITATE MARE */
+if(hum > 85){
+    saveAlarm(
+        "humidity",
+        "Umiditate ridicată",
+        hum
+    );
+}
+
+/* SOL USCAT */
+if(soil < 20){
+    saveAlarm(
+        "soil",
+        "Sol uscat - necesară irigare",
+        soil
+    );
+}
+
+/* SOL FOARTE UMED */
+if(soil > 90){
+    saveAlarm(
+        "soil",
+        "Sol foarte umed",
+        soil
+    );
+}
+
+/* LUMINA SCAZUTA */
+if(lux < 20){
+    saveAlarm(
+        "lux",
+        "Nivel lumină foarte scăzut",
+        lux
+    );
+}
+
+/* SENZOR BLOCAT */
+if(lastTemp === temp){
+
+    sameTempCount++;
+
+    if(sameTempCount >= 10){
+
+        saveAlarm(
+            "sensor",
+            "Posibil senzor blocat",
+            temp
+        );
+
+        sameTempCount = 0;
+    }
+
+}else{
+
+    sameTempCount = 0;
+}
+
+lastTemp = temp;
 
     // 1. Actualizăm status_control (pentru dashboard) - ADAUGAT dir și vit
     const sqlUpdate = "UPDATE status_control SET temperature = ?, humidity = ?, pressure = ?, lux = ?, soil_moisture = ?, wind_direction = ?, wind_speed = ? WHERE id = 1";
@@ -102,6 +191,22 @@ app.post('/login', (req, res) => {
     });
 });
 
+function saveAlarm(type, message, value) {
+
+    const sql = `
+        INSERT INTO alarms (type, message, value)
+        VALUES (?, ?, ?)
+    `;
+
+    db.query(sql, [type, message, value], (err) => {
+        if(err){
+            console.log("Eroare salvare alarmă:", err);
+        }
+    });
+
+    console.log("ALARMA:", message);
+
+
 // RUTA: Trimite ultimele 20 de înregistrări pentru grafic
 app.get('/get-history', (req, res) => {
     const range = req.query.range;
@@ -119,6 +224,43 @@ app.get('/get-history', (req, res) => {
         res.json(results);
     });
 });
+
+app.get('/get-alarms', (req, res) => {
+
+    const sql = `
+        SELECT * FROM alarms
+        ORDER BY id DESC
+        LIMIT 50
+    `;
+
+    db.query(sql, (err, results) => {
+
+        if(err){
+            return res.status(500).send(err);
+        }
+
+        res.json(results);
+
+    });
+
+});
+
+
+setInterval(() => {
+
+    const diff = Date.now() - lastUpdate;
+
+    if(diff > 30000){
+
+        saveAlarm(
+            "offline",
+            "Stația nu mai transmite date",
+            "OFFLINE"
+        );
+
+    }
+
+}, 30000);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

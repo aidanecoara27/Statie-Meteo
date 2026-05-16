@@ -52,6 +52,13 @@
                 </a>
             </li>
 
+            <li>
+                <a href="alarme.html">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span>Alarme</span>
+                </a>
+            </li>
+
         </ul>
 
     </div>
@@ -124,6 +131,18 @@
                 </div>
 
             </div>
+
+            <div class="panel" style="margin-bottom:20px;">
+
+    <div class="panel-header-green">
+        Alerte active
+    </div>
+
+    <div class="panel-body">
+        <span id="alarm-count">0 alarme active</span>
+    </div>
+
+</div>
 
             <!-- GRID -->
             <div class="dashboard-grid">
@@ -283,7 +302,23 @@
 
         }
 
+async function updateAlarmCount(){
+
+    const res = await fetch('/get-alarms');
+
+    const alarms = await res.json();
+
+    document.getElementById('alarm-count').innerText =
+        alarms.length + ' alarme active';
+
+}
+
+updateAlarmCount();
+
+setInterval(updateAlarmCount, 10000);
+
         /* DATE SENZORI */
+    
 
         async function updateLocalData() {
 
