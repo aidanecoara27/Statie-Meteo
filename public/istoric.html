@@ -157,6 +157,16 @@
         canvas { flex: 1; width: 100% !important; height: 100% !important; }
 
         @media (max-width: 1000px) { .charts-grid { grid-template-columns: 1fr; } }
+        
+        /* Mobile adjustments to match main style.css behavior */
+        @media (max-width: 768px) {
+            body { overflow: visible; }
+            .sidebar { position: fixed; left: 0; top: 0; width: 100%; height: auto; z-index: 999; }
+            .sidebar-menu { display: none; }
+            .sidebar.active .sidebar-menu { display: block; }
+            .main-content { padding-top: 80px; overflow-y: auto; }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -266,9 +276,20 @@
         </div> </div> <script>
         // Toggle Sidebar
         document.getElementById('toggle-btn').onclick = function() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            setTimeout(() => { Object.values(charts).forEach(c => c.resize()); }, 350);
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.toggle('active');
+            } else {
+                document.getElementById('sidebar').classList.toggle('collapsed');
+                setTimeout(() => { if (typeof charts !== 'undefined') Object.values(charts).forEach(c => c.resize()); }, 350);
+            }
         };
+
+        // Close mobile sidebar after clicking a menu link
+        document.querySelectorAll('.sidebar-menu a').forEach(a => {
+            a.addEventListener('click', () => {
+                if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
+            });
+        });
 
         // Toggle Grafice
         function toggleChart(boxId, btn) {

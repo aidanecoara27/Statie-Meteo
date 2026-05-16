@@ -346,6 +346,13 @@ if(window.innerWidth <= 768){
 }
 
 };
+
+// Close mobile sidebar after clicking a menu link
+document.querySelectorAll('.sidebar-menu a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
+    });
+});
 </script>
 
 </body>
