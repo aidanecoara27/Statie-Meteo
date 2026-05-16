@@ -665,6 +665,16 @@ canvas{
 
         grid-template-columns: 1fr;
 
+        gap: 24px;
+
+    }
+
+    .stats-grid .panel{
+
+        width: 100%;
+
+        min-width: 0;
+
     }
 
 }
@@ -677,21 +687,43 @@ canvas{
 
         width: 100%;
 
-        position: relative;
+        position: fixed;
+
+        top: 0;
 
         height: auto;
 
+        z-index: 999;
+
+        padding-bottom: 0;
+
     }
 
-    .sidebar.active{
+    .sidebar-header{
 
-        left: 0;
+        padding: 20px;
+
+        justify-content: space-between;
+
+    }
+
+    .sidebar-menu{
+
+        display: none;
+
+    }
+
+    .sidebar.active .sidebar-menu{
+
+        display: block;
 
     }
 
     .main-content{
 
         margin-left: 0;
+
+        padding-top: 80px;
 
     }
 
