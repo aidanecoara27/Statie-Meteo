@@ -281,6 +281,110 @@ select {
     border: 1px solid #ddd;
     margin-right: 10px;
 }
+
+/* WEATHER HERO */
+
+.weather-hero{
+    width: 100%;
+    min-height: 260px;
+
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+
+    border-radius: 24px;
+
+    padding: 35px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    color: white;
+
+    margin-bottom: 30px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.weather-left{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.weather-top{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.weather-top img{
+    width: 90px;
+    height: 90px;
+}
+
+.weather-top h2{
+    margin: 0;
+    font-size: 2rem;
+}
+
+.weather-top p{
+    margin-top: 5px;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+#hero-temp{
+    font-size: 5rem;
+    margin-top: 20px;
+    margin-bottom: 0;
+    font-weight: bold;
+}
+
+.weather-right{
+    display: flex;
+    gap: 25px;
+}
+
+.weather-detail{
+    background: rgba(255,255,255,0.12);
+
+    backdrop-filter: blur(10px);
+
+    padding: 20px;
+
+    border-radius: 18px;
+
+    min-width: 140px;
+
+    text-align: center;
+}
+
+.weather-detail span{
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+.weather-detail h3{
+    margin-top: 10px;
+    font-size: 1.6rem;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 900px){
+
+    .weather-hero{
+        flex-direction: column;
+        gap: 30px;
+        align-items: flex-start;
+    }
+
+    .weather-right{
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+}
 /* CULORI */
 .label-red { background: #e74c3c; }
 .label-blue { background: #3498db; }
