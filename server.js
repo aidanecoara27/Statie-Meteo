@@ -227,10 +227,23 @@ app.get('/get-history', (req, res) => {
 app.get('/get-alarms', (req, res) => {
 
     const sql = `
-        SELECT * FROM alarms
-        ORDER BY id DESC
-        LIMIT 50
-    `;
+
+SELECT *
+FROM alarms a1
+
+WHERE id = (
+
+    SELECT MAX(id)
+
+    FROM alarms a2
+
+    WHERE a1.message = a2.message
+
+)
+
+ORDER BY id DESC
+
+`;
 
     db.query(sql, (err, results) => {
 

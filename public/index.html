@@ -309,7 +309,12 @@ async function updateAlarmCount(){
     const alarms = await res.json();
 
     document.getElementById('alarm-count').innerText =
-        alarms.length + ' alarme active';
+
+    alarms.length === 1
+
+    ? '1 alarmă activă'
+
+    : alarms.length + ' alarme active';
 
 }
 
