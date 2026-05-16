@@ -673,7 +673,13 @@ canvas{
 
     .sidebar{
 
-        left: -240px;
+        left: 0;
+
+        width: 100%;
+
+        position: relative;
+
+        height: auto;
 
     }
 
@@ -704,6 +710,18 @@ canvas{
     .weather-detail{
 
         flex: 1;
+
+    }
+
+    body{
+
+        display: block;
+
+    }
+
+    .sidebar-header i{
+
+        display: block;
 
     }
 

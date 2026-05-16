@@ -30,6 +30,12 @@ if (localStorage.getItem("logged") !== "true") {
     gap: 20px;
 }
 
+@media(max-width: 900px){
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* fiecare rand */
 .stat-row {
     display: flex;
