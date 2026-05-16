@@ -1,0 +1,286 @@
+# SmartMeteo – Pagina Analiză Inteligentă
+
+# 1. ADAUGĂ ÎN SIDEBAR
+
+În toate paginile:
+
+```html
+<li>
+    <a href="analiza.html">
+
+        <i class="fas fa-brain"></i>
+
+        <span>Analiză</span>
+
+    </a>
+</li>
+```
+
+---
+
+# 2. CREEAZĂ analiza.html
+
+```html
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SmartMeteo - Analiză</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+
+        <div class="sidebar-header">
+
+            <span>SmartMeteo</span>
+
+            <i class="fas fa-bars"
+               id="toggle-btn"></i>
+
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="index.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="istoric.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Istoric</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="statistica.html">
+                    <i class="fas fa-table"></i>
+                    <span>Statistică</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="alarme.html">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span>Alarme</span>
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="analiza.html">
+                    <i class="fas fa-brain"></i>
+                    <span>Analiză</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+        <div class="content-padding">
+
+            <h1 style="margin-bottom:25px;">
+                Analiză inteligentă mediu
+            </h1>
+
+            <!-- SCOR -->
+            <div class="analysis-score-card">
+
+                <h2>Scor confort ambiental</h2>
+
+                <div id="comfort-score">--</div>
+
+                <p id="comfort-text">
+                    Se analizează datele...
+                </p>
+
+            </div>
+
+            <!-- ANALIZE -->
+            <div id="analysis-list"></div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        /* SIDEBAR */
+
+        document.getElementById('toggle-btn').onclick = () => {
+
+            document.getElementById('sidebar')
+                .classList.toggle('collapsed');
+
+        };
+
+        /* ANALIZA */
+
+        async function loadAnalysis(){
+
+            try{
+
+                const res = await fetch('/get-latest-data');
+
+                const data = await res.json();
+
+                const temp = parseFloat(data.temperature);
+                const hum = parseFloat(data.humidity);
+                const pressure = parseFloat(data.pressure);
+                const lux = parseFloat(data.lux);
+                const soil = parseFloat(data.soil_moisture);
+
+                const analysisContainer =
+                    document.getElementById('analysis-list');
+
+                analysisContainer.innerHTML = '';
+
+                let score = 100;
+
+                /* TEMPERATURA MARE */
+                if(temp > 35 && hum < 40){
+
+                    score -= 20;
+
+                    addAnalysis(
+                        '🌡 Temperatură ridicată și aer uscat',
+                        'Există risc de supraîncălzire și stres termic pentru plante.'
+                    );
+
+                }
+
+                /* PLOAIE */
+                if(hum > 85 && pressure < 1000){
+
+                    score -= 10;
+
+                    addAnalysis(
+                        '🌧 Posibile precipitații',
+                        'Umiditatea ridicată și presiunea scăzută indică posibilitatea unor precipitații.'
+                    );
+
+                }
+
+                /* SOL USCAT */
+                if(soil < 20 && temp > 30){
+
+                    score -= 25;
+
+                    addAnalysis(
+                        '🌱 Sol foarte uscat',
+                        'Se recomandă irigarea urgentă a solului pentru protejarea vegetației.'
+                    );
+
+                }
+
+                /* MUCEGAI */
+                if(lux < 20 && hum > 80){
+
+                    score -= 15;
+
+                    addAnalysis(
+                        '🌫 Risc de condens',
+                        'Nivelul redus de lumină și umiditatea mare pot favoriza apariția condensului.'
+                    );
+
+                }
+
+                /* CONFORT BUN */
+                if(
+                    temp >= 20 && temp <= 28 &&
+                    hum >= 40 && hum <= 70
+                ){
+
+                    addAnalysis(
+                        '✅ Mediu stabil',
+                        'Parametrii actuali indică un mediu ambiental confortabil și stabil.'
+                    );
+
+                }
+
+                /* SCOR */
+                if(score < 0){
+                    score = 0;
+                }
+
+                document.getElementById('comfort-score').innerText =
+                    score + '/100';
+
+                if(score >= 80){
+
+                    document.getElementById('comfort-text').innerText =
+                        'Confort ambiental bun';
+
+                }
+                else if(score >= 50){
+
+                    document.getElementById('comfort-text').innerText =
+                        'Confort ambiental moderat';
+
+                }
+                else{
+
+                    document.getElementById('comfort-text').innerText =
+                        'Mediu nefavorabil';
+
+                }
+
+            }
+            catch(err){
+
+                console.log(err);
+
+            }
+
+        }
+
+        /* ADAUGA CARD */
+
+        function addAnalysis(title, text){
+
+            const container =
+                document.getElementById('analysis-list');
+
+            container.innerHTML += `
+
+            <div class="analysis-card">
+
+                <h3>${title}</h3>
+
+                <p>${text}</p>
+
+            </div>
+
+            `;
+
+        }
+
+        loadAnalysis();
+
+        setInterval(loadAnalysis, 5000);
+
+    </script>
+
+</body>
+</html>
