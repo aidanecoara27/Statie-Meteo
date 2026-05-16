@@ -10,8 +10,84 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
+  <body>
+
+    <!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+
+        <span>SmartMeteo</span>
+
+        <i class="fas fa-bars" id="toggle-btn"></i>
+
+    </div>
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="index.html">
+
+                <i class="fas fa-tachometer-alt"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+        </li>
+
+        <li>
+            <a href="istoric.html">
+
+                <i class="fas fa-chart-line"></i>
+
+                <span>Istoric</span>
+
+            </a>
+        </li>
+
+        <li>
+            <a href="statistica.html">
+
+                <i class="fas fa-table"></i>
+
+                <span>Statistică</span>
+
+            </a>
+        </li>
+
+        <li class="active">
+            <a href="alarme.html">
+
+                <i class="fas fa-triangle-exclamation"></i>
+
+                <span>Alarme</span>
+
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+        <div class="content-padding">
+
+            <h1 style="margin-bottom:25px;">
+                Alarme sistem
+            </h1>
+
+            <div id="alarm-list"></div>
+
+        </div>
+
+    </div>
 
 <div class="main-content">
 
@@ -26,6 +102,7 @@
 </div>
 
 <script>
+
 
 async function loadAlarms(){
 
@@ -76,6 +153,13 @@ async function loadAlarms(){
 loadAlarms();
 
 setInterval(loadAlarms, 5000);
+
+document.getElementById('toggle-btn').onclick = () => {
+
+    document.getElementById('sidebar')
+        .classList.toggle('collapsed');
+
+};
 
 </script>
 
