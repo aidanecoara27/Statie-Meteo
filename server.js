@@ -69,10 +69,9 @@ app.get('/update-sensors', (req, res) => {
 
     lastUpdate = Date.now();
     const temp = parseFloat(t);
-const hum = parseFloat(h);
-const lux = parseFloat(l);
-const soil = parseFloat(s);
-const soil = parseFloat(s);
+    const hum = parseFloat(h);
+    const lux = parseFloat(l);
+    const soil = parseFloat(s);
 
 /* TEMPERATURA MARE */
 if(temp > 35){
