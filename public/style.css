@@ -1,446 +1,626 @@
-/* 1. RESET ȘI VARIABILE */
-:root {
+/* =========================================
+   SMARTMETEO - STYLE.CSS
+========================================= */
+
+:root{
+
     --sidebar-width: 240px;
+
     --sidebar-collapsed: 70px;
-    --sidebar-bg: #212529;
+
+    --sidebar-bg: #1e1f26;
+
     --dashboard-green: #72b06e;
-    --bg-light: #f4f7f6;
-    --border-color: #dee2e6;
+
+    --bg-light: #f4f7fb;
+
+    --border-color: #e5e7eb;
+
+    --text-dark: #1f2937;
+
 }
 
-* { box-sizing: border-box !important; }
+/* RESET */
 
-body { 
-    font-family: 'Segoe UI', Roboto, Arial, sans-serif !important; 
-    margin: 0 !important; 
-    background: var(--bg-light) !important; 
-    display: flex !important; 
-    height: 100vh !important;
-    overflow: auto !important;
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* 2. SIDEBAR */
-.sidebar { 
-    width: var(--sidebar-width); 
-    background: var(--sidebar-bg); 
-    height: 100vh; 
-    color: white; 
-    flex-shrink: 0;
-    transition: width 0.3s ease;
+body{
+
+    font-family: 'Segoe UI', sans-serif;
+
+    background: var(--bg-light);
+
     display: flex;
-    flex-direction: column;
-    z-index: 100;
+
+    min-height: 100vh;
+
+    color: var(--text-dark);
+
 }
-.sidebar.collapsed {
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar{
+
+    width: var(--sidebar-width);
+
+    background: var(--sidebar-bg);
+
+    color: white;
+
+    height: 100vh;
+
+    position: fixed;
+
+    left: 0;
+
+    top: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    transition: 0.3s;
+
+    z-index: 999;
+
+}
+
+.sidebar.collapsed{
+
     width: var(--sidebar-collapsed);
+
 }
 
-.sidebar-header {
+.sidebar-header{
+
     padding: 25px 20px;
-    font-size: 20px;
-    font-weight: bold;
+
     display: flex;
+
     justify-content: space-between;
-}
 
-.sidebar-menu { list-style: none; padding: 0; margin: 0; }
-
-.sidebar-menu a {
-    display: flex;
     align-items: center;
-    padding: 16px 20px;
-    color: #adb5bd;
-    text-decoration: none;
+
+    font-size: 1.5rem;
+
+    font-weight: bold;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+
 }
 
-.sidebar-menu li.active a,
-.sidebar-menu a:hover {
-    background: rgba(255,255,255,0.1);
-    color: white;
+.sidebar-header i{
+
+    cursor: pointer;
+
 }
 
-/* 3. MAIN */
-.main-content {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
+.sidebar-menu{
 
-.top-nav {
-    background: white;
-    padding: 15px 25px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-}
+    list-style: none;
 
-.content-padding {
-    padding: 30px;
-}
-
-/* 4. DASHBOARD */
-.dashboard-row {
-    display: flex;
-    gap: 20px;
-}
-
-/* 🔥 CHEIA: coloane egale */
-.dashboard-row > div {
-    flex: 1;
-}
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1.8fr 1fr;
-    gap: 20px;
-}
-
-/* coloane */
-.col-left {
-    display: flex;
-    flex-direction: column;
-}
-
-.col-right {
-    display: flex;
-    flex-direction: column;
-}
-
-/* spațiu între panouri */
-.col-left .panel + .panel {
     margin-top: 20px;
-}
-/* PANELS */
-.panel {
-    background: white;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    overflow: hidden; /* 🔥 FOARTE IMPORTANT */
-    display: flex;
-    flex-direction: column;
+
 }
 
-.panel-body {
-    padding: 15px;
+.sidebar-menu li{
+
+    width: 100%;
+
 }
 
-.panel-header-green {
-    background: var(--dashboard-green);
-    color: white;
-    padding: 12px 15px;
-    font-weight: 600;
-}
-/* SENSOR TAGS */
-.sensor-tags {
+.sidebar-menu a{
+
     display: flex;
-    flex-direction: column;
+
+    align-items: center;
+
     gap: 12px;
-    padding: 15px;
-}
 
-.tag-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f8f9fa;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
+    padding: 16px 22px;
+
+    color: #c7ced6;
+
+    text-decoration: none;
+
     transition: 0.2s;
+
+    font-size: 1rem;
+
 }
 
+.sidebar-menu a:hover,
+.sidebar-menu .active a{
 
-.tag-item:hover {
-    background: #e9ecef;
-}
+    background: rgba(255,255,255,0.08);
 
-.label {
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.85rem;
     color: white;
-    font-weight: bold;
-    min-width: 130px;
-    text-align: center;
+
 }
 
-.container {
-    max-width: 1000px;
-    margin: auto;
+.sidebar.collapsed span{
+
+    display: none;
+
+}
+
+/* =========================================
+   MAIN
+========================================= */
+
+.main-content{
+
+    margin-left: var(--sidebar-width);
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    transition: 0.3s;
+
+}
+
+.top-nav{
+
     background: white;
-    padding: 25px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
 
-.controls {
+    padding: 18px 30px;
+
+    border-bottom: 1px solid var(--border-color);
+
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+
 }
 
-.controls select {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+.content-padding{
+
+    padding: 30px;
+
 }
 
-.controls button {
-    background: var(--dashboard-green);
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: 0.2s;
-}
-
-h1 {
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.controls button:hover {
-    background: #5c9e58;
-}
-
-canvas {
-    width: 100% !important;
-    height: 400px !important;
-}
-
-/* WEATHER */
-.weather-content {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-}
-
-.weather-indicators {
-    display: flex;
-    gap: 30px;
-}
-
-.gauge-circle, .gauge-container {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    border: 6px solid #3498db;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    font-weight: bold;
-}
-
-.gauge-container {
-    border-color: #e74c3c;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-}
-
-
-.panel-body {
-    padding: 10px;
-}
-
-.stat-card, .panel {
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-.stat-row {
-    font-size: 13px;
-}
-
-.stat-desc {
-    font-size: 12px;
-}
-
-.stat-row strong {
-    color: #333;
-    font-weight: 600;
-}
-
-.panel-header-green {
-    font-size: 14px;
-    letter-spacing: 0.5px;
-}
-
-select {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    margin-right: 10px;
-}
-
-/* WEATHER HERO */
+/* =========================================
+   WEATHER HERO
+========================================= */
 
 .weather-hero{
+
     width: 100%;
-    min-height: 260px;
 
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    min-height: 280px;
 
-    border-radius: 24px;
+    background: linear-gradient(135deg,#1d4ed8,#2563eb);
 
-    padding: 35px;
+    border-radius: 28px;
+
+    padding: 40px;
 
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
 
     color: white;
 
     margin-bottom: 30px;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+
 }
 
 .weather-left{
+
     display: flex;
+
     flex-direction: column;
+
     justify-content: center;
+
 }
 
 .weather-top{
+
     display: flex;
+
     align-items: center;
+
     gap: 20px;
+
 }
 
 .weather-top img{
-    width: 90px;
-    height: 90px;
+
+    width: 100px;
+
+    height: 100px;
+
 }
 
 .weather-top h2{
-    margin: 0;
-    font-size: 2rem;
+
+    font-size: 2.5rem;
+
+    margin-bottom: 5px;
+
 }
 
 .weather-top p{
-    margin-top: 5px;
-    font-size: 1rem;
+
     opacity: 0.9;
+
+    font-size: 1.1rem;
+
 }
 
 #hero-temp{
-    font-size: 5rem;
+
+    font-size: 6rem;
+
     margin-top: 20px;
-    margin-bottom: 0;
+
     font-weight: bold;
+
 }
 
 .weather-right{
+
     display: flex;
-    gap: 25px;
+
+    gap: 20px;
+
 }
 
 .weather-detail{
+
     background: rgba(255,255,255,0.12);
 
     backdrop-filter: blur(10px);
 
-    padding: 20px;
+    padding: 25px;
 
-    border-radius: 18px;
+    border-radius: 20px;
 
-    min-width: 140px;
+    min-width: 150px;
 
     text-align: center;
+
 }
 
 .weather-detail span{
-    font-size: 0.9rem;
-    opacity: 0.85;
+
+    font-size: 0.95rem;
+
+    opacity: 0.9;
+
 }
 
 .weather-detail h3{
-    margin-top: 10px;
-    font-size: 1.6rem;
+
+    margin-top: 12px;
+
+    font-size: 1.8rem;
+
 }
 
-/* RESPONSIVE */
+/* =========================================
+   GRID
+========================================= */
+
+.dashboard-grid{
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 20px;
+
+}
+
+/* =========================================
+   PANELS
+========================================= */
+
+.panel{
+
+    background: white;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+
+}
+
+.panel-header-green{
+
+    background: var(--dashboard-green);
+
+    color: white;
+
+    padding: 14px 18px;
+
+    font-weight: 600;
+
+    font-size: 1rem;
+
+}
+
+.panel-body{
+
+    padding: 20px;
+
+}
+
+/* =========================================
+   SENSOR TAGS
+========================================= */
+
+.sensor-tags{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+}
+
+.tag-item{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: #f8fafc;
+
+    padding: 15px 18px;
+
+    border-radius: 12px;
+
+    transition: 0.2s;
+
+    cursor: pointer;
+
+}
+
+.tag-item:hover{
+
+    background: #eef2f7;
+
+    transform: translateY(-2px);
+
+}
+
+.tag-item strong{
+
+    font-size: 1.1rem;
+
+}
+
+.label{
+
+    color: white;
+
+    padding: 8px 12px;
+
+    border-radius: 8px;
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    min-width: 170px;
+
+    text-align: center;
+
+}
+
+/* LABEL COLORS */
+
+.label-red{
+    background: #e74c3c;
+}
+
+.label-blue{
+    background: #3498db;
+}
+
+.label-brown{
+    background: #795548;
+}
+
+.label-green{
+    background: #2ecc71;
+}
+
+.label-soil{
+    background: #8d6e63;
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.btn{
+
+    border: none;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    color: white;
+
+    font-weight: 600;
+
+}
+
+.btn-red{
+
+    background: #ef4444;
+
+}
+
+.btn-red:hover{
+
+    background: #dc2626;
+
+}
+
+/* =========================================
+   CONTAINER
+========================================= */
+
+.container{
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 25px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+
+}
+
+/* =========================================
+   CONTROLS
+========================================= */
+
+.controls{
+
+    display: flex;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+
+    flex-wrap: wrap;
+
+}
+
+.controls button{
+
+    background: var(--dashboard-green);
+
+    color: white;
+
+    border: none;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+}
+
+.controls button:hover{
+
+    background: #5e9f5a;
+
+}
+
+select{
+
+    padding: 10px;
+
+    border-radius: 10px;
+
+    border: 1px solid #d1d5db;
+
+}
+
+/* =========================================
+   CANVAS
+========================================= */
+
+canvas{
+
+    width: 100% !important;
+
+    height: 400px !important;
+
+}
+
+/* =========================================
+   MOBILE
+========================================= */
 
 @media(max-width: 900px){
 
     .weather-hero{
+
         flex-direction: column;
-        gap: 30px;
+
         align-items: flex-start;
+
+        gap: 30px;
+
     }
 
     .weather-right{
+
         width: 100%;
+
         flex-wrap: wrap;
+
     }
 
 }
-/* CULORI */
-.label-red { background: #e74c3c; }
-.label-blue { background: #3498db; }
-.label-brown { background: #795548; }
-.label-green { background: #2ecc71; }
-.label-soil { background: #8d6e63; }
 
-/* BUTTON */
-.btn { 
-    padding: 8px 15px; 
-    border: none; 
-    border-radius: 4px; 
-    color: white; 
-    cursor: pointer; 
-}
+@media(max-width: 768px){
 
-.btn-red { background: #dc3545; }
+    .sidebar{
 
-/* 📱 MOBILE */
-@media (max-width: 768px) {
+        left: -240px;
 
-    .dashboard-grid {
-        grid-template-columns: 1fr;
     }
 
-    .sidebar {
-        position: fixed;
-        left: -240px; /* 🔥 ascuns */
-        top: 0;
-        width: 240px;
-        height: 100vh;
-        z-index: 9999;
-        transition: 0.3s;
+    .sidebar.active{
+
+        left: 0;
+
     }
 
-    .sidebar.active {
-        left: 0; /* 🔥 apare când apeși */
+    .main-content{
+
+        margin-left: 0;
+
     }
 
-    .main-content {
-        margin-left: 0 !important;
+    .content-padding{
+
+        padding: 20px;
+
     }
 
-    .weather-content {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
+    #hero-temp{
+
+        font-size: 4.5rem;
+
     }
 
-    .weather-indicators {
-        flex-direction: column;
-        align-items: center;
+    .weather-detail{
+
+        flex: 1;
+
     }
 
-    .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
 }
