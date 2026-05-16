@@ -13,6 +13,14 @@ if (localStorage.getItem("logged") !== "true") {
 </script>
 
 <style>
+    :root {
+            --sidebar-width: 240px;
+            --sidebar-collapsed: 70px;
+            --sidebar-bg: #212529;
+            --dashboard-green: #72b06e;
+            --bg-light: #f4f7f6;
+            --border-color: #dee2e6;
+        }
 
 /* GRID */
 .stats-grid {
@@ -36,6 +44,10 @@ if (localStorage.getItem("logged") !== "true") {
     color: #666;
 }
 
+        .sidebar-menu li.active { border-left: 4px solid var(--dashboard-green); background: rgba(255,255,255,0.05); }
+        .sidebar-menu li.active a { color: white; }
+        .sidebar-menu i { min-width: 30px; font-size: 18px; }
+        .sidebar.collapsed span { display: none; }
 </style>
 </head>
 
@@ -52,7 +64,7 @@ if (localStorage.getItem("logged") !== "true") {
         <li><a href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
         <li><a href="istoric.html"><i class="fas fa-chart-line"></i><span>Istoric</span></a></li>
         <li class="active"><a href="statistica.html"><i class="fas fa-table"></i><span>Statistică</span></a></li>
-        <li class="active"><a href="alarme.html"><i class="fas fa-triangle-exclamation"></i><span>Alarme</span></a></li>
+        <li><a href="alarme.html"><i class="fas fa-triangle-exclamation"></i><span>Alarme</span></a></li>
     </ul>
 </div>
 
