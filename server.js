@@ -204,7 +204,7 @@ function saveAlarm(type, message, value) {
     });
 
     console.log("ALARMA:", message);
-
+}
 
 // RUTA: Trimite ultimele 20 de înregistrări pentru grafic
 app.get('/get-history', (req, res) => {
