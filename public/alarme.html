@@ -1,84 +1,88 @@
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
 
-<title>SmartMeteo - Alarme</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>SmartMeteo - Alarme</title>
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 </head>
+
 <body>
 
     <!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
+    <div class="sidebar" id="sidebar">
 
-    <div class="sidebar-header">
+        <div class="sidebar-header">
 
-        <span>SmartMeteo</span>
+            <span>SmartMeteo</span>
 
-        <i class="fas fa-bars" id="toggle-btn"></i>
+            <i class="fas fa-bars"
+               id="toggle-btn"></i>
+
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="index.html">
+
+                    <i class="fas fa-tachometer-alt"></i>
+
+                    <span>Dashboard</span>
+
+                </a>
+            </li>
+
+            <li>
+                <a href="istoric.html">
+
+                    <i class="fas fa-chart-line"></i>
+
+                    <span>Istoric</span>
+
+                </a>
+            </li>
+
+            <li>
+                <a href="statistica.html">
+
+                    <i class="fas fa-table"></i>
+
+                    <span>Statistică</span>
+
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="alarme.html">
+
+                    <i class="fas fa-triangle-exclamation"></i>
+
+                    <span>Alarme</span>
+
+                </a>
+            </li>
+
+        </ul>
 
     </div>
-
-    <ul class="sidebar-menu">
-
-        <li>
-            <a href="index.html">
-
-                <i class="fas fa-tachometer-alt"></i>
-
-                <span>Dashboard</span>
-
-            </a>
-        </li>
-
-        <li>
-            <a href="istoric.html">
-
-                <i class="fas fa-chart-line"></i>
-
-                <span>Istoric</span>
-
-            </a>
-        </li>
-
-        <li>
-            <a href="statistica.html">
-
-                <i class="fas fa-table"></i>
-
-                <span>Statistică</span>
-
-            </a>
-        </li>
-
-        <li class="active">
-            <a href="alarme.html">
-
-                <i class="fas fa-triangle-exclamation"></i>
-
-                <span>Alarme</span>
-
-            </a>
-        </li>
-
-    </ul>
-
-</div>
 
     <!-- MAIN -->
     <div class="main-content">
 
         <div class="content-padding">
 
-            <h1 style="margin-bottom:25px;">
+            <h1 style="margin-bottom: 25px;">
                 Alarme sistem
             </h1>
 
@@ -88,79 +92,121 @@
 
     </div>
 
-<div class="main-content">
+    <!-- SCRIPT -->
+    <script>
 
-<div class="content-padding">
+        /* SIDEBAR */
 
-<h1>Alarme sistem</h1>
+        document.getElementById('toggle-btn').onclick = () => {
 
-<div id="alarm-list"></div>
+            document.getElementById('sidebar')
+                .classList.toggle('collapsed');
 
-</div>
+        };
 
-</div>
+        /* LOAD ALARMS */
 
-<script>
+        async function loadAlarms() {
 
+            try {
 
-async function loadAlarms(){
+                const res =
+                    await fetch('/get-alarms');
 
-    const res = await fetch('/get-alarms');
+                const alarms =
+                    await res.json();
 
-    const alarms = await res.json();
+                const container =
+                    document.getElementById('alarm-list');
 
-    const container = document.getElementById('alarm-list');
+                container.innerHTML = '';
 
-    container.innerHTML = '';
+                alarms.forEach(a => {
 
-    alarms.forEach(a => {
+                    let color = '#3498db';
 
-        let color = '#3498db';
+                    if (a.type === 'offline') {
 
-        if(a.type === 'offline'){
-            color = '#e74c3c';
+                        color = '#e74c3c';
+
+                    }
+
+                    if (a.type === 'temperature') {
+
+                        color = '#f39c12';
+
+                    }
+
+                    if (a.type === 'soil') {
+
+                        color = '#27ae60';
+
+                    }
+
+                    if (a.type === 'sensor') {
+
+                        color = '#8e44ad';
+
+                    }
+
+                    container.innerHTML += `
+
+                    <div style="
+                        background:white;
+                        padding:20px;
+                        border-radius:16px;
+                        margin-bottom:18px;
+                        border-left:6px solid ${color};
+                        box-shadow:0 4px 12px rgba(0,0,0,0.06);
+                        max-width:900px;
+                    ">
+
+                        <h3 style="
+                            margin-bottom:10px;
+                            color:#1f2937;
+                        ">
+                            ${a.message}
+                        </h3>
+
+                        <p style="margin-bottom:5px;">
+
+                            <strong>Valoare:</strong>
+                            ${a.value}
+
+                        </p>
+
+                        <p style="
+                            color:#6b7280;
+                            font-size:0.95rem;
+                        ">
+
+                            <strong>Data:</strong>
+                            ${a.created_at}
+
+                        </p>
+
+                    </div>
+
+                    `;
+
+                });
+
+            }
+
+            catch (err) {
+
+                console.log(err);
+
+            }
+
         }
 
-        if(a.type === 'temperature'){
-            color = '#f39c12';
-        }
+        loadAlarms();
 
-        container.innerHTML += `
+        setInterval(loadAlarms, 5000);
 
-        <div style="
-            background:white;
-            padding:20px;
-            border-radius:14px;
-            margin-bottom:15px;
-            border-left:6px solid ${color};
-            box-shadow:0 4px 10px rgba(0,0,0,0.05);
-        ">
-
-            <h3>${a.message}</h3>
-
-            <p><strong>Valoare:</strong> ${a.value}</p>
-
-            <p><strong>Data:</strong> ${a.created_at}</p>
-
-        </div>
-        `;
-
-    });
-
-}
-
-loadAlarms();
-
-setInterval(loadAlarms, 5000);
-
-document.getElementById('toggle-btn').onclick = () => {
-
-    document.getElementById('sidebar')
-        .classList.toggle('collapsed');
-
-};
-
-</script>
+    </script>
 
 </body>
+
 </html>
