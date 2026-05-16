@@ -326,9 +326,17 @@ async function loadStats() {
     document.getElementById("conf").innerText = "± " + s.conf.toFixed(2);
 }
 document.getElementById('toggle-btn').onclick = () => {
+if(window.innerWidth <= 768){
+
+    document.getElementById('sidebar')
+        .classList.toggle('active');
+
+}else{
 
     document.getElementById('sidebar')
         .classList.toggle('collapsed');
+
+}
 
 };
 </script>

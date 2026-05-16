@@ -107,8 +107,17 @@
 
         document.getElementById('toggle-btn').onclick = () => {
 
-            document.getElementById('sidebar')
-                .classList.toggle('collapsed');
+            if(window.innerWidth <= 768){
+
+    document.getElementById('sidebar')
+        .classList.toggle('active');
+
+}else{
+
+    document.getElementById('sidebar')
+        .classList.toggle('collapsed');
+
+}
 
         };
 
