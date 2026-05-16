@@ -228,43 +228,26 @@ function saveAlarm(type, message, value) {
 }
 
 function sendAlarmEmail(type, message, value){
-
-        from: 'EMAILUL_TAU@gmail.com',
-
-        to: 'EMAILUL_TAU@gmail.com',
-
+    const mailOptions = {
+        from: 'erikaboo2000@gmail.com',
+        to: 'erikaboo2000@gmail.com',
         subject: 'SmartMeteo - Alarmă activă',
-
         html: `
-
             <h2>Alarmă SmartMeteo</h2>
-
             <p><strong>Tip:</strong> ${type}</p>
-
             <p><strong>Mesaj:</strong> ${message}</p>
-
             <p><strong>Valoare:</strong> ${value}</p>
-
             <p><strong>Data:</strong> ${new Date().toLocaleString('ro-RO')}</p>
-
         `
-
     };
 
     transporter.sendMail(mailOptions, (err, info) => {
-
         if(err){
-
             console.log('Eroare email:', err);
-
-        }else{
-
+        } else {
             console.log('Email trimis:', info.response);
-
         }
-
     });
-
 }
 
 // RUTA: Trimite ultimele 20 de înregistrări pentru grafic
