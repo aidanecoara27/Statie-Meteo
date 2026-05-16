@@ -6,6 +6,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const nodemailer = require('nodemailer');
+
 // Linie CRITICA: Permite serverului să arate fișierele din folderul 'public'
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -30,10 +32,26 @@ db.connect((err) => {
 
 const axios = require('axios'); // Asigură-te că linia asta e la începutul fișierului server.js
 
+let lastEmailAlarm = {};
+
 let lastUpdate = Date.now();
 
 let lastTemp = null;
 let sameTempCount = 0;
+
+const transporter = nodemailer.createTransport({
+
+    service: 'gmail',
+
+    auth: {
+
+        user: 'EMAILUL_TAU@gmail.com',
+
+        pass: 'PAROLA_APLICATIE_GMAIL'
+
+    }
+
+});
 
 // Ruta pentru OpenWeatherMap
 // Ruta pentru OpenWeatherMap
@@ -192,6 +210,7 @@ app.post('/login', (req, res) => {
 
 function saveAlarm(type, message, value) {
 
+    
     const sql = `
         INSERT INTO alarms (type, message, value)
         VALUES (?, ?, ?)
@@ -204,6 +223,48 @@ function saveAlarm(type, message, value) {
     });
 
     console.log("ALARMA:", message);
+
+    sendAlarmEmail(type, message, value);
+}
+
+function sendAlarmEmail(type, message, value){
+
+        from: 'EMAILUL_TAU@gmail.com',
+
+        to: 'EMAILUL_TAU@gmail.com',
+
+        subject: 'SmartMeteo - Alarmă activă',
+
+        html: `
+
+            <h2>Alarmă SmartMeteo</h2>
+
+            <p><strong>Tip:</strong> ${type}</p>
+
+            <p><strong>Mesaj:</strong> ${message}</p>
+
+            <p><strong>Valoare:</strong> ${value}</p>
+
+            <p><strong>Data:</strong> ${new Date().toLocaleString('ro-RO')}</p>
+
+        `
+
+    };
+
+    transporter.sendMail(mailOptions, (err, info) => {
+
+        if(err){
+
+            console.log('Eroare email:', err);
+
+        }else{
+
+            console.log('Email trimis:', info.response);
+
+        }
+
+    });
+
 }
 
 // RUTA: Trimite ultimele 20 de înregistrări pentru grafic
