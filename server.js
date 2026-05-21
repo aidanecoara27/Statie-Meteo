@@ -82,15 +82,21 @@ app.get('/update-sensors', (req, res) => {
     const p = req.query.p || 0;
     const l = req.query.l || 0;
     const r = req.query.r || 0;
-    const dir = req.query.dir || 0; // Direcția vântului
-    const vit = req.query.vit || 0; // Viteza vântului (rotații)
+ const dir = req.query.dir || "Necunoscut";
 
-    lastUpdate = Date.now();
-    const temp = parseFloat(t);
-    const hum = parseFloat(h);
-    const lux = parseFloat(l);
-    const rain = parseFloat(r);
+const vit = req.query.vit || 0;
 
+lastUpdate = Date.now();
+
+const temp = parseFloat(t);
+
+const hum = parseFloat(h);
+
+const lux = parseFloat(l);
+
+const rain = parseFloat(r);
+
+const speed = parseFloat(vit) || 0;
 /* TEMPERATURA MARE */
 if(temp > 35){
     saveAlarm(
@@ -166,7 +172,7 @@ lastTemp = temp;
 const sqlUpdate =
 "UPDATE status_control SET temperature = ?, humidity = ?, pressure = ?, lux = ?, rain = ?, wind_direction = ?, wind_speed = ? WHERE id = 1";
 
-db.query(sqlUpdate, [t, h, p, l, r, dir, vit], (err) => {
+db.query(sqlUpdate, [t, h, p, l, r, dir, speed], (err) => {
 
     if (err)
         console.error("Eroare Update status_control:", err);
@@ -178,7 +184,7 @@ db.query(sqlUpdate, [t, h, p, l, r, dir, vit], (err) => {
 const sqlInsert =
 "INSERT INTO istoric_meteo (temperature, humidity, pressure, lux, rain, wind_direction, wind_speed) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-db.query(sqlInsert, [t, h, p, l, r, dir, vit], (err) => {
+db.query(sqlInsert, [t, h, p, l, r, dir, speed], (err) => {
 
     if (err)
         console.error("Eroare Insert istoric_meteo:", err);
