@@ -192,6 +192,8 @@ console.log(
 
 res.send("Date salvate cu succes!");
 
+});
+
 // 3. RUTA PENTRU SITE (Site -> DB)
 app.get('/get-latest-data', (req, res) => {
     const sql = "SELECT * FROM status_control WHERE id = 1";
@@ -329,5 +331,4 @@ setInterval(() => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Serverul ruleaza pe http://localhost:${PORT}`);
-});
 });
