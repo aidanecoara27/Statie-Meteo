@@ -133,7 +133,7 @@
         .s-box.off { opacity: 0.2; filter: grayscale(1); }
         .c-temp { background: #e74c3c; } .c-hum { background: #3498db; }
         .c-pres { background: #f39c12; } .c-lux { background: #2ecc71; }
-        .c-soil { background: #795548; }
+        .c-rain { background: #00bcd4; }
 
         .charts-grid { 
             display: grid; 
@@ -262,7 +262,7 @@
                     <button class="s-box c-hum" onclick="toggleChart('box-hum', this)"><i class="fas fa-tint"></i></button>
                     <button class="s-box c-pres" onclick="toggleChart('box-pres', this)"><i class="fas fa-compress-arrows-alt"></i></button>
                     <button class="s-box c-lux" onclick="toggleChart('box-lux', this)"><i class="fas fa-sun"></i></button>
-                    <button class="s-box c-soil" onclick="toggleChart('box-soil', this)"><i class="fas fa-seedling"></i></button>
+                    <button class="s-box c-rain" onclick="toggleChart('box-rain', this)"><i class="fas fa-cloud-rain"></i></button>
                 </div>
             </div>
 
@@ -271,7 +271,8 @@
                 <div class="chart-card" id="box-hum"><div class="chart-title">Umiditate Relativă (%)</div><canvas id="chart-hum"></canvas></div>
                 <div class="chart-card" id="box-pres"><div class="chart-title">Presiune Atmosferică (hPa)</div><canvas id="chart-pres"></canvas></div>
                 <div class="chart-card" id="box-lux"><div class="chart-title">Intensitate Luminoasă (lx)</div><canvas id="chart-lux"></canvas></div>
-                <div class="chart-card" id="box-soil"><div class="chart-title">Umiditate Sol (%)</div><canvas id="chart-soil"></canvas></div>
+                <div class="chart-card" id="box-rain"><div class="chart-title">Precipitații (%)</div><canvas id="chart-rain"></canvas>
+</div>
             </div>
         </div> </div> <script>
         // Toggle Sidebar
@@ -352,7 +353,7 @@
                 render('chart-hum', 'Umiditate', '#3498db', 'humidity');
                 render('chart-pres', 'Presiune', '#f39c12', 'pressure');
                 render('chart-lux', 'Luminozitate', '#2ecc71', 'lux');
-                render('chart-soil', 'Umiditate Sol', '#795548', 'soil_moisture');
+                render('chart-rain', 'Precipitații', '#00bcd4', 'rain');
 
             } catch (err) { console.error("Eroare încarcare date:", err); }
         }
@@ -380,7 +381,7 @@ document.getElementById('btn-raport').onclick = async function() {
         { nume: "Umiditate Relativa", senzor: "BME280 / DHT22", id: "chart-hum" },
         { nume: "Presiune Atmosferica", senzor: "BME280", id: "chart-pres" },
         { nume: "Intensitate Luminoasa", senzor: "BH1750", id: "chart-lux" },
-        { nume: "Umiditate Sol", senzor: "Capacitive Soil", id: "chart-soil" }
+        { nume: "Precipitatii", senzor: "Rain Sensor Module", id: "chart-rain" }
     ];
 
     parametri.forEach((param, index) => {

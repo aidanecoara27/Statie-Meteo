@@ -211,13 +211,33 @@
 
                                 </div>
 
-                                <div class="tag-item" onclick="goToIstoric('soil_moisture')">
+                                <div class="tag-item" onclick="goToIstoric('rain')">
 
-                                    <span class="label label-soil">
-                                        Umiditate Sol
+                                    <span class="label label-cyan">
+                                        Precipitații
                                     </span>
 
-                                    <strong id="val-soil">--</strong>
+                                    <strong id="val-rain">--</strong>
+
+                                </div>
+
+                                <div class="tag-item">
+
+                                    <span class="label label-wind">
+                                        Direcție Vânt
+                                    </span>
+
+                                    <strong id="val-dir">--</strong>
+
+                                </div>
+
+                                <div class="tag-item">
+
+                                    <span class="label label-wind2">
+                                        Viteză Vânt
+                                    </span>
+
+                                    <strong id="val-vit">--</strong>
 
                                 </div>
 
@@ -367,8 +387,14 @@ setInterval(updateAlarmCount, 10000);
                     document.getElementById('val-lux').innerText =
                         d.lux + " lx";
 
-                    document.getElementById('val-soil').innerText =
-                        d.soil_moisture + " %";
+                    document.getElementById('val-rain').innerText =
+                        d.rain + " %";
+
+                    document.getElementById('val-dir').innerText =
+                        d.wind_direction;
+
+                    document.getElementById('val-vit').innerText =
+                        d.wind_speed + " km/h";
 
                 }
 

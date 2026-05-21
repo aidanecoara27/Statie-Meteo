@@ -453,8 +453,22 @@ body{
     background: #2ecc71;
 }
 
-.label-soil{
-    background: #8d6e63;
+.label-rain{
+
+    background:#00bcd4;
+
+}
+
+.label-wind{
+
+    background:#8e44ad;
+
+}
+
+.label-wind2{
+
+    background:#16a085;
+
 }
 
 .analysis-score-card{

@@ -140,7 +140,7 @@
                 const hum = parseFloat(data.humidity);
                 const pressure = parseFloat(data.pressure);
                 const lux = parseFloat(data.lux);
-                const soil = parseFloat(data.soil_moisture);
+                const rain = parseFloat(data.rain);
 
                 const analysisContainer =
                     document.getElementById('analysis-list');
@@ -173,14 +173,27 @@
 
                 }
 
-                /* SOL USCAT */
-                if(soil < 20 && temp > 30){
+                /* PRECIPITAȚII */
+/* PRECIPITAȚII */
+                if(rain > 70){
 
-                    score -= 25;
+                    score -= 15;
 
                     addAnalysis(
-                        '🌱 Sol foarte uscat',
-                        'Se recomandă irigarea urgentă a solului pentru protejarea vegetației.'
+                        '🌧 Precipitații detectate',
+                        'Sistemul a detectat un nivel ridicat al precipitațiilor.'
+                    );
+
+                }
+
+                /* PLOAIE + PRESIUNE */
+                if(rain > 70 && pressure < 1000){
+
+                    score -= 20;
+
+                    addAnalysis(
+                        '⛈ Posibilă schimbare meteo',
+                        'Precipitațiile și presiunea atmosferică scăzută indică instabilitate atmosferică.'
                     );
 
                 }

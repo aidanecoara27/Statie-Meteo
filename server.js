@@ -81,7 +81,7 @@ app.get('/update-sensors', (req, res) => {
     const h = req.query.h || 0;
     const p = req.query.p || 0;
     const l = req.query.l || 0;
-    const s = req.query.s || 0;
+    const r = req.query.r || 0;
     const dir = req.query.dir || 0; // Direcția vântului
     const vit = req.query.vit || 0; // Viteza vântului (rotații)
 
@@ -89,7 +89,7 @@ app.get('/update-sensors', (req, res) => {
     const temp = parseFloat(t);
     const hum = parseFloat(h);
     const lux = parseFloat(l);
-    const soil = parseFloat(s);
+    const rain = parseFloat(r);
 
 /* TEMPERATURA MARE */
 if(temp > 35){
@@ -118,22 +118,15 @@ if(hum > 85){
     );
 }
 
-/* SOL USCAT */
-if(soil < 20){
-    saveAlarm(
-        "soil",
-        "Sol uscat - necesară irigare",
-        soil
-    );
-}
+/* PRECIPITAȚII DETECTATE */
+if(rain > 70){
 
-/* SOL FOARTE UMED */
-if(soil > 90){
     saveAlarm(
-        "soil",
-        "Sol foarte umed",
-        soil
+        "rain",
+        "Precipitații detectate",
+        rain
     );
+
 }
 
 /* LUMINA SCAZUTA */
@@ -168,21 +161,36 @@ if(lastTemp === temp){
 
 lastTemp = temp;
 
-    // 1. Actualizăm status_control (pentru dashboard) - ADAUGAT dir și vit
-    const sqlUpdate = "UPDATE status_control SET temperature = ?, humidity = ?, pressure = ?, lux = ?, soil_moisture = ?, wind_direction = ?, wind_speed = ? WHERE id = 1";
-    db.query(sqlUpdate, [t, h, p, l, s, dir, vit], (err) => {
-        if (err) console.error("Eroare Update status_control:", err);
-    });
 
-    // 2. Inserăm în istoric - ADAUGAT wind_direction și wind_speed
-    const sqlInsert = "INSERT INTO istoric_meteo (temperature, humidity, pressure, lux, soil_moisture, wind_direction, wind_speed) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    db.query(sqlInsert, [t, h, p, l, s, dir, vit], (err) => {
-        if (err) console.error("Eroare Insert istoric_meteo:", err);
-    });
+// 1. Actualizăm status_control
+const sqlUpdate =
+"UPDATE status_control SET temperature = ?, humidity = ?, pressure = ?, lux = ?, rain = ?, wind_direction = ?, wind_speed = ? WHERE id = 1";
 
-    console.log(`[DATE NOI] T:${t}, H:${h}, P:${p}, L:${l}, S:${s}, DIR:${dir}, VIT:${vit}`);
-    res.send("Date salvate cu succes!");
+db.query(sqlUpdate, [t, h, p, l, r, dir, vit], (err) => {
+
+    if (err)
+        console.error("Eroare Update status_control:", err);
+
 });
+
+
+// 2. Inserăm în istoric
+const sqlInsert =
+"INSERT INTO istoric_meteo (temperature, humidity, pressure, lux, rain, wind_direction, wind_speed) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+db.query(sqlInsert, [t, h, p, l, r, dir, vit], (err) => {
+
+    if (err)
+        console.error("Eroare Insert istoric_meteo:", err);
+
+});
+
+
+console.log(
+`[DATE NOI] T:${t}, H:${h}, P:${p}, L:${l}, R:${r}, DIR:${dir}, VIT:${vit}`
+);
+
+res.send("Date salvate cu succes!");
 
 // 3. RUTA PENTRU SITE (Site -> DB)
 app.get('/get-latest-data', (req, res) => {
