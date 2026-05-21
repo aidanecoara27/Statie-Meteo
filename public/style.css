@@ -453,9 +453,12 @@ body{
     background: #2ecc71;
 }
 
+
 .label-rain{
 
-    background:#00bcd4;
+    background:#00bcd4 !important;
+
+    color:rgb(255, 255, 255) !important;
 
 }
 
