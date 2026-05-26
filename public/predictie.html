@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Predicție Meteo</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<link rel="stylesheet"
+href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+.pred-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+.pred-card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    text-align:center;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+
+}
+
+.pred-card h2{
+
+    margin-bottom:15px;
+
+    color:#2c3e50;
+
+}
+
+.pred-value{
+
+    font-size:40px;
+
+    font-weight:bold;
+
+    color:#27ae60;
+
+}
+
+.chart-card{
+
+    margin-top:25px;
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+<div class="sidebar-header">
+
+<span>SmartMeteo</span>
+
+<i class="fas fa-bars" id="toggle-btn"></i>
+
+</div>
+
+<ul class="sidebar-menu">
+
+<li>
+<a href="index.html">
+
+<i class="fas fa-tachometer-alt"></i>
+
+<span>Dashboard</span>
+
+</a>
+</li>
+
+<li>
+<a href="istoric.html">
+
+<i class="fas fa-chart-line"></i>
+
+<span>Istoric</span>
+
+</a>
+</li>
+
+<li>
+<a href="statistica.html">
+
+<i class="fas fa-table"></i>
+
+<span>Statistică</span>
+
+</a>
+</li>
+
+<li>
+<a href="alarme.html">
+
+<i class="fas fa-triangle-exclamation"></i>
+
+<span>Alarme</span>
+
+</a>
+</li>
+
+<li>
+<a href="analiza.html">
+
+<i class="fas fa-brain"></i>
+
+<span>Analiză</span>
+
+</a>
+</li>
+
+<li>
+<a href="precizie.html">
+
+<i class="fas fa-check-circle"></i>
+
+<span>Precizie</span>
+
+</a>
+</li>
+
+<li class="active">
+<a href="predictie.html">
+
+<i class="fas fa-chart-area"></i>
+
+<span>Predicție</span>
+
+</a>
+</li>
+
+</ul>
+
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+<header class="top-nav">
+
+<strong>Predicție Meteo</strong>
+
+<span id="lastUpdate"></span>
+
+</header>
+
+<div class="content-padding">
+
+<div class="pred-grid">
+
+<div class="pred-card">
+
+<h2>Temperatură estimată</h2>
+
+<div class="pred-value"
+id="pred-temp">
+
+--
+
+</div>
+
+</div>
+
+<div class="pred-card">
+
+<h2>Umiditate estimată</h2>
+
+<div class="pred-value"
+id="pred-hum">
+
+--
+
+</div>
+
+</div>
+
+<div class="pred-card">
+
+<h2>Presiune estimată</h2>
+
+<div class="pred-value"
+id="pred-pres">
+
+--
+
+</div>
+
+</div>
+
+<div class="pred-card">
+
+<h2>Precipitații estimate</h2>
+
+<div class="pred-value"
+id="pred-rain">
+
+--
+
+</div>
+
+</div>
+
+</div>
+
+<div class="chart-card">
+
+<h2 style="margin-bottom:20px;">
+
+Evoluție și predicție temperatură
+
+</h2>
+
+<canvas id="predChart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+document.getElementById(
+'toggle-btn'
+).onclick = () => {
+
+if(window.innerWidth <= 768){
+
+document.getElementById(
+'sidebar'
+).classList.toggle('active');
+
+}
+else{
+
+document.getElementById(
+'sidebar'
+).classList.toggle('collapsed');
+
+}
+
+};
+
+function updateClock(){
+
+document.getElementById(
+'lastUpdate'
+).innerText =
+
+new Date().toLocaleString(
+'ro-RO'
+);
+
+}
+
+setInterval(updateClock,1000);
+
+updateClock();
+
+async function loadPrediction(){
+
+const res =
+await fetch('/predict-data');
+
+const data =
+await res.json();
+
+document.getElementById(
+'pred-temp'
+).innerText =
+
+data.prediction.temperature
+.toFixed(1) + " °C";
+
+document.getElementById(
+'pred-hum'
+).innerText =
+
+data.prediction.humidity
+.toFixed(1) + " %";
+
+document.getElementById(
+'pred-pres'
+).innerText =
+
+data.prediction.pressure
+.toFixed(1) + " hPa";
+
+document.getElementById(
+'pred-rain'
+).innerText =
+
+data.prediction.rain
+.toFixed(1) + " %";
+
+const labels =
+
+data.history.map((x,i)=>
+"Val " + (i+1));
+
+const temps =
+
+data.history.map(
+x => x.temperature
+);
+
+temps.push(
+data.prediction.temperature
+);
+
+labels.push("Predicție");
+
+new Chart(
+
+document.getElementById(
+'predChart'
+),
+
+{
+
+type:'line',
+
+data:{
+
+labels:labels,
+
+datasets:[{
+
+label:'Temperatură',
+
+data:temps,
+
+borderColor:'#3498db',
+
+backgroundColor:'rgba(52,152,219,0.2)',
+
+fill:true,
+
+tension:0.4
+
+}]
+
+},
+
+options:{
+
+responsive:true
+
+}
+
+}
+
+);
+
+}
+
+loadPrediction();
+
+</script>
+
+</body>
+
+</html>

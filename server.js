@@ -410,6 +410,109 @@ app.get('/compare-weather', async (req, res) => {
 
 });
 
+app.get('/predict-data', (req, res) => {
+
+    const sql = `
+    
+    SELECT *
+    
+    FROM istoric_meteo
+    
+    ORDER BY id DESC
+    
+    LIMIT 10
+    
+    `;
+
+    db.query(sql, (err, result) => {
+
+        if(err)
+            return res.status(500).json(err);
+
+        const data = result.reverse();
+
+        /* FUNCTIE PREDICTIE */
+
+        function predict(values){
+
+            if(values.length < 2)
+                return values[0] || 0;
+
+            let diffs = [];
+
+            for(let i = 1; i < values.length; i++){
+
+                diffs.push(
+                    values[i] - values[i-1]
+                );
+
+            }
+
+            const avgDiff =
+
+                diffs.reduce((a,b)=>a+b,0)
+
+                / diffs.length;
+
+            return values[values.length-1]
+                   + avgDiff;
+
+        }
+
+        const tempValues =
+            data.map(x => x.temperature);
+
+        const humValues =
+            data.map(x => x.humidity);
+
+        const presValues =
+            data.map(x => x.pressure);
+
+        const rainValues =
+            data.map(x => x.rain);
+
+        res.json({
+
+            current:{
+
+                temperature:
+                    tempValues[tempValues.length-1],
+
+                humidity:
+                    humValues[humValues.length-1],
+
+                pressure:
+                    presValues[presValues.length-1],
+
+                rain:
+                    rainValues[rainValues.length-1]
+
+            },
+
+            prediction:{
+
+                temperature:
+                    predict(tempValues),
+
+                humidity:
+                    predict(humValues),
+
+                pressure:
+                    predict(presValues),
+
+                rain:
+                    predict(rainValues)
+
+            },
+
+            history:data
+
+        });
+
+    });
+
+});
+
 
 setInterval(() => {
 
