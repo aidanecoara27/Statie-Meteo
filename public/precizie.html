@@ -10,42 +10,28 @@
 
     <title>Raport Precizie</title>
 
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- STYLE GENERAL -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- CHART -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- LOGIN -->
+    <script>
+
+        if(localStorage.getItem("logged") !== "true"){
+
+            window.location.href = "login.html";
+
+        }
+
+    </script>
+
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial;
-        }
-
-        body{
-
-            background:#f4f6f9;
-
-            padding:30px;
-
-        }
-
-        h1{
-
-            text-align:center;
-
-            margin-bottom:30px;
-
-            color:#2c3e50;
-
-        }
-
-        .container{
-
-            max-width:1100px;
-
-            margin:auto;
-
-        }
 
         .card{
 
@@ -57,7 +43,7 @@
 
             margin-bottom:25px;
 
-            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+            box-shadow:0 2px 10px rgba(0,0,0,0.08);
 
         }
 
@@ -91,15 +77,9 @@
 
         }
 
-        tr:hover{
-
-            background:#f8f9fa;
-
-        }
-
         .good{
 
-            color:green;
+            color:#27ae60;
 
             font-weight:bold;
 
@@ -107,7 +87,7 @@
 
         .medium{
 
-            color:orange;
+            color:#f39c12;
 
             font-weight:bold;
 
@@ -115,7 +95,7 @@
 
         .bad{
 
-            color:red;
+            color:#e74c3c;
 
             font-weight:bold;
 
@@ -125,11 +105,11 @@
 
             display:flex;
 
+            flex-direction:column;
+
             justify-content:center;
 
             align-items:center;
-
-            flex-direction:column;
 
         }
 
@@ -157,22 +137,112 @@
 
 <body>
 
-    <div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
 
-        <h1>
-            Raport Precizie Sistem SmartMeteo
-        </h1>
+    <div class="sidebar-header">
+
+        <span>SmartMeteo</span>
+
+        <i class="fas fa-bars" id="toggle-btn"></i>
+
+    </div>
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="index.html">
+
+                <i class="fas fa-tachometer-alt"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+        </li>
+
+        <li>
+            <a href="istoric.html">
+
+                <i class="fas fa-chart-line"></i>
+
+                <span>Istoric</span>
+
+            </a>
+        </li>
+
+        <li>
+            <a href="statistica.html">
+
+                <i class="fas fa-table"></i>
+
+                <span>Statistică</span>
+
+            </a>
+        </li>
+
+        <li>
+            <a href="alarme.html">
+
+                <i class="fas fa-triangle-exclamation"></i>
+
+                <span>Alarme</span>
+
+            </a>
+        </li>
+
+        <li>
+            <a href="analiza.html">
+
+                <i class="fas fa-brain"></i>
+
+                <span>Analiză</span>
+
+            </a>
+        </li>
+
+        <li class="active">
+            <a href="precizie.html">
+
+                <i class="fas fa-check-circle"></i>
+
+                <span>Precizie</span>
+
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+    <!-- TOP NAV -->
+    <header class="top-nav">
+
+        <strong>Raport Precizie Sistem</strong>
+
+        <span id="lastUpdate"></span>
+
+    </header>
+
+    <div class="content-padding">
 
         <!-- SCOR GENERAL -->
 
         <div class="card score-box">
 
-            <div class="score" id="general-score">
+            <div class="score"
+                 id="general-score">
+
                 --
+
             </div>
 
             <div class="subtitle">
+
                 Precizie generală sistem
+
             </div>
 
         </div>
@@ -227,162 +297,207 @@
 
     </div>
 
+</div>
+
 <script>
 
-async function loadAccuracy(){
+    /* SIDEBAR */
 
-    try{
+    document.getElementById('toggle-btn').onclick = () => {
 
-        const res =
-        await fetch('/compare-weather');
+        if(window.innerWidth <= 768){
 
-        const data =
-        await res.json();
+            document.getElementById('sidebar')
+            .classList.toggle('active');
 
-        const tbody =
-        document.getElementById('table-body');
+        }
+        else{
 
-        tbody.innerHTML = "";
+            document.getElementById('sidebar')
+            .classList.toggle('collapsed');
 
-        const rows = [
+        }
 
-            {
-                name:"Temperatură",
-                local:data.local.temperature,
-                api:data.api.temperature,
-                diff:data.diff.temperature,
-                acc:data.accuracy.temperature,
-                unit:"°C"
-            },
+    };
 
-            {
-                name:"Umiditate",
-                local:data.local.humidity,
-                api:data.api.humidity,
-                diff:data.diff.humidity,
-                acc:data.accuracy.humidity,
-                unit:"%"
-            },
+    /* CEAS */
 
-            {
-                name:"Presiune",
-                local:data.local.pressure,
-                api:data.api.pressure,
-                diff:data.diff.pressure,
-                acc:data.accuracy.pressure,
-                unit:"hPa"
-            }
+    function updateClock(){
 
-        ];
+        const el =
+        document.getElementById("lastUpdate");
 
-        rows.forEach(r => {
+        if(el){
 
-            let cls = "good";
+            el.innerText =
+            new Date().toLocaleString('ro-RO');
 
-            if(r.acc < 90)
-                cls = "medium";
+        }
 
-            if(r.acc < 75)
-                cls = "bad";
+    }
 
-            tbody.innerHTML += `
+    setInterval(updateClock, 1000);
 
-            <tr>
+    updateClock();
 
-                <td>${r.name}</td>
+    /* DATE */
 
-                <td>${r.local} ${r.unit}</td>
+    async function loadAccuracy(){
 
-                <td>${r.api} ${r.unit}</td>
+        try{
 
-                <td>${r.diff}</td>
+            const res =
+            await fetch('/compare-weather');
 
-                <td class="${cls}">
-                    ${r.acc.toFixed(1)}%
-                </td>
+            const data =
+            await res.json();
 
-            </tr>
+            const tbody =
+            document.getElementById('table-body');
 
-            `;
+            tbody.innerHTML = "";
 
-        });
+            const rows = [
 
-        /* SCOR GENERAL */
-
-        const avgAccuracy = (
-
-            data.accuracy.temperature +
-
-            data.accuracy.humidity +
-
-            data.accuracy.pressure
-
-        ) / 3;
-
-        document.getElementById(
-            'general-score'
-        ).innerText =
-        avgAccuracy.toFixed(1) + "%";
-
-        /* GRAFIC */
-
-        new Chart(
-
-            document.getElementById(
-                'accuracyChart'
-            ),
-
-            {
-
-                type:'bar',
-
-                data:{
-
-                    labels:[
-                        'Temperatură',
-                        'Umiditate',
-                        'Presiune'
-                    ],
-
-                    datasets:[{
-
-                        label:'Precizie %',
-
-                        data:[
-
-                            data.accuracy.temperature,
-
-                            data.accuracy.humidity,
-
-                            data.accuracy.pressure
-
-                        ],
-
-                        backgroundColor:[
-
-                            '#3498db',
-
-                            '#2ecc71',
-
-                            '#9b59b6'
-
-                        ]
-
-                    }]
-
+                {
+                    name:"Temperatură",
+                    local:data.local.temperature,
+                    api:data.api.temperature,
+                    diff:data.diff.temperature,
+                    acc:data.accuracy.temperature,
+                    unit:"°C"
                 },
 
-                options:{
+                {
+                    name:"Umiditate",
+                    local:data.local.humidity,
+                    api:data.api.humidity,
+                    diff:data.diff.humidity,
+                    acc:data.accuracy.humidity,
+                    unit:"%"
+                },
 
-                    responsive:true,
+                {
+                    name:"Presiune",
+                    local:data.local.pressure,
+                    api:data.api.pressure,
+                    diff:data.diff.pressure,
+                    acc:data.accuracy.pressure,
+                    unit:"hPa"
+                }
 
-                    scales:{
+            ];
 
-                        y:{
+            rows.forEach(r => {
 
-                            beginAtZero:true,
+                let cls = "good";
 
-                            max:100
+                if(r.acc < 90)
+                    cls = "medium";
+
+                if(r.acc < 75)
+                    cls = "bad";
+
+                tbody.innerHTML += `
+
+                <tr>
+
+                    <td>${r.name}</td>
+
+                    <td>${r.local} ${r.unit}</td>
+
+                    <td>${r.api} ${r.unit}</td>
+
+                    <td>${r.diff}</td>
+
+                    <td class="${cls}">
+                        ${r.acc.toFixed(1)}%
+                    </td>
+
+                </tr>
+
+                `;
+
+            });
+
+            /* SCOR */
+
+            const avgAccuracy = (
+
+                data.accuracy.temperature +
+
+                data.accuracy.humidity +
+
+                data.accuracy.pressure
+
+            ) / 3;
+
+            document.getElementById(
+                'general-score'
+            ).innerText =
+            avgAccuracy.toFixed(1) + "%";
+
+            /* GRAFIC */
+
+            new Chart(
+
+                document.getElementById(
+                    'accuracyChart'
+                ),
+
+                {
+
+                    type:'bar',
+
+                    data:{
+
+                        labels:[
+                            'Temperatură',
+                            'Umiditate',
+                            'Presiune'
+                        ],
+
+                        datasets:[{
+
+                            label:'Precizie %',
+
+                            data:[
+
+                                data.accuracy.temperature,
+
+                                data.accuracy.humidity,
+
+                                data.accuracy.pressure
+
+                            ],
+
+                            backgroundColor:[
+
+                                '#3498db',
+
+                                '#2ecc71',
+
+                                '#9b59b6'
+
+                            ]
+
+                        }]
+
+                    },
+
+                    options:{
+
+                        responsive:true,
+
+                        scales:{
+
+                            y:{
+
+                                beginAtZero:true,
+
+                                max:100
+
+                            }
 
                         }
 
@@ -390,23 +505,21 @@ async function loadAccuracy(){
 
                 }
 
-            }
+            );
 
-        );
+        }
+
+        catch(err){
+
+            console.log(err);
+
+        }
 
     }
 
-    catch(err){
+    loadAccuracy();
 
-        console.log(err);
-
-    }
-
-}
-
-loadAccuracy();
-
-setInterval(loadAccuracy, 10000);
+    setInterval(loadAccuracy, 10000);
 
 </script>
 
