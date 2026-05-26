@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Raport Precizie</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial;
+        }
+
+        body{
+
+            background:#f4f6f9;
+
+            padding:30px;
+
+        }
+
+        h1{
+
+            text-align:center;
+
+            margin-bottom:30px;
+
+            color:#2c3e50;
+
+        }
+
+        .container{
+
+            max-width:1100px;
+
+            margin:auto;
+
+        }
+
+        .card{
+
+            background:white;
+
+            border-radius:15px;
+
+            padding:25px;
+
+            margin-bottom:25px;
+
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+
+        }
+
+        table{
+
+            width:100%;
+
+            border-collapse:collapse;
+
+            margin-top:20px;
+
+        }
+
+        th{
+
+            background:#3498db;
+
+            color:white;
+
+            padding:14px;
+
+        }
+
+        td{
+
+            padding:14px;
+
+            text-align:center;
+
+            border-bottom:1px solid #eee;
+
+        }
+
+        tr:hover{
+
+            background:#f8f9fa;
+
+        }
+
+        .good{
+
+            color:green;
+
+            font-weight:bold;
+
+        }
+
+        .medium{
+
+            color:orange;
+
+            font-weight:bold;
+
+        }
+
+        .bad{
+
+            color:red;
+
+            font-weight:bold;
+
+        }
+
+        .score-box{
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            flex-direction:column;
+
+        }
+
+        .score{
+
+            font-size:60px;
+
+            font-weight:bold;
+
+            color:#27ae60;
+
+        }
+
+        .subtitle{
+
+            margin-top:10px;
+
+            color:#555;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>
+            Raport Precizie Sistem SmartMeteo
+        </h1>
+
+        <!-- SCOR GENERAL -->
+
+        <div class="card score-box">
+
+            <div class="score" id="general-score">
+                --
+            </div>
+
+            <div class="subtitle">
+                Precizie generală sistem
+            </div>
+
+        </div>
+
+        <!-- TABEL -->
+
+        <div class="card">
+
+            <h2>
+                Comparație date senzori - API Meteo
+            </h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Parametru</th>
+
+                        <th>SmartMeteo</th>
+
+                        <th>API Meteo</th>
+
+                        <th>Diferență</th>
+
+                        <th>Precizie</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="table-body">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- GRAFIC -->
+
+        <div class="card">
+
+            <h2>
+                Precizia parametrilor
+            </h2>
+
+            <canvas id="accuracyChart"></canvas>
+
+        </div>
+
+    </div>
+
+<script>
+
+async function loadAccuracy(){
+
+    try{
+
+        const res =
+        await fetch('/compare-weather');
+
+        const data =
+        await res.json();
+
+        const tbody =
+        document.getElementById('table-body');
+
+        tbody.innerHTML = "";
+
+        const rows = [
+
+            {
+                name:"Temperatură",
+                local:data.local.temperature,
+                api:data.api.temperature,
+                diff:data.diff.temperature,
+                acc:data.accuracy.temperature,
+                unit:"°C"
+            },
+
+            {
+                name:"Umiditate",
+                local:data.local.humidity,
+                api:data.api.humidity,
+                diff:data.diff.humidity,
+                acc:data.accuracy.humidity,
+                unit:"%"
+            },
+
+            {
+                name:"Presiune",
+                local:data.local.pressure,
+                api:data.api.pressure,
+                diff:data.diff.pressure,
+                acc:data.accuracy.pressure,
+                unit:"hPa"
+            }
+
+        ];
+
+        rows.forEach(r => {
+
+            let cls = "good";
+
+            if(r.acc < 90)
+                cls = "medium";
+
+            if(r.acc < 75)
+                cls = "bad";
+
+            tbody.innerHTML += `
+
+            <tr>
+
+                <td>${r.name}</td>
+
+                <td>${r.local} ${r.unit}</td>
+
+                <td>${r.api} ${r.unit}</td>
+
+                <td>${r.diff}</td>
+
+                <td class="${cls}">
+                    ${r.acc.toFixed(1)}%
+                </td>
+
+            </tr>
+
+            `;
+
+        });
+
+        /* SCOR GENERAL */
+
+        const avgAccuracy = (
+
+            data.accuracy.temperature +
+
+            data.accuracy.humidity +
+
+            data.accuracy.pressure
+
+        ) / 3;
+
+        document.getElementById(
+            'general-score'
+        ).innerText =
+        avgAccuracy.toFixed(1) + "%";
+
+        /* GRAFIC */
+
+        new Chart(
+
+            document.getElementById(
+                'accuracyChart'
+            ),
+
+            {
+
+                type:'bar',
+
+                data:{
+
+                    labels:[
+                        'Temperatură',
+                        'Umiditate',
+                        'Presiune'
+                    ],
+
+                    datasets:[{
+
+                        label:'Precizie %',
+
+                        data:[
+
+                            data.accuracy.temperature,
+
+                            data.accuracy.humidity,
+
+                            data.accuracy.pressure
+
+                        ],
+
+                        backgroundColor:[
+
+                            '#3498db',
+
+                            '#2ecc71',
+
+                            '#9b59b6'
+
+                        ]
+
+                    }]
+
+                },
+
+                options:{
+
+                    responsive:true,
+
+                    scales:{
+
+                        y:{
+
+                            beginAtZero:true,
+
+                            max:100
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+    }
+
+}
+
+loadAccuracy();
+
+setInterval(loadAccuracy, 10000);
+
+</script>
+
+</body>
+
+</html>

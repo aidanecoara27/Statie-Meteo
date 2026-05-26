@@ -317,6 +317,99 @@ ORDER BY id DESC
 
 });
 
+app.get('/compare-weather', async (req, res) => {
+
+    try{
+
+        /* DATE SISTEM */
+
+        const sql =
+        "SELECT * FROM status_control WHERE id = 1";
+
+        db.query(sql, async (err, result) => {
+
+            if(err)
+                return res.status(500).json(err);
+
+            const local = result[0];
+
+            /* API METEO */
+
+            const apiKey = "8be2098d066d3fe35f3d44dbc4526f4e";
+
+            const city = "Bucharest";
+
+            const response = await fetch(
+                `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+            );
+
+            const apiData = await response.json();
+
+            const apiTemp =
+                apiData.main.temp;
+
+            const apiHum =
+                apiData.main.humidity;
+
+            const apiPres =
+                apiData.main.pressure;
+
+            /* DIFERENTE */
+
+            const diffTemp =
+                Math.abs(local.temperature - apiTemp);
+
+            const diffHum =
+                Math.abs(local.humidity - apiHum);
+
+            const diffPres =
+                Math.abs(local.pressure - apiPres);
+
+            /* PRECIZIE */
+
+            const accuracyTemp =
+                100 - diffTemp * 2;
+
+            const accuracyHum =
+                100 - diffHum;
+
+            const accuracyPres =
+                100 - diffPres;
+
+            res.json({
+
+                local,
+                api:{
+                    temperature: apiTemp,
+                    humidity: apiHum,
+                    pressure: apiPres
+                },
+
+                diff:{
+                    temperature: diffTemp,
+                    humidity: diffHum,
+                    pressure: diffPres
+                },
+
+                accuracy:{
+                    temperature: accuracyTemp,
+                    humidity: accuracyHum,
+                    pressure: accuracyPres
+                }
+
+            });
+
+        });
+
+    }
+    catch(err){
+
+        res.status(500).json(err);
+
+    }
+
+});
+
 
 setInterval(() => {
 
