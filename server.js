@@ -14,20 +14,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // 1. Conexiunea la baza de date
 // TEST TEMPORAR (nu lăsa așa pe termen lung din motive de securitate)
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: process.env.MYSQLHOST || 'interchange.proxy.rlwy.net',
     user: process.env.MYSQLUSER || 'root',
     password: process.env.MYSQLPASSWORD || 'FjWCGwzRtMTCrzXbMOWghLmirnfoYVIV',
     database: process.env.MYSQLDATABASE || 'railway',
-    port: process.env.MYSQLPORT || 50040
+    port: process.env.MYSQLPORT || 50040,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 10000
 });
 
-db.connect((err) => {
+// verificare conexiune la pornire
+db.getConnection((err, conn) => {
     if (err) {
         console.error("EROARE CONECTARE BAZĂ DATE:", err.message);
         return;
     }
     console.log("CONECTAT CU SUCCES LA RAILWAY!");
+    conn.release();
 });
 
 const axios = require('axios'); // Asigură-te că linia asta e la începutul fișierului server.js

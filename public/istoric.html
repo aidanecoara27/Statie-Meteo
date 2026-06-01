@@ -397,7 +397,6 @@ document.getElementById('btn-raport').onclick = async function() {
 
         if (index > 0) doc.addPage();
 
-        // 🔥 HEADER
         doc.setFillColor(33, 37, 41);
         doc.rect(0, 0, pageWidth, 25, 'F');
 
@@ -406,7 +405,6 @@ document.getElementById('btn-raport').onclick = async function() {
         doc.setFont("helvetica", "bold");
         doc.text(`Raport Tehnic - ${param.nume}`, pageWidth / 2, 15, { align: "center" });
 
-        // 🔥 INFO BOX
         doc.setTextColor(0,0,0);
         doc.setFillColor(245,245,245);
         doc.roundedRect(15, 35, pageWidth - 30, 30, 3, 3, 'F');
@@ -418,12 +416,10 @@ document.getElementById('btn-raport').onclick = async function() {
         doc.text(`Interval monitorizat: ${dataDeLa} - ${dataPanaLa}`, 20, 52);
         doc.text(`Statie: SmartMeteo ID 1016`, 20, 59);
 
-        // 🔥 TITLU GRAFIC
         doc.setFontSize(11);
         doc.setFont("helvetica", "bold");
         doc.text("Evolutie grafica:", 20, 75);
 
-        // 🔥 GRAFIC
         const chartCanvas = document.getElementById(param.id);
         if (chartCanvas) {
             try {
@@ -439,7 +435,6 @@ document.getElementById('btn-raport').onclick = async function() {
             }
         }
 
-        // 🔥 INTERPRETARE
         doc.setFont("helvetica", "bold");
         doc.text("Interpretare date:", 20, 180);
 
@@ -454,7 +449,6 @@ document.getElementById('btn-raport').onclick = async function() {
             lineHeightFactor: 1.4
         });
 
-        // 🔥 FOOTER
         doc.setFontSize(8);
         doc.setTextColor(120,120,120);
 
