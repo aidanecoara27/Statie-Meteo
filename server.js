@@ -273,20 +273,56 @@ function sendAlarmEmail(type, message, value){
     });
 }
 
-// RUTA: Trimite ultimele 20 de înregistrări pentru grafic
+// RUTA: Trimite înregistrările pentru grafic (filtrare după interval + grupare)
 app.get('/get-history', (req, res) => {
     const range = req.query.range;
+    const from  = req.query.from;    // data de început (YYYY-MM-DD)
+    const to    = req.query.to;      // data de sfârșit (YYYY-MM-DD)
+    const group = req.query.group;   // "ora" sau "zi"
 
     let sql;
+    let params = [];
 
-    if(range === "day")
-        sql = "SELECT * FROM istoric_meteo WHERE data_ora >= NOW() - INTERVAL 1 DAY";
-    else if(range === "week")
-        sql = "SELECT * FROM istoric_meteo WHERE data_ora >= NOW() - INTERVAL 7 DAY";
-    else
-        sql = "SELECT * FROM istoric_meteo WHERE data_ora >= NOW() - INTERVAL 1 MONTH";
+    // condiția de interval
+    let where;
+    if (from && to) {
+        where = "data_ora >= ? AND data_ora < DATE_ADD(?, INTERVAL 1 DAY)";
+        params = [from, to];
+    } else if (range === "day") {
+        where = "data_ora >= NOW() - INTERVAL 1 DAY";
+    } else if (range === "week") {
+        where = "data_ora >= NOW() - INTERVAL 7 DAY";
+    } else {
+        where = "data_ora >= NOW() - INTERVAL 1 MONTH";
+    }
 
-    db.query(sql, (err, results) => {
+    if (group === "ora" || group === "zi") {
+        // format pentru gruparea pe oră sau pe zi
+        const fmt = (group === "zi") ? "%Y-%m-%d" : "%Y-%m-%d %H:00:00";
+
+        sql = `
+            SELECT
+                DATE_FORMAT(data_ora, '${fmt}') AS data_ora,
+                AVG(temperature) AS temperature,
+                AVG(humidity)    AS humidity,
+                AVG(pressure)    AS pressure,
+                AVG(lux)         AS lux,
+                AVG(rain)        AS rain
+            FROM istoric_meteo
+            WHERE ${where}
+            GROUP BY DATE_FORMAT(data_ora, '${fmt}')
+            ORDER BY data_ora ASC
+        `;
+    } else {
+        // fără grupare: toate citirile individuale
+        sql = `SELECT * FROM istoric_meteo WHERE ${where} ORDER BY id ASC`;
+    }
+
+    db.query(sql, params, (err, results) => {
+        if (err) {
+            console.error("Eroare get-history:", err);
+            return res.status(500).json([]);
+        }
         res.json(results);
     });
 });

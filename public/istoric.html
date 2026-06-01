@@ -248,8 +248,8 @@
                     <div style="display:flex; flex-direction:column; gap:5px;">
                         <label style="font-size:12px; font-weight:bold;">Grupare</label>
                         <select id="group-by" style="padding:8px; border:1px solid #ddd; border-radius:4px;">
-                            <option>Oră</option>
-                            <option>Zi</option>
+                            <option value="ora">Oră</option>
+                            <option value="zi">Zi</option>
                         </select>
                     </div>
                     <button onclick="loadData()" style="background:#3498db; color:white; border:none; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; margin-left:auto;">
@@ -311,18 +311,32 @@
         let charts = {};
         async function loadData() {
             try {
-                // Înlocuiește cu URL-ul tău real către API
-                const res = await fetch('/get-history');
-                const data = await res.json();
-                
-                const labels = data.map(d => {
-    const dt = new Date(d.data_ora);
+                // citim intervalul de date și gruparea din câmpuri
+                const from  = document.getElementById('date-from').value;
+                const to    = document.getElementById('date-to').value;
+                const group = document.getElementById('group-by').value;
 
-    return dt.toLocaleTimeString('ro-RO', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-});
+                // construim URL-ul cu filtrele
+                let url = '/get-history?';
+                if (from && to) url += 'from=' + from + '&to=' + to + '&';
+                url += 'group=' + group;
+
+                const res = await fetch(url);
+                const data = await res.json();
+
+                const labels = data.map(d => {
+                    const dt = new Date(d.data_ora);
+                    if (group === 'zi') {
+                        // grupare pe zi -> afișăm data
+                        return dt.toLocaleDateString('ro-RO', {
+                            day: '2-digit', month: '2-digit'
+                        });
+                    }
+                    // grupare pe oră -> afișăm ora
+                    return dt.toLocaleTimeString('ro-RO', {
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                });
 
                 const render = (id, label, color, key) => {
                     const canvas = document.getElementById(id);
@@ -397,6 +411,7 @@ document.getElementById('btn-raport').onclick = async function() {
 
         if (index > 0) doc.addPage();
 
+        // 🔥 HEADER
         doc.setFillColor(33, 37, 41);
         doc.rect(0, 0, pageWidth, 25, 'F');
 
@@ -405,6 +420,7 @@ document.getElementById('btn-raport').onclick = async function() {
         doc.setFont("helvetica", "bold");
         doc.text(`Raport Tehnic - ${param.nume}`, pageWidth / 2, 15, { align: "center" });
 
+        // 🔥 INFO BOX
         doc.setTextColor(0,0,0);
         doc.setFillColor(245,245,245);
         doc.roundedRect(15, 35, pageWidth - 30, 30, 3, 3, 'F');
@@ -416,10 +432,12 @@ document.getElementById('btn-raport').onclick = async function() {
         doc.text(`Interval monitorizat: ${dataDeLa} - ${dataPanaLa}`, 20, 52);
         doc.text(`Statie: SmartMeteo ID 1016`, 20, 59);
 
+        // 🔥 TITLU GRAFIC
         doc.setFontSize(11);
         doc.setFont("helvetica", "bold");
         doc.text("Evolutie grafica:", 20, 75);
 
+        // 🔥 GRAFIC
         const chartCanvas = document.getElementById(param.id);
         if (chartCanvas) {
             try {
@@ -435,6 +453,7 @@ document.getElementById('btn-raport').onclick = async function() {
             }
         }
 
+        // 🔥 INTERPRETARE
         doc.setFont("helvetica", "bold");
         doc.text("Interpretare date:", 20, 180);
 
@@ -449,6 +468,7 @@ document.getElementById('btn-raport').onclick = async function() {
             lineHeightFactor: 1.4
         });
 
+        // 🔥 FOOTER
         doc.setFontSize(8);
         doc.setTextColor(120,120,120);
 
