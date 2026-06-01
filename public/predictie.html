@@ -75,6 +75,28 @@ href="style.css">
 
     box-shadow:0 2px 10px rgba(0,0,0,0.08);
 
+    overflow:hidden;
+
+}
+
+.chart-container{
+
+    position:relative;
+
+    height:320px;
+
+    max-width:900px;
+
+    margin:auto;
+
+}
+
+.chart-container canvas{
+
+    width:100% !important;
+
+    height:100% !important;
+
 }
 
 </style>
@@ -247,11 +269,7 @@ Evoluție și predicție temperatură
 
 </h2>
 
-<div style="
-height:320px;
-max-width:900px;
-margin:auto;
-">
+<div class="chart-container">
 
 <canvas id="predChart"></canvas>
 
